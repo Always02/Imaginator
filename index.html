@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#ffffff">
 <title>ELSEWHERE</title>
 
-<!-- 内嵌 Base64 黑色底、白色 story 字样的图标，确保 Safari 绝对能抓到 -->
+<!-- 内嵌 Base64 黑色底、白色 story 字样的图标 -->
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzExMSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iLWFwcGxlLXN5c3RlbSwgU0YgUHJvIERpc3BsYXksIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuMzVlbSIgbGV0dGVyLXNwYWNpbmc9IjAuMDVlbSI+c3Rvcnk8L3RleHQ+PC9zdmc+">
 
 <style>
@@ -18,15 +18,15 @@ button,input,textarea{font:inherit;color:inherit;font-size:16px !important;} /* 
 button{cursor:pointer;touch-action:manipulation;border:none;background:none;}
 input:focus, textarea:focus, button:focus { outline: none; }
 
-/* ====== 加载与日历 ====== */
-#loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease; }
+/* ====== 极简不卡顿翻书动画 ====== */
+#loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease; }
 #loader.fade-out { opacity: 0; pointer-events: none; }
-.book-wrap { perspective: 1200px; margin-bottom: 20px; }
-.book-3d { width: 50px; height: 70px; position: relative; transform-style: preserve-3d; background: #fff; border: 2px solid var(--ink); border-radius: 2px; }
-.book-page { position: absolute; top: -2px; left: 50%; width: 100%; height: calc(100% + 4px); background: #fff; border: 2px solid var(--ink); border-radius: 2px; transform-origin: left center; animation: realFlip 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1); }
-@keyframes realFlip { 0% { transform: rotateY(0deg); } 20% { transform: rotateY(0deg); } 80% { transform: rotateY(-180deg); } 100% { transform: rotateY(-180deg); } }
-.loader-text { font-size: 12px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
+.book-wrap { width: 40px; height: 56px; border: 2px solid var(--ink); border-radius: 3px; position: relative; overflow: hidden; margin-bottom: 20px; }
+.book-page { width: 50%; height: 100%; background: var(--white); position: absolute; right: 0; border-left: 1px solid var(--ink); transform-origin: left; animation: flip 1.5s infinite cubic-bezier(0.4, 0, 0.2, 1); }
+@keyframes flip { 0% { transform: rotateY(0deg); } 50%,100% { transform: rotateY(-180deg); } }
+.loader-text { font-size: 11px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
 
+/* ====== 日历过渡页 ====== */
 #calendarOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 9000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 1s ease; padding: 40px; }
 #calendarOverlay.fade-out { opacity: 0; pointer-events: none; }
 .cal-month-year { font-size: 13px; letter-spacing: 0.3em; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; }
@@ -39,7 +39,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 @keyframes pulse { 0%,100%{opacity: 0.3;} 50%{opacity: 1;} }
 
 /* ====== 主应用 ====== */
-.app { max-width: 680px; margin: 0 auto; min-height: 100vh; padding: 0 20px 100px; opacity: 0; transition: opacity 1s; }
+.app { max-width: 680px; margin: 0 auto; min-height: 100vh; padding: 0 20px 100px; opacity: 0; transition: opacity 0.8s; }
 .app.loaded { opacity: 1; }
 
 .topbar { height: 72px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: rgba(255,255,255,.95); backdrop-filter: blur(10px); z-index: 100; margin-bottom: 20px; }
@@ -119,7 +119,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .add-submit { background: var(--ink); color: var(--white); padding: 6px 16px; border-radius: 15px; font-size: 14px; font-weight: 600; }
 
 /* 悬浮球 */
-.fab { position: fixed; right: 20px; bottom: 40px; width: 56px; height: 56px; background: var(--ink); border-radius: 50%; z-index: 800; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; cursor: grab; touch-action: none; transition: transform 0.1s, left 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.fab { position: fixed; right: 20px; bottom: 40px; width: 56px; height: 56px; background: var(--ink); border-radius: 50%; z-index: 800; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; cursor: grab; touch-action: none; transition: transform 0.1s, left 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .fab:active { cursor: grabbing; transform: scale(0.95); }
 .fab svg { width: 24px; height: 24px; fill: none; stroke: var(--white); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .fab.hidden { display: none !important; }
@@ -175,7 +175,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 
 <!-- 加载动画 -->
 <div id="loader">
-  <div class="book-wrap"><div class="book-3d"><div class="book-page"></div></div></div>
+  <div class="book-wrap"><div class="book-page"></div></div>
   <div class="loader-text">Life is Elsewhere</div>
 </div>
 
@@ -370,7 +370,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
       
       var d = localStorage.getItem(KEY_DIARY) || localStorage.getItem('herLittleAtlas.entries.v3');
       entries = d ? JSON.parse(d) : [];
-      if (entries.length === 0) entries.push(presetEntry); // 如果没有数据，放进预置日记
+      if (entries.length === 0) entries.push(presetEntry);
       
       var i = localStorage.getItem(KEY_IMAGINE) || localStorage.getItem('herLittleAtlas.imagine.v3');
       imagineBoxes = i ? JSON.parse(i) : [];
@@ -393,7 +393,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     userProfile = { name: name, gender: selectedGender };
     localStorage.setItem(KEY_PROFILE, JSON.stringify(userProfile));
     
-    // 如果此时日记为空，推入预置日记
     if (entries.length === 0) {
       entries.push(presetEntry);
       saveDiary();
@@ -447,7 +446,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
         $('loader').style.display = 'none';
         showCalendar();
       }, 600);
-    }, 2000);
+    }, 1500);
   }
 
   // ================= 日历过渡 =================
@@ -476,5 +475,458 @@ input:focus, textarea:focus, button:focus { outline: none; }
       setTimeout(function() {
         overlay.classList.add('hidden');
         $('app').classList.add('loaded');
-        window.scrollTo(0, 0); // 修复进入页面不是在最顶侧的问题
-        $('fabBtn').classList.remove('hidden'); // 日历消失后才显示悬浮
+        window.scrollTo(0, 0);
+        $('fabBtn').classList.remove('hidden');
+      }, 1000);
+    }, { once: true });
+  }
+
+  // ================= 数据保存 =================
+  function saveDiary() { localStorage.setItem(KEY_DIARY, JSON.stringify(entries)); }
+  function saveImagine() { localStorage.setItem(KEY_IMAGINE, JSON.stringify(imagineBoxes)); }
+  
+  var toastTimer = null;
+  function showToast(t) {
+    var el = $('toast'); el.textContent = t; el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { el.classList.remove('show'); }, 2000);
+  }
+
+  // ================= 页面切换 =================
+  document.querySelectorAll('.main-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      if (this.getAttribute('data-view') === 'diary') {
+        $('diarySection').classList.remove('hidden');
+        $('imagineSection').classList.add('hidden');
+      } else {
+        $('diarySection').classList.add('hidden');
+        $('imagineSection').classList.remove('hidden');
+        backToImagineHub();
+      }
+    });
+  });
+
+  // ================= 日记逻辑 =================
+  function formatDate(s) {
+    if (!s) return '';
+    var d = new Date(s + 'T12:00:00');
+    return d.toLocaleDateString('zh-CN', {year:'numeric', month:'long', day:'numeric'});
+  }
+
+  function renderDiary() {
+    $('daysCount').textContent = entries.length;
+    $('entriesCount').textContent = entries.length;
+    var places = new Set();
+    entries.forEach(e => {
+      if (e.place) e.place.split(/[·，,、]/).forEach(x => { if(x.trim()) places.add(x.trim()); });
+    });
+    $('placesCount').textContent = places.size;
+
+    var filtered = entries.filter(function(e) {
+      if (!currentSearchQuery) return true;
+      var str = (e.date + ' ' + (e.place||'') + ' ' + (e.food||'') + ' ' + (e.mood||'') + ' ' + (e.events||'')).toLowerCase();
+      return str.indexOf(currentSearchQuery) > -1;
+    });
+
+    filtered.sort((a,b) => b.date.localeCompare(a.date));
+
+    var html = filtered.map(function(e) {
+      var tags = '';
+      if (e.food) tags += '<span class="tag">吃了 · ' + e.food + '</span>';
+      if (e.mood) tags += '<span class="tag">感觉 · ' + e.mood + '</span>';
+      
+      return '<div class="entry">'
+        + '<div class="entry-date">' + formatDate(e.date) + '</div>'
+        + '<div class="entry-place">' + (e.place || '无题') + '</div>'
+        + (tags ? '<div class="entry-tags">' + tags + '</div>' : '')
+        + '<div class="entry-body">' + (e.events || '') + '</div>'
+        + '<div class="entry-actions">'
+        + '<button onclick="editEntry(\'' + e.id + '\')">编辑</button>'
+        + '<button onclick="deleteEntry(\'' + e.id + '\')">删除</button>'
+        + '</div></div>';
+    }).join('');
+
+    if (!html) html = '<div style="padding:40px 0; color:var(--muted); text-align:center;">没有记录</div>';
+    $('entriesList').innerHTML = html;
+  }
+
+  $('searchInput').addEventListener('input', function(e) {
+    currentSearchQuery = e.target.value.toLowerCase().trim();
+    renderDiary();
+  });
+
+  $('fabBtn').addEventListener('click', function() {
+    $('entryForm').reset();
+    $('entryId').value = '';
+    $('date').value = new Date().toISOString().split('T')[0];
+    $('formTitle').textContent = '记下今天';
+    $('diarySubView').classList.add('hidden');
+    $('writeSubView').classList.remove('hidden');
+    document.querySelector('.main-tab[data-view="diary"]').click();
+  });
+
+  $('backBtn').addEventListener('click', function() {
+    $('writeSubView').classList.add('hidden');
+    $('diarySubView').classList.remove('hidden');
+  });
+
+  function parseSmartText(text, currentObj) {
+    if (!text.trim()) return currentObj;
+    var lines = text.split('\n');
+    var parsedPlace = currentObj.place; var parsedFood = currentObj.food; var parsedMood = currentObj.mood;
+    var remainingLines = [];
+    lines.forEach(line => {
+      let trimmed = line.trim();
+      if (!trimmed) return;
+      if (!parsedPlace && (trimmed.includes('去了') || trimmed.includes('在') || trimmed.includes('到了'))) {
+        let match = trimmed.match(/(去了|在|到了)([\u4e00-\u9fa5A-Za-z0-9·]{2,10})/);
+        if (match && match[2]) { parsedPlace = match[2]; remainingLines.push(trimmed.replace(match[0], '')); return; }
+      }
+      if (!parsedFood && (trimmed.includes('吃了') || trimmed.includes('喝了') || trimmed.includes('点了'))) {
+        let match = trimmed.match(/(吃了|喝了|点了)([\u4e00-\u9fa5A-Za-z0-9·]{2,10})/);
+        if (match && match[2]) { parsedFood = match[2]; remainingLines.push(trimmed.replace(match[0], '')); return; }
+      }
+      if (!parsedMood && (trimmed.includes('感觉') || trimmed.includes('开心') || trimmed.includes('安静') || trimmed.includes('微醺'))) {
+        let match = trimmed.match(/(感觉|觉得)([\u4e00-\u9fa5A-Za-z0-9·]{2,10})/);
+        if (match && match[2]) { parsedMood = match[2]; remainingLines.push(trimmed.replace(match[0], '')); return; }
+      }
+      remainingLines.push(trimmed);
+    });
+    return { place: parsedPlace, food: parsedFood, mood: parsedMood, events: remainingLines.join('\n').trim() || text };
+  }
+
+  $('entryForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var id = $('entryId').value || ('e-' + Date.now());
+    
+    var finalPlace = $('place').value.trim();
+    var finalFood = $('food').value.trim();
+    var finalMood = $('mood').value.trim();
+    var finalEvents = $('events').value.trim();
+
+    if (currentMode === 'smart') {
+      var parsed = parseSmartText(finalEvents, {place: finalPlace, food: finalFood, mood: finalMood});
+      finalPlace = parsed.place || ''; finalFood = parsed.food || ''; finalMood = parsed.mood || ''; finalEvents = parsed.events;
+    }
+
+    var obj = {
+      id: id, date: $('date').value, place: finalPlace, food: finalFood, mood: finalMood, events: finalEvents
+    };
+    
+    var idx = entries.findIndex(x => x.id === id);
+    if (idx > -1) entries[idx] = obj; else entries.push(obj);
+    saveDiary(); renderDiary();
+    $('backBtn').click();
+    showToast('保存成功');
+  });
+
+  window.editEntry = function(id) {
+    var e = entries.find(x => x.id === id);
+    if (!e) return;
+    $('entryId').value = e.id;
+    $('date').value = e.date;
+    $('place').value = e.place || '';
+    $('food').value = e.food || '';
+    $('mood').value = e.mood || '';
+    $('events').value = e.events || '';
+    $('formTitle').textContent = '编辑记录';
+    $('diarySubView').classList.add('hidden');
+    $('writeSubView').classList.remove('hidden');
+    switchMode('normal');
+  };
+
+  window.deleteEntry = function(id) {
+    if (!confirm('确定删除吗？')) return;
+    entries = entries.filter(x => x.id !== id);
+    saveDiary(); renderDiary();
+  };
+
+  function switchMode(mode) {
+    currentMode = mode;
+    if (mode === 'normal') {
+      $('modeNormal').classList.add('active');
+      $('modeSmart').classList.remove('active');
+      $('normalInputs').style.display = 'block';
+      $('eventsLabel').textContent = '发生了什么';
+      $('events').placeholder = '先随便写点什么……';
+    } else {
+      $('modeNormal').classList.remove('active');
+      $('modeSmart').classList.add('active');
+      $('normalInputs').style.display = 'none';
+      $('eventsLabel').textContent = '大段记录';
+      $('events').placeholder = '在这里写下或者粘贴一大段话，保存时会自动拆分……';
+    }
+  }
+  $('modeNormal').addEventListener('click', () => switchMode('normal'));
+  $('modeSmart').addEventListener('click', () => switchMode('smart'));
+
+  // ================= 想象逻辑 =================
+  function renderHub() {
+    var html = imagineBoxes.map(function(box) {
+      return '<div class="box-card" onclick="openBox(\'' + box.id + '\')">'
+        + '<div><div class="box-title">' + box.name + '</div>'
+        + '<div class="box-desc">' + (box.details ? box.details.length : 0) + ' 条补充</div></div>'
+        + '<div style="font-size:18px; color:#ccc;">›</div></div>';
+    }).join('');
+    $('boxList').innerHTML = html;
+  }
+
+  window.openBox = function(id) {
+    currentBoxId = id;
+    var box = imagineBoxes.find(x => x.id === id);
+    if (!box) return;
+
+    $('imagineHub').classList.add('hidden');
+    $('boxDetail').classList.remove('hidden');
+    $('boxTitleInput').value = box.name;
+    $('boxTitleInput').disabled = true;
+    $('editBoxTitleBtn').style.display = 'none';
+    
+    if (box.type === 'custom') {
+      $('editBoxTitleBtn').style.display = 'inline';
+    }
+
+    $('coreInput').value = box.core || '';
+    var prompt = boxPrompts[box.name] || boxPrompts['default'];
+    $('coreInput').placeholder = prompt;
+
+    renderThreads(box);
+  };
+
+  function renderThreads(box) {
+    var html = '';
+    if (box.details && box.details.length > 0) {
+      html = box.details.map(function(item, index) {
+        var dateStr = item.date ? item.date.split('T')[0].replace(/-/g, '年').replace(/(\d+)月/, '$1月') + '日' : '';
+        return '<div class="thread-item">'
+          + '<div class="thread-content-wrap">'
+          + '<div class="thread-text">' + item.text + '</div>'
+          + '<div class="thread-date">' + dateStr + '</div>'
+          + '<div class="thread-edit-btn" onclick="editThread(' + index + ')">编辑</div>'
+          + '</div>'
+          + (item.image ? '<img src="' + item.image + '" class="thread-img">' : '')
+          + '<div class="thread-actions"><button onclick="delThread(' + index + ')">删除</button></div>'
+          + '</div>';
+      }).join('');
+    }
+    $('threadFeed').innerHTML = html;
+  }
+
+  window.editThread = function(index) {
+    var box = imagineBoxes.find(x => x.id === currentBoxId);
+    var item = box.details[index];
+    var newText = prompt('修改内容：', item.text);
+    if (newText !== null && newText.trim() !== '') {
+      box.details[index].text = newText.trim();
+      saveImagine();
+      renderThreads(box);
+    }
+  };
+
+  window.delThread = function(index) {
+    if (!confirm('删除这条补充吗？')) return;
+    var box = imagineBoxes.find(x => x.id === currentBoxId);
+    box.details.splice(index, 1);
+    saveImagine();
+    renderThreads(box);
+  };
+
+  $('coreInput').addEventListener('blur', function() {
+    var box = imagineBoxes.find(x => x.id === currentBoxId);
+    if (box) { box.core = this.value; saveImagine(); }
+  });
+
+  $('addDetailBtn').addEventListener('click', function() {
+    var text = $('detailText').value.trim();
+    var file = $('detailImage').files[0];
+    if (!text && !file) return;
+
+    var proceed = function(imgData) {
+      var box = imagineBoxes.find(x => x.id === currentBoxId);
+      if (!box.details) box.details = [];
+      var now = new Date();
+      var dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+      box.details.push({ text: text, image: imgData || null, date: dateStr });
+      saveImagine();
+      $('detailText').value = '';
+      $('detailImage').value = '';
+      renderThreads(box);
+    };
+
+    if (file) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          var scale = Math.min(1, 800 / Math.max(img.width, img.height));
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          proceed(canvas.toDataURL('image/jpeg', 0.6));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      proceed(null);
+    }
+  });
+
+  $('editBoxTitleBtn').addEventListener('click', function() {
+    $('boxTitleInput').disabled = false;
+    $('boxTitleInput').focus();
+    this.style.display = 'none';
+  });
+
+  $('boxTitleInput').addEventListener('blur', function() {
+    var box = imagineBoxes.find(x => x.id === currentBoxId);
+    if (box) {
+      box.name = this.value.trim() || box.name;
+      this.value = box.name;
+      saveImagine();
+      this.disabled = true;
+      if (box.type === 'custom') $('editBoxTitleBtn').style.display = 'inline';
+    }
+  });
+
+  $('backToImagineHub').addEventListener('click', backToImagineHub);
+  function backToImagineHub() {
+    $('boxDetail').classList.add('hidden');
+    $('imagineHub').classList.remove('hidden');
+    renderHub();
+  }
+
+  $('addBoxBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    $('boxTypeMenu').classList.toggle('show');
+  });
+
+  document.querySelectorAll('#boxTypeMenu button').forEach(btn => {
+    btn.addEventListener('click', function() {
+      var type = this.getAttribute('data-type');
+      var boxName = type;
+      if (type === 'custom') {
+        boxName = '自定义';
+      }
+      if (imagineBoxes.find(x => x.name === boxName)) {
+        showToast('这个盒子已经有了');
+        $('boxTypeMenu').classList.remove('show');
+        return;
+      }
+      var newBox = { id: 'box-' + Date.now(), type: type, name: boxName, core: '', details: [] };
+      imagineBoxes.push(newBox);
+      saveImagine();
+      $('boxTypeMenu').classList.remove('show');
+      renderHub();
+      openBox(newBox.id);
+    });
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#addBoxBtn') && !e.target.closest('#boxTypeMenu')) {
+      $('boxTypeMenu').classList.remove('show');
+    }
+  });
+
+  // ================= 导入导出 =================
+  $('exportBtn').addEventListener('click', function() {
+    var data = { profile: userProfile, diary: entries, imagine: imagineBoxes };
+    var blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '生活在别处_备份.json';
+    a.click();
+    showToast('导出成功');
+  });
+
+  $('importBtn').addEventListener('click', function() {
+    $('importFile').click();
+  });
+
+  $('importFile').addEventListener('change', function(e) {
+    var f = e.target.files[0]; if (!f) return;
+    var r = new FileReader();
+    r.onload = function(ev) {
+      try {
+        var data = JSON.parse(ev.target.result);
+        if (confirm('导入将覆盖当前所有数据，确定吗？')) {
+          if (data.profile) { userProfile = data.profile; localStorage.setItem(KEY_PROFILE, JSON.stringify(userProfile)); }
+          if (data.diary) { entries = data.diary; saveDiary(); }
+          if (data.imagine) { imagineBoxes = data.imagine; saveImagine(); }
+          showToast('导入成功，即将刷新');
+          setTimeout(() => location.reload(), 1500);
+        }
+      } catch(err) { showToast('文件格式错误'); }
+      e.target.value = '';
+    };
+    r.readAsText(f);
+  });
+
+  // ================= 拖拽悬浮球 =================
+  var fab = $('fabBtn');
+  var isDragging = false;
+  var startX, startY, startLeft, startTop;
+
+  fab.addEventListener('touchstart', startDrag, {passive: false});
+  fab.addEventListener('mousedown', startDrag);
+
+  function startDrag(e) {
+    isDragging = false;
+    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    var rect = fab.getBoundingClientRect();
+    startX = clientX; startY = clientY;
+    startLeft = rect.left; startTop = rect.top;
+    
+    document.addEventListener('touchmove', onDrag, {passive: false});
+    document.addEventListener('touchend', endDrag);
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', endDrag);
+  }
+
+  function onDrag(e) {
+    if (!startX) return;
+    e.preventDefault();
+    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    var dx = clientX - startX;
+    var dy = clientY - startY;
+    
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
+    
+    fab.style.left = (startLeft + dx) + 'px';
+    fab.style.top = (startTop + dy) + 'px';
+    fab.style.right = 'auto';
+    fab.style.bottom = 'auto';
+  }
+
+  function endDrag() {
+    document.removeEventListener('touchmove', onDrag);
+    document.removeEventListener('touchend', endDrag);
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', endDrag);
+    startX = null;
+    
+    var rect = fab.getBoundingClientRect();
+    var vw = window.innerWidth;
+    var targetLeft = rect.left + rect.width/2 > vw/2 ? vw - rect.width - 20 : 20;
+    
+    // 平滑吸附
+    fab.style.left = targetLeft + 'px';
+    fab.style.top = Math.max(20, Math.min(rect.top, window.innerHeight - rect.height - 20)) + 'px';
+  }
+
+  fab.addEventListener('click', function(e) {
+    if (isDragging) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+
+})();
+</script>
+</body>
+</html>
