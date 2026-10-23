@@ -5,76 +5,118 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
 <title>她的世界</title>
+
+<!-- App 图标设置（用于添加到主屏幕） -->
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzExMSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iLWFwcGxlLXN5c3RlbSwgU0YgUHJvIERpc3BsYXksIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuMzVlbSIgbGV0dGVyLXNwYWNpbmc9IjAuMDVlbSI+c3Rvcnk8L3RleHQ+PC9zdmc+">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzExMSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iLWFwcGxlLXN5c3RlbSwgU0YgUHJvIERpc3BsYXksIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuMzVlbSIgbGV0dGVyLXNwYWNpbmc9IjAuMDVlbSI+c3Rvcnk8L3RleHQ+PC9zdmc+">
+
 <style>
+/* 调大了全局字体基准，解决字体过小的问题 */
 :root{--ink:#111;--muted:#777;--line:#e8e8e8;--soft:#f7f7f7;--white:#fff}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--white);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","PingFang SC",sans-serif;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--white);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","PingFang SC",sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer;touch-action:manipulation}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #111;outline-offset:2px}
-.app{max-width:720px;margin:0 auto;min-height:100vh;padding:0 22px 90px}
+
+/* 启动加载动画 */
+#loader {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--white); z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.6s ease;
+}
+#loader.fade-out { opacity: 0; pointer-events: none; }
+.book-loader {
+  width: 40px; height: 50px; border: 2px solid var(--ink);
+  border-radius: 4px; position: relative; overflow: hidden;
+  animation: flip 2s infinite ease-in-out;
+}
+.book-loader::after {
+  content: ""; position: absolute; top: 0; left: 50%; width: 50%; height: 100%;
+  background: var(--white); border-left: 1px solid var(--ink);
+  transform-origin: left; animation: page-flip 2s infinite ease-in-out;
+}
+@keyframes flip { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes page-flip { 0%, 100% { transform: rotateY(0deg); } 50% { transform: rotateY(-180deg); } }
+
+.app{max-width:720px;margin:0 auto;min-height:100vh;padding:0 22px 90px;opacity:0;transition:opacity 0.5s ease;}
+.app.loaded{opacity:1;}
+
 .topbar{height:68px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.94);z-index:5;will-change:transform}
 @supports(backdrop-filter:blur(14px)){.topbar{backdrop-filter:blur(14px)}}
-.brand{font-size:16px;font-weight:700;letter-spacing:-.04em}
-.brand span{display:block;color:var(--muted);font-size:10px;font-weight:500;letter-spacing:.14em;margin-top:1px}
+.brand{font-size:17px;font-weight:700;letter-spacing:-.04em}
+.brand span{display:block;color:var(--muted);font-size:11px;font-weight:500;letter-spacing:.14em;margin-top:1px}
 .top-actions{display:flex;align-items:center;gap:8px}
-.icon-btn,.plain-btn{border:0;background:transparent;padding:8px 10px;font-size:12px;color:var(--muted);position:relative;z-index:6}
-.primary{background:#111;color:#fff;border:1px solid #111;border-radius:999px;padding:9px 16px;font-size:12px;font-weight:600}
+.icon-btn,.plain-btn{border:0;background:transparent;padding:8px 10px;font-size:13px;color:var(--muted);position:relative;z-index:6}
+.primary{background:#111;color:#fff;border:1px solid #111;border-radius:999px;padding:10px 18px;font-size:13px;font-weight:600}
 .tabs{display:flex;gap:25px;border-bottom:1px solid var(--line);height:51px;align-items:stretch}
-.tab{border:0;background:transparent;padding:0 1px;color:var(--muted);font-weight:600;font-size:13px;position:relative}
+.tab{border:0;background:transparent;padding:0 1px;color:var(--muted);font-weight:600;font-size:15px;position:relative}
 .tab.active{color:var(--ink)}
 .tab.active:after{content:"";height:2px;background:#111;position:absolute;bottom:-1px;left:0;right:0}
+
 .intro{padding:34px 0 28px}
-.eyebrow{font-size:10px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
-h1{font-size:clamp(27px,5vw,36px);letter-spacing:-.06em;line-height:1.2;margin:10px 0 10px;font-weight:700}
-.intro p{margin:0;max-width:440px;color:#666;font-size:13px;line-height:1.8}
-.stats{display:flex;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:15px 0;margin-bottom:27px;gap:0}
+.eyebrow{font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+h1{font-size:clamp(28px,5vw,38px);letter-spacing:-.06em;line-height:1.2;margin:12px 0 12px;font-weight:700}
+.intro p{margin:0;max-width:440px;color:#666;font-size:15px;line-height:1.8}
+
+.stats{display:flex;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0;margin-bottom:27px;gap:0}
 .stat{flex:1;border-right:1px solid var(--line);padding-left:16px}
 .stat:first-child{padding-left:0}
 .stat:last-child{border:0}
-.stat strong{display:block;font-size:22px;letter-spacing:-.05em;font-weight:600;line-height:1.2}
-.stat span{display:block;color:var(--muted);font-size:11px;margin-top:4px}
-.list-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 8px}
-.list-head h2{font-size:18px;letter-spacing:-.04em;margin:0;font-weight:700}
-.list-head span{font-size:11px;color:var(--muted)}
+.stat strong{display:block;font-size:24px;letter-spacing:-.05em;font-weight:600;line-height:1.2}
+.stat span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+
+/* 搜索与跳转控制栏 */
+.list-controls{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px;gap:10px;flex-wrap:wrap;}
+.list-head h2{font-size:20px;letter-spacing:-.04em;margin:0;font-weight:700}
+.list-head span{font-size:12px;color:var(--muted)}
+.search-box{position:relative;flex:1;min-width:150px;max-width:250px;}
+.search-box input{width:100%;border:1px solid var(--line);background:var(--soft);border-radius:8px;padding:8px 10px 8px 30px;font-size:13px;outline:none;transition:all .2s;}
+.search-box input:focus{border-color:#111;background:#fff;}
+.search-box::before{content:"🔍";position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;opacity:0.5;}
+
 .entry{padding:23px 0 25px;border-bottom:1px solid var(--line)}
-.entry-meta{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px;gap:10px}
-.entry h3{font-size:20px;line-height:1.3;letter-spacing:-.04em;margin:9px 0 12px;font-weight:650}
-.entry-body{font-size:14px;line-height:1.9;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;color:#262626}
-.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
-.chip{font-size:11px;color:#555;border:1px solid #e4e4e4;border-radius:999px;padding:4px 9px}
+.entry-meta{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;gap:10px}
+.entry h3{font-size:22px;line-height:1.3;letter-spacing:-.04em;margin:10px 0 14px;font-weight:650}
+.entry-body{font-size:15px;line-height:1.9;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;color:#262626}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{font-size:12px;color:#555;border:1px solid #e4e4e4;border-radius:999px;padding:5px 10px}
 .entry-actions{display:flex;gap:16px;margin-top:15px}
-.text-btn{border:0;background:transparent;color:var(--muted);padding:0;font-size:11px;min-height:28px;min-width:28px}
+.text-btn{border:0;background:transparent;color:var(--muted);padding:0;font-size:13px;min-height:28px;min-width:28px}
 .text-btn.delete{color:#888}
-.empty{padding:55px 10px;text-align:center;color:var(--muted);font-size:13px;border-bottom:1px solid var(--line)}
-.empty strong{display:block;color:var(--ink);font-size:16px;margin-bottom:7px}
+
+.empty{padding:55px 10px;text-align:center;color:var(--muted);font-size:15px;border-bottom:1px solid var(--line)}
+.empty strong{display:block;color:var(--ink);font-size:18px;margin-bottom:7px}
+
 .view{display:none}.view.active{display:block}
 .form-view{padding:27px 0 20px}
 .form-head{margin-bottom:25px}
-.form-head h2{font-size:25px;letter-spacing:-.055em;margin:6px 0 7px}
-.form-head p{color:var(--muted);font-size:12px;margin:0}
-form{display:flex;flex-direction:column;gap:19px}
-.field label{display:block;font-size:12px;font-weight:600;margin-bottom:8px}
-.field .sub{font-size:11px;color:var(--muted);font-weight:400;margin-left:5px}
-.field input,.field textarea{width:100%;border:1px solid #dedede;border-radius:9px;background:#fff;padding:12px 13px;font-size:16px;outline:none}
+.form-head h2{font-size:26px;letter-spacing:-.055em;margin:6px 0 8px}
+.form-head p{color:var(--muted);font-size:13px;margin:0}
+form{display:flex;flex-direction:column;gap:20px}
+.field label{display:block;font-size:14px;font-weight:600;margin-bottom:8px}
+.field .sub{font-size:12px;color:var(--muted);font-weight:400;margin-left:5px}
+.field input,.field textarea{width:100%;border:1px solid #dedede;border-radius:9px;background:#fff;padding:12px 13px;font-size:16px;outline:none;}
 .field input:focus,.field textarea:focus{border-color:#111}
 .field textarea{resize:vertical;min-height:150px;line-height:1.75}
 .field input::placeholder,.field textarea::placeholder{color:#aaa}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 .form-actions{display:flex;gap:10px;align-items:center;padding-top:2px;flex-wrap:wrap}
-.secondary{border:1px solid #dedede;background:#fff;border-radius:999px;padding:9px 15px;font-size:12px}
-.hint{font-size:11px;color:#999;line-height:1.7;margin:15px 0 0}
+.secondary{border:1px solid #dedede;background:#fff;border-radius:999px;padding:10px 16px;font-size:13px}
+.hint{font-size:12px;color:#999;line-height:1.7;margin:15px 0 0}
+
 .quote-box{padding:40px 0 30px;text-align:center;border-bottom:1px solid var(--line);margin-bottom:20px;}
-.quote-text{font-size:15px;color:#333;line-height:1.8;margin-bottom:10px;font-style:italic;}
-.quote-author{font-size:11px;color:var(--muted);letter-spacing:.1em;}
-footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:space-between;gap:12px}
-.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 15px;border-radius:999px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10;white-space:nowrap}
+.quote-text{font-size:16px;color:#333;line-height:1.8;margin-bottom:10px;font-style:italic;}
+.quote-author{font-size:12px;color:var(--muted);letter-spacing:.1em;}
+
+footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:space-between;gap:12px}
+.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 15px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10;white-space:nowrap}
 .toast.show{opacity:1}
 
-/* 模式切换按钮与语音按钮 */
 .mode-switch{display:flex;gap:10px;margin-bottom:15px;}
-.mode-btn{flex:1;background:#f7f7f7;border:1px solid #e8e8e8;border-radius:9px;padding:10px;font-size:12px;color:#666;font-weight:600;transition:all .2s;}
+.mode-btn{flex:1;background:#f7f7f7;border:1px solid #e8e8e8;border-radius:9px;padding:10px;font-size:13px;color:#666;font-weight:600;transition:all .2s;}
 .mode-btn.active{background:#fff;border-color:#111;color:#111;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
 .input-wrap{position:relative;}
 .mic-btn{position:absolute;bottom:12px;right:12px;background:#fff;border:1px solid #dedede;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#333;transition:all .2s;box-shadow:0 2px 5px rgba(0,0,0,0.05);}
@@ -82,11 +124,17 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
 .mic-btn.listening{background:#111;color:#fff;animation:pulse 1.5s infinite;}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(17,17,17,0.4)}70%{box-shadow:0 0 0 10px rgba(17,17,17,0)}100%{box-shadow:0 0 0 0 rgba(17,17,17,0)}}
 
-@media(max-width:520px){.app{padding:0 17px 85px}.topbar{height:61px}.intro{padding:27px 0 23px}.stats{margin-bottom:23px}.stat{padding-left:12px}.stat strong{font-size:20px}.entry{padding:20px 0 22px}.two{gap:9px}.top-actions{gap:1px}.top-actions .plain-btn{padding:8px 5px}.primary{padding:9px 13px}footer{flex-direction:column;gap:5px}}
+@media(max-width:520px){.app{padding:0 17px 85px}.topbar{height:61px}.intro{padding:27px 0 23px}.stats{margin-bottom:23px}.stat{padding-left:12px}.stat strong{font-size:22px}.entry{padding:20px 0 22px}.two{gap:9px}.top-actions{gap:1px}.top-actions .plain-btn{padding:8px 5px}.primary{padding:10px 14px}footer{flex-direction:column;gap:5px}}
 </style>
 </head>
 <body>
-<div class="app">
+
+<!-- 加载动画 -->
+<div id="loader">
+  <div class="book-loader"></div>
+</div>
+
+<div class="app" id="app">
   <header class="topbar">
     <div class="brand">她的世界<span>HER LITTLE ATLAS</span></div>
     <div class="top-actions">
@@ -119,7 +167,18 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
       <div class="stat"><strong id="placesCount">0</strong><span>去过的地方</span></div>
       <div class="stat"><strong id="entriesCount">0</strong><span>留下的文字</span></div>
     </div>
-    <div class="list-head"><h2>最近的日子</h2><span id="dateRange">从第一天开始</span></div>
+
+    <!-- 新增：搜索与日期跳转 -->
+    <div class="list-controls">
+      <div class="list-head">
+        <h2>最近的日子</h2>
+        <span id="dateRange">从第一天开始</span>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="搜索内容或日期…">
+      </div>
+    </div>
+    
     <div id="entries"></div>
   </section>
 
@@ -167,6 +226,7 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
   <footer><span>给她留下一点生活的痕迹。</span><span>私人原型 · 数据保存在当前浏览器</span></footer>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
 (function(){
   'use strict';
@@ -176,6 +236,7 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
   var currentMode = 'normal';
   var isListening = false;
   var recognition = null;
+  var currentSearchQuery = '';
 
   var quotes = [
     { text: "人不应该是插在花瓶里供人观赏的静物，而是蔓延在草原上随风起舞的韵律。", author: "—— 弗吉尼亚·伍尔夫" },
@@ -187,6 +248,15 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
     { text: "宇宙以其不息的欲望将一个歌舞炼为永恒。这欲望有怎样一个人间的姓名，大可忽略不计。", author: "—— 史铁生《我与地坛》" },
     { text: "只有一件事会使人疲劳，那就是摇摆不定和优柔寡断。", author: "—— 罗曼·罗兰" }
   ];
+
+  // 启动加载动画逻辑
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      $('loader').classList.add('fade-out');
+      $('app').classList.add('loaded');
+      setTimeout(function(){ $('loader').style.display = 'none'; }, 600);
+    }, 800); // 800毫秒后进入
+  });
 
   function today(){
     var d=new Date();
@@ -256,12 +326,18 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
       $('modeSmart').classList.add('active');
       $('normalInputs').style.display = 'none';
       $('eventsLabel').textContent = '大段自由记录';
-      $('events').placeholder = '在这里大段输入或语音录入今天发生的事。\n点击保存时，系统会自动寻找“地点、食物、心情”关键词并归类。如果没找到，会原样保留在正文中。';
+      $('events').placeholder = '在这里大段输入或语音录入今天发生的事。\n点击保存时，系统会自动寻找“地点、食物、心情”关键词并归类。';
       $('events').style.minHeight = '250px';
     }
   }
   $('modeNormal').addEventListener('click', function(){ setMode('normal'); });
   $('modeSmart').addEventListener('click', function(){ setMode('smart'); });
+
+  // 搜索功能
+  $('searchInput').addEventListener('input', function(e) {
+    currentSearchQuery = e.target.value.trim().toLowerCase();
+    render();
+  });
 
   // 语音输入
   var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -345,7 +421,6 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
 
   function parseSmartText(text, currentObj) {
     if (!text.trim()) return currentObj;
-    
     var lines = text.split('\n');
     var parsedPlace = currentObj.place;
     var parsedFood = currentObj.food;
@@ -397,7 +472,6 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
     if(!date){showToast('请先选择日期');return;}
 
     var id=$('entryId').value||('e-'+Date.now()+'-'+Math.floor(Math.random()*1000));
-    
     var finalPlace = $('place').value.trim();
     var finalFood = $('food').value.trim();
     var finalMood = $('mood').value.trim();
@@ -412,7 +486,6 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
     }
 
     var obj={id:id,date:date,place:finalPlace,food:finalFood,mood:finalMood,events:finalEvents,photos:[],sample:false};
-
     var snapshot=entries.slice();
     var idx=entries.findIndex(function(e){return e.id===id});
     if(idx>=0)entries[idx]=obj;else entries.push(obj);
@@ -420,8 +493,7 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
     try{
       saveAll();render();resetForm();switchView('records');showToast('记录已保存');
     }catch(err){
-      entries=snapshot;
-      showToast('保存失败，请检查存储空间');
+      entries=snapshot;showToast('保存失败，请检查存储空间');
     }
   });
 
@@ -496,6 +568,21 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
     r.readAsText(f);
   });
 
+  // 模糊搜索逻辑
+  function fuzzyMatch(text, query) {
+    if (!query) return true;
+    text = text.toLowerCase();
+    query = query.toLowerCase();
+    if (text.includes(query)) return true;
+    // 对于中文的模糊支持：比如搜“雁湖”匹配“雁栖湖”
+    let qi = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] === query[qi]) qi++;
+      if (qi === query.length) return true;
+    }
+    return false;
+  }
+
   function render(){
     entries.sort(function(a,b){return (b.date||'').localeCompare(a.date||'')});
     
@@ -508,18 +595,31 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
     });
     $('placesCount').textContent=places.size;
 
-    if(entries.length){
+    if(entries.length && !currentSearchQuery){
       $('dateRange').textContent=entries[entries.length-1].date+' — '+entries[0].date;
+    }else if(currentSearchQuery){
+      $('dateRange').textContent='搜索中…';
     }else{
       $('dateRange').textContent='从第一天开始';
     }
 
     var root=$('entries');
-    if(!entries.length){
-      root.innerHTML='<div class="empty"><strong>这里还没有记录</strong>等她过完今天，再把这一页写下来。<br><br><button class="primary" type="button" data-action="startNew">写下第一天</button></div>';
+    var filtered = entries.filter(function(e) {
+      if (!currentSearchQuery) return true;
+      var fullText = (e.date + ' ' + (e.place||'') + ' ' + (e.food||'') + ' ' + (e.mood||'') + ' ' + (e.events||'')).toLowerCase();
+      return fuzzyMatch(fullText, currentSearchQuery);
+    });
+
+    if(!filtered.length){
+      if (currentSearchQuery) {
+        root.innerHTML='<div class="empty"><strong>没有找到相关记录</strong>换个词试试看吧。</div>';
+      } else {
+        root.innerHTML='<div class="empty"><strong>这里还没有记录</strong>等她过完今天，再把这一页写下来。<br><br><button class="primary" type="button" data-action="startNew">写下第一天</button></div>';
+      }
       return;
     }
-    root.innerHTML=entries.map(function(e){
+
+    root.innerHTML=filtered.map(function(e){
       var chips='';
       if(e.food||e.mood){
         chips='<div class="chips">'
@@ -547,8 +647,6 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
       entries=raw?JSON.parse(raw):[];
       if(!Array.isArray(entries))entries=[];
     }catch(e){entries=[]}
-
-    // 去除了默认的示例假数据，如果为空，就干干净净。
     showRandomQuote();
     render();
   }
