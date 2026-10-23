@@ -6,13 +6,12 @@
 <meta name="theme-color" content="#ffffff">
 <title>她的世界</title>
 
-<!-- App 图标设置（用于添加到主屏幕） -->
-<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzExMSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iLWFwcGxlLXN5c3RlbSwgU0YgUHJvIERpc3BsYXksIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuMzVlbSIgbGV0dGVyLXNwYWNpbmc9IjAuMDVlbSI+c3Rvcnk8L3RleHQ+PC9zdmc+">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzExMSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iLWFwcGxlLXN5c3RlbSwgU0YgUHJvIERpc3BsYXksIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuMzVlbSIgbGV0dGVyLXNwYWNpbmc9IjAuMDVlbSI+c3Rvcnk8L3RleHQ+PC9zdmc+">
+<!-- 图标设置 -->
+<link rel="apple-touch-icon" href="./story.svg">
+<link rel="icon" type="image/svg+xml" href="./story.svg">
 
 <style>
-/* 调大了全局字体基准，解决字体过小的问题 */
-:root{--ink:#111;--muted:#777;--line:#e8e8e8;--soft:#f7f7f7;--white:#fff}
+:root{--ink:#111;--muted:#777;--line:#e8e8e8;--soft:#f7f7f7;--white:#fff;--hover:#f0f0f0}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--white);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","PingFang SC",sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
@@ -20,28 +19,29 @@ button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer;touch-action:manipulation}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #111;outline-offset:2px}
 
-/* 启动加载动画 */
+/* 启动加载动画 - 放慢并放大 */
 #loader {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: var(--white); z-index: 9999;
   display: flex; align-items: center; justify-content: center;
-  transition: opacity 0.6s ease;
+  transition: opacity 0.8s ease;
 }
 #loader.fade-out { opacity: 0; pointer-events: none; }
 .book-loader {
-  width: 40px; height: 50px; border: 2px solid var(--ink);
-  border-radius: 4px; position: relative; overflow: hidden;
-  animation: flip 2s infinite ease-in-out;
+  width: 64px; height: 86px; border: 3px solid var(--ink);
+  border-radius: 8px; position: relative; overflow: hidden;
+  animation: float 3s infinite ease-in-out;
+  background: #fff;
 }
 .book-loader::after {
   content: ""; position: absolute; top: 0; left: 50%; width: 50%; height: 100%;
-  background: var(--white); border-left: 1px solid var(--ink);
-  transform-origin: left; animation: page-flip 2s infinite ease-in-out;
+  background: var(--white); border-left: 2px solid var(--ink);
+  transform-origin: left; animation: page-flip 3s infinite ease-in-out;
 }
-@keyframes flip { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-@keyframes page-flip { 0%, 100% { transform: rotateY(0deg); } 50% { transform: rotateY(-180deg); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes page-flip { 0%, 15% { transform: rotateY(0deg); } 85%, 100% { transform: rotateY(-180deg); } }
 
-.app{max-width:720px;margin:0 auto;min-height:100vh;padding:0 22px 90px;opacity:0;transition:opacity 0.5s ease;}
+.app{max-width:720px;margin:0 auto;min-height:100vh;padding:0 22px 90px;opacity:0;transition:opacity 0.8s ease;}
 .app.loaded{opacity:1;}
 
 .topbar{height:68px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.94);z-index:5;will-change:transform}
@@ -51,12 +51,17 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .top-actions{display:flex;align-items:center;gap:8px}
 .icon-btn,.plain-btn{border:0;background:transparent;padding:8px 10px;font-size:13px;color:var(--muted);position:relative;z-index:6}
 .primary{background:#111;color:#fff;border:1px solid #111;border-radius:999px;padding:10px 18px;font-size:13px;font-weight:600}
-.tabs{display:flex;gap:25px;border-bottom:1px solid var(--line);height:51px;align-items:stretch}
-.tab{border:0;background:transparent;padding:0 1px;color:var(--muted);font-weight:600;font-size:15px;position:relative}
-.tab.active{color:var(--ink)}
-.tab.active:after{content:"";height:2px;background:#111;position:absolute;bottom:-1px;left:0;right:0}
+.primary:hover{background:#333}
+.secondary{border:1px solid #dedede;background:#fff;border-radius:999px;padding:10px 16px;font-size:13px}
+.secondary:hover{background:var(--soft)}
 
-.intro{padding:34px 0 28px}
+/* 主页导航 */
+.main-tabs{display:flex;gap:0;border-bottom:1px solid var(--line);height:60px;align-items:stretch;margin-bottom:20px;}
+.main-tab{flex:1;border:0;background:transparent;padding:0 1px;color:var(--muted);font-weight:700;font-size:18px;position:relative;transition:color .2s;}
+.main-tab.active{color:var(--ink)}
+.main-tab.active:after{content:"";height:3px;background:#111;position:absolute;bottom:-1px;left:0;right:0}
+
+.intro{padding:20px 0 28px}
 .eyebrow{font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
 h1{font-size:clamp(28px,5vw,38px);letter-spacing:-.06em;line-height:1.2;margin:12px 0 12px;font-weight:700}
 .intro p{margin:0;max-width:440px;color:#666;font-size:15px;line-height:1.8}
@@ -68,12 +73,12 @@ h1{font-size:clamp(28px,5vw,38px);letter-spacing:-.06em;line-height:1.2;margin:1
 .stat strong{display:block;font-size:24px;letter-spacing:-.05em;font-weight:600;line-height:1.2}
 .stat span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
 
-/* 搜索与跳转控制栏 */
+/* 搜索与列表 */
 .list-controls{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px;gap:10px;flex-wrap:wrap;}
 .list-head h2{font-size:20px;letter-spacing:-.04em;margin:0;font-weight:700}
 .list-head span{font-size:12px;color:var(--muted)}
 .search-box{position:relative;flex:1;min-width:150px;max-width:250px;}
-.search-box input{width:100%;border:1px solid var(--line);background:var(--soft);border-radius:8px;padding:8px 10px 8px 30px;font-size:13px;outline:none;transition:all .2s;}
+.search-box input{width:100%;border:1px solid var(--line);background:var(--soft);border-radius:8px;padding:8px 10px 8px 30px;font-size:16px;outline:none;transition:all .2s;}
 .search-box input:focus{border-color:#111;background:#fff;}
 .search-box::before{content:"🔍";position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;opacity:0.5;}
 
@@ -90,8 +95,8 @@ h1{font-size:clamp(28px,5vw,38px);letter-spacing:-.06em;line-height:1.2;margin:1
 .empty{padding:55px 10px;text-align:center;color:var(--muted);font-size:15px;border-bottom:1px solid var(--line)}
 .empty strong{display:block;color:var(--ink);font-size:18px;margin-bottom:7px}
 
-.view{display:none}.view.active{display:block}
-.form-view{padding:27px 0 20px}
+/* 写记录 & 编辑表单 */
+.form-view{padding:10px 0 20px}
 .form-head{margin-bottom:25px}
 .form-head h2{font-size:26px;letter-spacing:-.055em;margin:6px 0 8px}
 .form-head p{color:var(--muted);font-size:13px;margin:0}
@@ -104,32 +109,61 @@ form{display:flex;flex-direction:column;gap:20px}
 .field input::placeholder,.field textarea::placeholder{color:#aaa}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 .form-actions{display:flex;gap:10px;align-items:center;padding-top:2px;flex-wrap:wrap}
-.secondary{border:1px solid #dedede;background:#fff;border-radius:999px;padding:10px 16px;font-size:13px}
 .hint{font-size:12px;color:#999;line-height:1.7;margin:15px 0 0}
-
-.quote-box{padding:40px 0 30px;text-align:center;border-bottom:1px solid var(--line);margin-bottom:20px;}
-.quote-text{font-size:16px;color:#333;line-height:1.8;margin-bottom:10px;font-style:italic;}
-.quote-author{font-size:12px;color:var(--muted);letter-spacing:.1em;}
-
-footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:space-between;gap:12px}
-.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 15px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10;white-space:nowrap}
-.toast.show{opacity:1}
 
 .mode-switch{display:flex;gap:10px;margin-bottom:15px;}
 .mode-btn{flex:1;background:#f7f7f7;border:1px solid #e8e8e8;border-radius:9px;padding:10px;font-size:13px;color:#666;font-weight:600;transition:all .2s;}
 .mode-btn.active{background:#fff;border-color:#111;color:#111;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
 .input-wrap{position:relative;}
 .mic-btn{position:absolute;bottom:12px;right:12px;background:#fff;border:1px solid #dedede;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#333;transition:all .2s;box-shadow:0 2px 5px rgba(0,0,0,0.05);}
-.mic-btn:hover{border-color:#111;}
 .mic-btn.listening{background:#111;color:#fff;animation:pulse 1.5s infinite;}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(17,17,17,0.4)}70%{box-shadow:0 0 0 10px rgba(17,17,17,0)}100%{box-shadow:0 0 0 0 rgba(17,17,17,0)}}
 
-@media(max-width:520px){.app{padding:0 17px 85px}.topbar{height:61px}.intro{padding:27px 0 23px}.stats{margin-bottom:23px}.stat{padding-left:12px}.stat strong{font-size:22px}.entry{padding:20px 0 22px}.two{gap:9px}.top-actions{gap:1px}.top-actions .plain-btn{padding:8px 5px}.primary{padding:10px 14px}footer{flex-direction:column;gap:5px}}
+/* 想象版块 */
+.imag-boxes{display:flex;flex-direction:column;gap:16px;}
+.box-card{border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .2s;background:#fff;}
+.box-card:hover{background:var(--soft);border-color:#111;}
+.box-title{font-size:18px;font-weight:700;}
+.box-desc{font-size:13px;color:var(--muted);margin-top:4px;}
+.add-box-btn{border:1px dashed var(--line);border-radius:12px;padding:20px;text-align:center;cursor:pointer;color:var(--muted);font-weight:600;transition:all .2s;}
+.add-box-btn:hover{border-color:#111;color:#111;}
+
+/* 笔记内部 */
+.box-detail-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid var(--line);}
+.back-btn{border:0;background:transparent;font-size:24px;padding:0 10px 0 0;cursor:pointer;line-height:1;}
+
+.note-card{border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px;background:#fff;}
+.note-card.main-note{border:2px solid #111;background:var(--soft);}
+.note-text{font-size:15px;line-height:1.8;white-space:pre-wrap;margin:0 0 12px;color:#333;}
+.note-media{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+.note-img{max-width:100%;border-radius:8px;max-height:200px;object-fit:cover;border:1px solid var(--line);}
+.note-link{display:inline-block;font-size:13px;color:#0066cc;text-decoration:none;background:#f0f7ff;padding:4px 10px;border-radius:4px;}
+.note-link:hover{text-decoration:underline;}
+
+/* 弹窗确认 */
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:100;display:none;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal-content{background:#fff;border-radius:16px;padding:24px;width:90%;max-width:360px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.1);}
+.modal-title{font-size:18px;font-weight:700;margin-bottom:12px;}
+.modal-actions{display:flex;gap:10px;justify-content:center;margin-top:20px;}
+
+/* 弹出菜单 */
+.popup-menu{position:absolute;top:60px;right:20px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);z-index:50;display:none;flex-direction:column;padding:8px;width:160px;}
+.popup-menu.show{display:flex;}
+.popup-menu button{border:0;background:transparent;text-align:left;padding:10px 14px;font-size:14px;border-radius:6px;cursor:pointer;}
+.popup-menu button:hover{background:var(--soft);}
+
+footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:space-between;gap:12px}
+.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 15px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:1000;white-space:nowrap}
+.toast.show{opacity:1}
+
+.hidden{display:none !important;}
+
+@media(max-width:520px){.app{padding:0 17px 85px}.topbar{height:61px}.stats{margin-bottom:23px}.stat{padding-left:12px}.stat strong{font-size:22px}.entry{padding:20px 0 22px}.two{gap:9px}.top-actions{gap:1px}.top-actions .plain-btn{padding:8px 5px}.primary{padding:10px 14px}footer{flex-direction:column;gap:5px}}
 </style>
 </head>
 <body>
 
-<!-- 加载动画 -->
 <div id="loader">
   <div class="book-loader"></div>
 </div>
@@ -145,45 +179,47 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
     </div>
   </header>
 
-  <nav class="tabs" aria-label="页面导航">
-    <button class="tab active" type="button" data-view="records">日记</button>
-    <button class="tab" type="button" data-view="write">写记录</button>
+  <!-- 主页导航：日记 / 想象 -->
+  <nav class="main-tabs" aria-label="主页面导航">
+    <button class="main-tab active" type="button" data-view="diary">日记</button>
+    <button class="main-tab" type="button" data-view="imagine">想象</button>
   </nav>
 
-  <section class="view active" id="recordsView">
-    <div class="intro">
-      <div class="eyebrow">A LIFE IN NOTES</div>
-      <h1>她在好好生活。</h1>
-      <p>去过的地方，吃过的东西，走过的路，以及那些不必特别、但值得记下来的日子。</p>
-    </div>
-    
-    <div class="quote-box" id="quoteBox" style="display:none;">
-      <div class="quote-text" id="quoteText"></div>
-      <div class="quote-author" id="quoteAuthor"></div>
-    </div>
-
-    <div class="stats">
-      <div class="stat"><strong id="daysCount">0</strong><span>记录的日子</span></div>
-      <div class="stat"><strong id="placesCount">0</strong><span>去过的地方</span></div>
-      <div class="stat"><strong id="entriesCount">0</strong><span>留下的文字</span></div>
-    </div>
-
-    <!-- 新增：搜索与日期跳转 -->
-    <div class="list-controls">
-      <div class="list-head">
-        <h2>最近的日子</h2>
-        <span id="dateRange">从第一天开始</span>
+  <!-- ========== 日记板块 ========== -->
+  <div id="diarySection">
+    <div id="diarySubView">
+      <div class="intro">
+        <div class="eyebrow">A LIFE IN NOTES</div>
+        <h1>她在好好生活。</h1>
+        <p>去过的地方，吃过的东西，走过的路，以及那些不必特别、但值得记下来的日子。</p>
       </div>
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="搜索内容或日期…">
+      
+      <div class="quote-box" id="quoteBox" style="display:none; text-align:center; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid var(--line);">
+        <div class="quote-text" id="quoteText" style="font-style:italic; color:#333; font-size:16px;"></div>
+        <div class="quote-author" id="quoteAuthor" style="font-size:12px; color:var(--muted); margin-top:10px;"></div>
       </div>
-    </div>
-    
-    <div id="entries"></div>
-  </section>
 
-  <section class="view" id="writeView">
-    <div class="form-view">
+      <div class="stats">
+        <div class="stat"><strong id="daysCount">0</strong><span>记录的日子</span></div>
+        <div class="stat"><strong id="placesCount">0</strong><span>去过的地方</span></div>
+        <div class="stat"><strong id="entriesCount">0</strong><span>留下的文字</span></div>
+      </div>
+
+      <div class="list-controls">
+        <div class="list-head">
+          <h2>最近的日子</h2>
+          <span id="dateRange">从第一天开始</span>
+        </div>
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="搜索内容或日期…">
+        </div>
+      </div>
+      
+      <div id="entries"></div>
+    </div>
+
+    <!-- 写日记表单 -->
+    <div id="writeSubView" class="hidden form-view">
       <div class="form-head">
         <div class="eyebrow">A NEW PAGE</div>
         <h2 id="formTitle">记下今天</h2>
@@ -222,21 +258,75 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
       </form>
       <p class="hint">记录保存在当前浏览器中。建议定期使用右上角的「导出」备份。</p>
     </div>
-  </section>
+  </div>
+
+  <!-- ========== 想象板块 ========== -->
+  <div id="imagineSection" class="hidden">
+    <!-- 想象力主页：大盒子列表 -->
+    <div id="imagineHub">
+      <div class="intro" style="padding-top:20px;">
+        <div class="eyebrow">IMAGINATION</div>
+        <h1>她的世界，不止现在。</h1>
+        <p>在脑海中构建未来的居所、穿着、职业与爱好。把这些渴望收集起来，总有一天会成为现实。</p>
+      </div>
+      <div class="imag-boxes" id="boxList">
+        <!-- 动态渲染 -->
+      </div>
+      <div class="add-box-btn" id="addBoxBtn">＋ 添加新想象（居所 / 服装 / 职业 / 爱好）</div>
+    </div>
+
+    <!-- 想象力详情页：主副便签 -->
+    <div id="boxDetail" class="hidden">
+      <div class="box-detail-header">
+        <button class="back-btn" id="backToImagineHub">←</button>
+        <h2 id="boxDetailTitle" style="margin:0; font-size:24px; letter-spacing:-0.5px;">居所</h2>
+      </div>
+      <div id="boxNotesContainer">
+        <!-- 动态渲染笔记 -->
+      </div>
+    </div>
+  </div>
+
   <footer><span>给她留下一点生活的痕迹。</span><span>私人原型 · 数据保存在当前浏览器</span></footer>
 </div>
+
+<!-- 保存确认弹窗 -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-content">
+    <div class="modal-title">确认保存这条畅想？</div>
+    <p style="font-size:14px; color:var(--muted); margin:0;">保存后可在想象页面随时查看和修改。</p>
+    <div class="modal-actions">
+      <button class="secondary" id="modalCancel">再想想</button>
+      <button class="primary" id="modalConfirm">确认保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 选择添加 Box 的弹窗 -->
+<div class="popup-menu" id="boxTypeMenu" style="top: 120px; right: 50%; transform: translateX(50%);">
+  <button data-type="居所">🏠 居所</button>
+  <button data-type="服装">👗 服装</button>
+  <button data-type="职业">💼 职业</button>
+  <button data-type="爱好">🎨 爱好</button>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (function(){
   'use strict';
-  var KEY='herLittleAtlas.entries.v1';
+  var KEY_DIARY='herLittleAtlas.entries.v1';
+  var KEY_IMAGINE='herLittleAtlas.imagine.v1';
+  
   function $(id){return document.getElementById(id)}
+  
   var entries=[];
+  var imagineBoxes=[];
   var currentMode = 'normal';
   var isListening = false;
   var recognition = null;
   var currentSearchQuery = '';
+  var currentBoxId = null;
 
   var quotes = [
     { text: "人不应该是插在花瓶里供人观赏的静物，而是蔓延在草原上随风起舞的韵律。", author: "—— 弗吉尼亚·伍尔夫" },
@@ -244,18 +334,15 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
     { text: "愿中国青年都摆脱冷气，只是向上走，不必听自暴自弃者流的话。", author: "—— 鲁迅" },
     { text: "人应当赶紧地、充分地生活，因为意外的疾病或悲惨的事故随时都可以突然结束他的生命。", author: "—— 契诃夫" },
     { text: "冬天来了，春天还会远吗？", author: "—— 雪莱《西风颂》" },
-    { text: "要爱具体的人，不要爱抽象的人；要爱生活，不要爱生活的意义。", author: "—— 陀思妥耶夫斯基" },
-    { text: "宇宙以其不息的欲望将一个歌舞炼为永恒。这欲望有怎样一个人间的姓名，大可忽略不计。", author: "—— 史铁生《我与地坛》" },
-    { text: "只有一件事会使人疲劳，那就是摇摆不定和优柔寡断。", author: "—— 罗曼·罗兰" }
+    { text: "要爱具体的人，不要爱抽象的人；要爱生活，不要爱生活的意义。", author: "—— 陀思妥耶夫斯基" }
   ];
 
-  // 启动加载动画逻辑
   window.addEventListener('load', function(){
     setTimeout(function(){
       $('loader').classList.add('fade-out');
       $('app').classList.add('loaded');
-      setTimeout(function(){ $('loader').style.display = 'none'; }, 600);
-    }, 800); // 800毫秒后进入
+      setTimeout(function(){ $('loader').style.display = 'none'; }, 800);
+    }, 1800);
   });
 
   function today(){
@@ -270,7 +357,8 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
     });
   }
-  function saveAll(){ localStorage.setItem(KEY,JSON.stringify(entries)); }
+  function saveAllDiary(){ localStorage.setItem(KEY_DIARY,JSON.stringify(entries)); }
+  function saveAllImagine(){ localStorage.setItem(KEY_IMAGINE,JSON.stringify(imagineBoxes)); }
 
   var toastTimer=null;
   function showToast(t){
@@ -286,6 +374,27 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
     if(isNaN(d.getTime()))return s;
     return d.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
   }
+
+  // ================= 主界面逻辑 =================
+  document.querySelectorAll('.main-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      var target = this.getAttribute('data-view');
+      if (target === 'diary') {
+        $('diarySection').classList.remove('hidden');
+        $('imagineSection').classList.add('hidden');
+        $('newBtn').classList.remove('hidden');
+      } else {
+        $('diarySection').classList.add('hidden');
+        $('imagineSection').classList.remove('hidden');
+        $('newBtn').classList.add('hidden');
+        backToImagineHub(); // 每次切换回主界面
+      }
+    });
+  });
+
+  // ================= 日记相关逻辑 =================
   function diary(e){
     if(e.events&&e.events.trim())return e.events.trim();
     var bits=[];
@@ -294,13 +403,15 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
     if(e.mood)bits.push('今天的感觉是'+e.mood+'。');
     return bits.join('\n\n')||'这一天还没有写下具体的事情。';
   }
-  function switchView(name){
-    var tabs=document.querySelectorAll('.tab');
-    for(var i=0;i<tabs.length;i++){
-      tabs[i].classList.toggle('active',tabs[i].getAttribute('data-view')===name);
+
+  function switchDiaryView(sub) {
+    if (sub === 'write') {
+      $('diarySubView').classList.add('hidden');
+      $('writeSubView').classList.remove('hidden');
+    } else {
+      $('writeSubView').classList.add('hidden');
+      $('diarySubView').classList.remove('hidden');
     }
-    $('recordsView').classList.toggle('active',name==='records');
-    $('writeView').classList.toggle('active',name==='write');
     try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}
   }
 
@@ -333,69 +444,44 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
   $('modeNormal').addEventListener('click', function(){ setMode('normal'); });
   $('modeSmart').addEventListener('click', function(){ setMode('smart'); });
 
-  // 搜索功能
   $('searchInput').addEventListener('input', function(e) {
     currentSearchQuery = e.target.value.trim().toLowerCase();
-    render();
+    renderDiary();
   });
 
-  // 语音输入
+  // 语音识别
   var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (SpeechRecognition) {
     recognition = new SpeechRecognition();
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = 'zh-CN';
-
-    recognition.onstart = function() {
-      isListening = true;
-      $('micBtn').classList.add('listening');
-      showToast('正在倾听...');
-    };
-    recognition.onerror = function() {
-      isListening = false;
-      $('micBtn').classList.remove('listening');
-      showToast('语音识别出错，请检查麦克风权限');
-    };
-    recognition.onend = function() {
-      isListening = false;
-      $('micBtn').classList.remove('listening');
-    };
+    recognition.onstart = function() { isListening = true; $('micBtn').classList.add('listening'); showToast('正在倾听...'); };
+    recognition.onerror = function() { isListening = false; $('micBtn').classList.remove('listening'); showToast('语音识别出错'); };
+    recognition.onend = function() { isListening = false; $('micBtn').classList.remove('listening'); };
     recognition.onresult = function(event) {
       var finalTranscript = '';
       for (var i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript;
-        }
+        if (event.results[i].isFinal) finalTranscript += event.results[i][0].transcript;
       }
       if (finalTranscript) {
         var currentText = $('events').value;
         $('events').value = currentText + (currentText ? ' ' : '') + finalTranscript;
       }
     };
+    $('micBtn').addEventListener('click', function() { isListening ? recognition.stop() : recognition.start(); });
+  } else { $('micBtn').style.display = 'none'; }
 
-    $('micBtn').addEventListener('click', function() {
-      if (isListening) {
-        recognition.stop();
-      } else {
-        recognition.start();
-      }
-    });
-  } else {
-    $('micBtn').style.display = 'none';
-  }
-
+  // 顶部按钮统一事件
   document.addEventListener('click',function(ev){
     var t=ev.target;
-    var tab=t.closest&&t.closest('.tab');
-    if(tab){switchView(tab.getAttribute('data-view'));return;}
-    switch(t&&t.id){
-      case 'newBtn': startNew(); return;
-      case 'backBtn': switchView('records'); return;
-      case 'cancelEdit': resetForm(); return;
-      case 'exportBtn': doExport(); return;
-      case 'importBtn': $('importFile').click(); return;
-    }
+    var targetId = t.id;
+    if(targetId === 'newBtn') { resetDiaryForm(); switchDiaryView('write'); return; }
+    if(targetId === 'backBtn') { switchDiaryView('list'); return; }
+    if(targetId === 'cancelEdit') { resetDiaryForm(); return; }
+    if(targetId === 'exportBtn') { doExport(); return; }
+    if(targetId === 'importBtn') { $('importFile').click(); return; }
+
     var btn=t.closest&&t.closest('[data-action]');
     if(btn){
       var id=btn.getAttribute('data-id');
@@ -403,13 +489,12 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
       if(action==='edit')editEntry(id);
       else if(action==='delete')deleteEntry(id);
       else if(action==='copy')copyDiary(id);
-      else if(action==='startNew')startNew();
+      else if(action==='startNew') { resetDiaryForm(); switchDiaryView('write'); }
       return;
     }
   });
 
-  function startNew(){resetForm();switchView('write');}
-  function resetForm(){
+  function resetDiaryForm(){
     $('entryForm').reset();
     $('entryId').value='';
     $('date').value=today();
@@ -422,48 +507,26 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
   function parseSmartText(text, currentObj) {
     if (!text.trim()) return currentObj;
     var lines = text.split('\n');
-    var parsedPlace = currentObj.place;
-    var parsedFood = currentObj.food;
-    var parsedMood = currentObj.mood;
+    var parsedPlace = currentObj.place; var parsedFood = currentObj.food; var parsedMood = currentObj.mood;
     var remainingLines = [];
-
     lines.forEach(line => {
       let trimmed = line.trim();
       if (!trimmed) return;
-
       if (!parsedPlace && (trimmed.includes('去了') || trimmed.includes('在') || trimmed.includes('到了'))) {
         let match = trimmed.match(/(去了|在|到了)([\u4e00-\u9fa5A-Za-z0-9·]{2,10})/);
-        if (match && match[2]) {
-          parsedPlace = match[2];
-          remainingLines.push(trimmed.replace(match[0], ''));
-          return;
-        }
+        if (match && match[2]) { parsedPlace = match[2]; remainingLines.push(trimmed.replace(match[0], '')); return; }
       }
       if (!parsedFood && (trimmed.includes('吃了') || trimmed.includes('喝了') || trimmed.includes('点了'))) {
         let match = trimmed.match(/(吃了|喝了|点了)([\u4e00-\u9fa5A-Za-z0-9·]{2,10})/);
-        if (match && match[2]) {
-          parsedFood = match[2];
-          remainingLines.push(trimmed.replace(match[0], ''));
-          return;
-        }
+        if (match && match[2]) { parsedFood = match[2]; remainingLines.push(trimmed.replace(match[0], '')); return; }
       }
       if (!parsedMood && (trimmed.includes('感觉') || trimmed.includes('开心') || trimmed.includes('安静') || trimmed.includes('微醺'))) {
         let match = trimmed.match(/(感觉|觉得)([\u4e00-\u9fa5A-Za-z0-9·]{2,10})/);
-        if (match && match[2]) {
-          parsedMood = match[2];
-          remainingLines.push(trimmed.replace(match[0], ''));
-          return;
-        }
+        if (match && match[2]) { parsedMood = match[2]; remainingLines.push(trimmed.replace(match[0], '')); return; }
       }
       remainingLines.push(trimmed);
     });
-
-    return {
-      place: parsedPlace,
-      food: parsedFood,
-      mood: parsedMood,
-      events: remainingLines.join('\n').trim() || text
-    };
+    return { place: parsedPlace, food: parsedFood, mood: parsedMood, events: remainingLines.join('\n').trim() || text };
   }
 
   $('entryForm').addEventListener('submit',function(ev){
@@ -472,17 +535,11 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
     if(!date){showToast('请先选择日期');return;}
 
     var id=$('entryId').value||('e-'+Date.now()+'-'+Math.floor(Math.random()*1000));
-    var finalPlace = $('place').value.trim();
-    var finalFood = $('food').value.trim();
-    var finalMood = $('mood').value.trim();
-    var finalEvents = $('events').value.trim();
+    var finalPlace = $('place').value.trim(); var finalFood = $('food').value.trim(); var finalMood = $('mood').value.trim(); var finalEvents = $('events').value.trim();
 
     if (currentMode === 'smart') {
       var parsed = parseSmartText(finalEvents, {place: finalPlace, food: finalFood, mood: finalMood});
-      finalPlace = parsed.place || '';
-      finalFood = parsed.food || '';
-      finalMood = parsed.mood || '';
-      finalEvents = parsed.events;
+      finalPlace = parsed.place || ''; finalFood = parsed.food || ''; finalMood = parsed.mood || ''; finalEvents = parsed.events;
     }
 
     var obj={id:id,date:date,place:finalPlace,food:finalFood,mood:finalMood,events:finalEvents,photos:[],sample:false};
@@ -491,90 +548,67 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
     if(idx>=0)entries[idx]=obj;else entries.push(obj);
 
     try{
-      saveAll();render();resetForm();switchView('records');showToast('记录已保存');
-    }catch(err){
-      entries=snapshot;showToast('保存失败，请检查存储空间');
-    }
+      saveAllDiary();renderDiary();resetDiaryForm();switchDiaryView('list');showToast('记录已保存');
+    }catch(err){ entries=snapshot; showToast('保存失败，请检查存储空间'); }
   });
 
   function editEntry(id){
-    var e=entries.find(function(x){return x.id===id});
-    if(!e)return;
-    $('entryId').value=e.id;
-    $('date').value=e.date||today();
-    $('place').value=e.place||'';
-    $('food').value=e.food||'';
-    $('mood').value=e.mood||'';
-    $('events').value=e.events||'';
-    $('formTitle').textContent='编辑记录';
-    $('saveBtn').textContent='保存修改';
-    $('cancelEdit').style.display='inline-block';
-    setMode('normal');
-    switchView('write');
+    var e=entries.find(function(x){return x.id===id}); if(!e)return;
+    $('entryId').value=e.id; $('date').value=e.date||today(); $('place').value=e.place||''; $('food').value=e.food||''; $('mood').value=e.mood||''; $('events').value=e.events||'';
+    $('formTitle').textContent='编辑记录'; $('saveBtn').textContent='保存修改'; $('cancelEdit').style.display='inline-block';
+    setMode('normal'); switchDiaryView('write');
   }
   function deleteEntry(id){
     if(!confirm('确定删除这条记录吗？'))return;
     entries=entries.filter(function(e){return e.id!==id});
-    try{saveAll();render();showToast('记录已删除');}
-    catch(err){showToast('删除失败，请稍后再试')}
+    try{saveAllDiary();renderDiary();showToast('记录已删除');}catch(err){showToast('删除失败')}
   }
   function copyDiary(id){
-    var e=entries.find(function(x){return x.id===id});
-    if(!e)return;
+    var e=entries.find(function(x){return x.id===id}); if(!e)return;
     var txt=niceDate(e.date)+'\n'+(e.place||'')+'\n\n'+diary(e);
     if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(txt).then(function(){showToast('日记已复制')})
-        .catch(function(){fallbackCopy(txt)});
+      navigator.clipboard.writeText(txt).then(function(){showToast('日记已复制')}).catch(function(){fallbackCopy(txt)});
     }else fallbackCopy(txt);
   }
   function fallbackCopy(txt){
-    var t=document.createElement('textarea');
-    t.value=txt;t.setAttribute('readonly','');
-    t.style.position='fixed';t.style.top='-1000px';
-    document.body.appendChild(t);t.select();
-    try{document.execCommand('copy');showToast('日记已复制')}
-    catch(e){showToast('复制失败，请手动选择文本')}
-    t.remove();
+    var t=document.createElement('textarea'); t.value=txt; t.setAttribute('readonly',''); t.style.position='fixed'; t.style.top='-1000px';
+    document.body.appendChild(t); t.select(); try{document.execCommand('copy');showToast('日记已复制')}catch(e){} t.remove();
   }
 
   function doExport(){
-    var blob=new Blob([JSON.stringify(entries,null,2)],{type:'application/json'});
-    var a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='她的世界-备份.json';
-    document.body.appendChild(a);a.click();a.remove();
-    setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
-    showToast('备份已导出');
+    var data = { diary: entries, imagine: imagineBoxes };
+    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='她的世界-备份.json';
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(a.href)},1000); showToast('全量备份已导出');
   }
+  
   $('importFile').addEventListener('change',function(ev){
-    var f=ev.target.files&&ev.target.files[0];
-    if(!f)return;
+    var f=ev.target.files&&ev.target.files[0]; if(!f)return;
     var r=new FileReader();
     r.onload=function(){
       try{
         var data=JSON.parse(r.result);
-        if(!Array.isArray(data))throw new Error('not array');
-        if(!confirm('导入会替换当前浏览器里的所有记录。建议先导出旧备份。继续吗？')){
-          ev.target.value='';return;
+        if(!confirm('导入会替换当前浏览器里的所有数据（含日记和想象）。继续吗？')){ ev.target.value=''; return; }
+        
+        if (Array.isArray(data)) { // 兼容旧版备份
+          entries = data;
+          saveAllDiary(); renderDiary();
+        } else if (data.diary && data.imagine) {
+          entries = data.diary;
+          imagineBoxes = data.imagine;
+          saveAllDiary(); saveAllImagine(); renderDiary(); renderImagineHub();
         }
-        var snapshot=entries.slice();
-        entries=data;
-        try{saveAll();render();showToast('备份已导入');}
-        catch(err){entries=snapshot;showToast('备份太大，导入失败');}
-      }catch(e){showToast('无法读取这个备份文件')}
+        showToast('备份已导入');
+      }catch(e){ showToast('无法读取这个备份文件') }
       ev.target.value='';
     };
-    r.onerror=function(){showToast('文件读取失败');ev.target.value=''};
     r.readAsText(f);
   });
 
-  // 模糊搜索逻辑
   function fuzzyMatch(text, query) {
     if (!query) return true;
-    text = text.toLowerCase();
-    query = query.toLowerCase();
+    text = text.toLowerCase(); query = query.toLowerCase();
     if (text.includes(query)) return true;
-    // 对于中文的模糊支持：比如搜“雁湖”匹配“雁栖湖”
     let qi = 0;
     for (let i = 0; i < text.length; i++) {
       if (text[i] === query[qi]) qi++;
@@ -583,16 +617,13 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
     return false;
   }
 
-  function render(){
+  function renderDiary(){
     entries.sort(function(a,b){return (b.date||'').localeCompare(a.date||'')});
-    
     $('daysCount').textContent=entries.length;
     $('entriesCount').textContent=entries.length;
 
     var places=new Set();
-    entries.forEach(function(e){
-      (e.place||'').split(/[·，,、]/).forEach(function(x){x=x.trim();if(x)places.add(x);});
-    });
+    entries.forEach(function(e){ (e.place||'').split(/[·，,、]/).forEach(function(x){x=x.trim();if(x)places.add(x);}); });
     $('placesCount').textContent=places.size;
 
     if(entries.length && !currentSearchQuery){
@@ -611,25 +642,16 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
     });
 
     if(!filtered.length){
-      if (currentSearchQuery) {
-        root.innerHTML='<div class="empty"><strong>没有找到相关记录</strong>换个词试试看吧。</div>';
-      } else {
-        root.innerHTML='<div class="empty"><strong>这里还没有记录</strong>等她过完今天，再把这一页写下来。<br><br><button class="primary" type="button" data-action="startNew">写下第一天</button></div>';
-      }
+      if (currentSearchQuery) { root.innerHTML='<div class="empty"><strong>没有找到相关记录</strong>换个词试试看吧。</div>'; }
+      else { root.innerHTML='<div class="empty"><strong>这里还没有记录</strong>等她过完今天，再把这一页写下来。<br><br><button class="primary" type="button" data-action="startNew">写下第一天</button></div>'; }
       return;
     }
 
     root.innerHTML=filtered.map(function(e){
       var chips='';
-      if(e.food||e.mood){
-        chips='<div class="chips">'
-          +(e.food?'<span class="chip">吃了 · '+escapeHtml(e.food)+'</span>':'')
-          +(e.mood?'<span class="chip">感觉 · '+escapeHtml(e.mood)+'</span>':'')
-          +'</div>';
-      }
+      if(e.food||e.mood){ chips='<div class="chips">'+(e.food?'<span class="chip">吃了 · '+escapeHtml(e.food)+'</span>':'')+(e.mood?'<span class="chip">感觉 · '+escapeHtml(e.mood)+'</span>':'')+'</div>'; }
       return '<article class="entry">'
-        +'<div class="entry-meta"><span>'+escapeHtml(niceDate(e.date))+'</span>'
-        +'<span>文字记录</span></div>'
+        +'<div class="entry-meta"><span>'+escapeHtml(niceDate(e.date))+'</span><span>文字记录</span></div>'
         +'<h3>'+escapeHtml(e.place||'这一天')+'</h3>'
         +'<p class="entry-body">'+escapeHtml(diary(e))+'</p>'
         +chips
@@ -641,18 +663,222 @@ footer{padding:22px 0 0;color:#999;font-size:11px;display:flex;justify-content:s
     }).join('');
   }
 
-  function load(){
-    try{
-      var raw=localStorage.getItem(KEY);
-      entries=raw?JSON.parse(raw):[];
-      if(!Array.isArray(entries))entries=[];
-    }catch(e){entries=[]}
-    showRandomQuote();
-    render();
+  // ================= 想象板块逻辑 =================
+  var boxPrompts = {
+    '居所': '想象一下你未来的家。地点在哪里？户型是怎么样的？面积多大？想要什么样的装修风格？写下你对居所的一切渴望……',
+    '服装': '想象一下你的衣橱。是极简还是复古？想要什么质感的面料？有什么喜欢的品牌或设计师？写下你对穿搭的想法……',
+    '职业': '想象一下你的工作状态。你在这个职业里做什么？工作环境是怎样的？带给你什么样的成就感？写下你对职业的期待……',
+    '爱好': '想象一下业余时间的你。有什么想学的技能？想收集什么？想沉浸在什么样的兴趣里？写下你想培养的爱好……'
+  };
+
+  function renderImagineHub() {
+    var root = $('boxList');
+    if (imagineBoxes.length === 0) {
+      root.innerHTML = '<div class="empty" style="border:none; padding:40px 0;"><strong>想象还是一片空白</strong>点击下方按钮，添加你的第一个主题盒子。</div>';
+    } else {
+      root.innerHTML = imagineBoxes.map(function(box, index) {
+        var icon = box.type === '居所' ? '🏠' : box.type === '服装' ? '👗' : box.type === '职业' ? '💼' : '🎨';
+        var count = box.notes ? box.notes.length : 0;
+        return '<div class="box-card" data-box-id="'+box.id+'">'
+          + '<div><div class="box-title">'+icon+' '+escapeHtml(box.type)+'</div><div class="box-desc">包含 '+count+' 条便签</div></div>'
+          + '<div style="font-size:20px; color:#ccc;">›</div>'
+          + '</div>';
+      }).join('');
+    }
+    
+    document.querySelectorAll('.box-card').forEach(card => {
+      card.addEventListener('click', function() {
+        var id = this.getAttribute('data-box-id');
+        openBoxDetail(id);
+      });
+    });
   }
 
-  resetForm();
-  load();
+  function openBoxDetail(boxId) {
+    currentBoxId = boxId;
+    var box = imagineBoxes.find(b => b.id === boxId);
+    if (!box) return;
+    
+    $('imagineHub').classList.add('hidden');
+    $('boxDetail').classList.remove('hidden');
+    $('boxDetailTitle').textContent = box.type;
+    
+    var notesContainer = $('boxNotesContainer');
+    var html = '';
+    
+    if (box.notes && box.notes.length > 0) {
+      box.notes.forEach(function(note, i) {
+        var isMain = i === 0;
+        var imgHtml = '';
+        if (note.image) {
+          imgHtml += '<img src="'+note.image+'" class="note-img">';
+        }
+        var linkHtml = note.link ? '<div class="note-media"><a href="'+escapeHtml(note.link)+'" target="_blank" class="note-link">🔗 点击查看参考链接</a></div>' : '';
+        
+        html += '<div class="note-card '+(isMain?'main-note':'')+'">'
+          + (isMain ? '<div style="font-size:12px; font-weight:700; color:#111; margin-bottom:8px; letter-spacing:1px;">✨ 主畅想</div>' : '')
+          + '<p class="note-text">'+escapeHtml(note.text)+'</p>'
+          + '<div class="note-media">'+imgHtml+'</div>'
+          + linkHtml
+          + '<div style="margin-top:15px; text-align:right;">'
+          + '<button class="text-btn delete" data-action="del-note" data-note-index="'+i+'">删除</button>'
+          + '</div></div>';
+      });
+    } else {
+      html = '<div class="empty" style="border:none; padding:20px 0;">还没有便签，快去记录吧。</div>';
+    }
+    
+    // 添加新便签的表单
+    html += '<div class="note-card" style="border-style:dashed; background:var(--soft);">'
+      + '<div style="font-size:13px; font-weight:600; margin-bottom:10px; color:var(--muted);">添加新便签（副畅想）</div>'
+      + '<textarea id="newNoteText" class="field" style="width:100%; min-height:80px; padding:10px; font-size:15px; border-radius:6px; border:1px solid #ddd; margin-bottom:10px; background:#fff;" placeholder="写下新的细节、灵感或渴望……"></textarea>'
+      + '<div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">'
+      + '  <input type="text" id="newNoteLink" placeholder="附加链接 (选填)" style="flex:1; padding:8px; border:1px solid #ddd; border-radius:6px; font-size:13px; background:#fff;">'
+      + '  <label class="upload-btn" style="background:#fff; border:1px solid #ddd; padding:8px 12px; border-radius:6px; font-size:13px; cursor:pointer;">🖼️ 图片<input type="file" id="newNoteImage" accept="image/*" style="display:none;"></label>'
+      + '</div>'
+      + '<div id="previewImgName" style="font-size:12px; color:var(--muted); margin-bottom:10px;"></div>'
+      + '<button class="primary" id="saveNoteBtn" data-box-id="'+box.id+'" style="width:100%;">添加便签</button>'
+      + '</div>';
+      
+    notesContainer.innerHTML = html;
+    
+    // 绑定便签事件
+    document.querySelectorAll('[data-action="del-note"]').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if(!confirm('确定删除这条便签吗？')) return;
+        var idx = parseInt(this.getAttribute('data-note-index'));
+        var b = imagineBoxes.find(b => b.id === currentBoxId);
+        if (b && b.notes) {
+          b.notes.splice(idx, 1);
+          saveAllImagine();
+          openBoxDetail(currentBoxId);
+        }
+      });
+    });
+    
+    document.getElementById('newNoteImage').addEventListener('change', function(e) {
+      var file = e.target.files[0];
+      if(file) {
+        $('previewImgName').textContent = '已选择图片: ' + file.name;
+      } else {
+        $('previewImgName').textContent = '';
+      }
+    });
+    
+    document.getElementById('saveNoteBtn').addEventListener('click', function() {
+      var text = $('newNoteText').value.trim();
+      var link = $('newNoteLink').value.trim();
+      var file = $('newNoteImage').files[0];
+      
+      if (!text && !file) {
+        showToast('请写点内容或添加图片');
+        return;
+      }
+      
+      var proceedSave = function(imgData) {
+        var b = imagineBoxes.find(b => b.id === currentBoxId);
+        if (b) {
+          if (!b.notes) b.notes = [];
+          b.notes.push({ text: text, link: link, image: imgData || null });
+          saveAllImagine();
+          openBoxDetail(currentBoxId);
+          showToast('便签已添加');
+        }
+      };
+      
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = new Image();
+          img.onload = function() {
+            var canvas = document.createElement('canvas');
+            var scale = Math.min(1, 800 / Math.max(img.width, img.height));
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+            proceedSave(canvas.toDataURL('image/jpeg', 0.7));
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        proceedSave(null);
+      }
+    });
+  }
+
+  document.getElementById('backToImagineHub').addEventListener('click', backToImagineHub);
+  function backToImagineHub() {
+    $('boxDetail').classList.add('hidden');
+    $('imagineHub').classList.remove('hidden');
+    renderImagineHub();
+  }
+
+  // 添加Box逻辑
+  document.getElementById('addBoxBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    var menu = $('boxTypeMenu');
+    menu.classList.toggle('show');
+  });
+
+  document.querySelectorAll('#boxTypeMenu button').forEach(btn => {
+    btn.addEventListener('click', function() {
+      var type = this.getAttribute('data-type');
+      var exists = imagineBoxes.find(b => b.type === type);
+      if (exists) {
+        showToast('这个主题已经有了');
+        $('boxTypeMenu').classList.remove('show');
+        return;
+      }
+      
+      // 创建新 Box
+      var newBox = { id: 'box-' + Date.now(), type: type, notes: [] };
+      imagineBoxes.push(newBox);
+      saveAllImagine();
+      
+      // 初始化时马上弹出一个主便签的输入界面
+      // 由于我们是在 Hub，我们保存后直接跳转到详情页让用户写主畅想
+      $('boxTypeMenu').classList.remove('show');
+      renderImagineHub();
+      openBoxDetail(newBox.id);
+      
+      // 自动填入一个主便签（占位提示）
+      setTimeout(function() {
+        var ta = $('newNoteText');
+        if (ta) {
+          ta.placeholder = boxPrompts[type] || '写下你的主畅想……';
+          ta.focus();
+        }
+      }, 100);
+    });
+  });
+
+  // 点击空白处关闭菜单
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#addBoxBtn') && !e.target.closest('#boxTypeMenu')) {
+      $('boxTypeMenu').classList.remove('show');
+    }
+  });
+
+  // ================= 初始化 =================
+  function loadData(){
+    try{
+      var rawD = localStorage.getItem(KEY_DIARY);
+      entries = rawD ? JSON.parse(rawD) : [];
+      if(!Array.isArray(entries)) entries = [];
+      
+      var rawI = localStorage.getItem(KEY_IMAGINE);
+      imagineBoxes = rawI ? JSON.parse(rawI) : [];
+      if(!Array.isArray(imagineBoxes)) imagineBoxes = [];
+    }catch(e){ entries=[]; imagineBoxes=[]; }
+    
+    showRandomQuote();
+    renderDiary();
+    renderImagineHub();
+  }
+
+  resetDiaryForm();
+  loadData();
 })();
 </script>
 </body>
