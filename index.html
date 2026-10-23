@@ -36,13 +36,14 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .intro-tap.show { opacity: 1; animation: pulse 2s infinite; }
 
 /* 来信 */
-#letterOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.96); z-index: 9700; display: flex; align-items: center; justify-content: center; padding: 30px; transition: opacity 0.5s ease; }
+#letterOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 9700; display: flex; align-items: center; justify-content: center; padding: 30px; transition: opacity 0.5s ease; }
 #letterOverlay.fade-out { opacity: 0; pointer-events: none; }
-.letter-card { max-width: 380px; width: 100%; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 32px 26px; box-shadow: 0 20px 60px rgba(0,0,0,0.08); }
-.letter-card h2 { margin: 0 0 18px; font-size: 18px; font-weight: 800; letter-spacing: 0.05em; }
-.letter-card p { font-size: 15px; line-height: 2; color: #333; margin: 0 0 14px; }
-.letter-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 26px; }
-.letter-skip { font-size: 13px; color: var(--muted); padding: 5px; }
+.letter-card { max-width: 380px; width: 100%; text-align: center; }
+.letter-card h2 { margin: 0 0 26px; font-size: 13px; font-weight: 600; letter-spacing: 0.35em; color: var(--muted); }
+.letter-card p { font-size: 16px; line-height: 2.2; color: #333; margin: 0 0 6px; }
+.letter-actions { margin-top: 40px; text-align: center; }
+.letter-ok { font-size: 16px; color: var(--ink); padding: 6px 12px; border-bottom: 1px solid transparent; }
+.letter-ok:active { opacity: 0.5; }
 
 /* 日历过渡 */
 #calendarOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 9000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 1s ease; padding: 40px; }
@@ -79,11 +80,12 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .entry { padding: 20px 0; border-bottom: 1px solid var(--line); }
 .entry-date { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
 .entry-place { font-size: 20px; font-weight: 700; margin: 5px 0 10px; }
-.entry-body { font-size: 15px; line-height: 1.8; white-space: pre-wrap; margin-bottom: 10px; }
+.entry-body { font-size: 15px; line-height: 1.8; white-space: pre-wrap; margin-bottom: 10px; word-break: break-word; }
+.entry-body a { color: #0066cc; text-decoration: underline; }
 .entry-tags { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
 .tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); padding: 3px 8px; border-radius: 12px; }
-.entry-actions { display: flex; gap: 15px; }
-.entry-actions button { font-size: 12px; color: var(--muted); }
+.entry-actions { display: flex; justify-content: flex-end; gap: 16px; }
+.entry-actions button { font-size: 15px; color: var(--muted); }
 .form-group { margin-bottom: 20px; }
 .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
 .form-input, .form-textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 12px 15px; background: var(--white); }
@@ -101,23 +103,27 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .box-title-input { font-size: 20px; font-weight: 700; border: none; background: transparent; width: 200px; padding: 0; color: var(--ink);}
 .box-title-input:disabled { color: var(--ink); }
 .box-title-input:not(:disabled) { border-bottom: 1px solid var(--ink); }
-.core-imagine { margin-bottom: 30px; position: relative; }
-.core-input { width: 100%; border: 1px solid var(--line); background: var(--soft); border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 600; line-height: 1.6; resize: none; }
-.core-input:focus { background: #f0f0f0; }
-.core-hint { position: absolute; right: 12px; bottom: 8px; font-size: 11px; color: #bbb; pointer-events: none; transition: opacity 0.2s; }
-.core-input:focus + .core-hint { opacity: 0; }
+/* 标题旁小灰笔 */
+.title-pencil { font-size: 15px; color: #bbb; margin-left: 8px; cursor: pointer; user-select: none; }
+/* core 引言感 */
+.core-imagine { margin-bottom: 30px; position: relative; padding-left: 16px; }
+.core-imagine::before { content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 2px; background: var(--ink); border-radius: 2px; }
+.core-input { width: 100%; border: none; background: transparent; padding: 12px 4px; font-size: 17px; font-weight: 600; line-height: 1.8; resize: none; }
+.core-input:focus { background: transparent; }
+/* core 引导气泡 */
+.core-bubble { position: absolute; left: 16px; top: -12px; transform: translateY(-100%); background: var(--ink); color: #fff; font-size: 12px; padding: 8px 12px; border-radius: 10px; white-space: nowrap; z-index: 5; }
+.core-bubble::after { content: ""; position: absolute; left: 18px; bottom: -4px; width: 8px; height: 8px; background: var(--ink); transform: rotate(45deg); }
 .thread-feed { display: flex; flex-direction: column; margin-bottom: 20px; }
 .thread-item { position: relative; padding: 15px 0 15px 20px; border-left: 1px solid #e0e0e0; margin-left: 5px; }
-.thread-item::before { content: ""; position: absolute; left: -4px; top: 22px; width: 7px; height: 7px; border-radius: 50%; background: var(--white); border: 1px solid var(--ink); cursor: pointer; transition: background 0.2s; }
-.thread-item.selected::before { background: var(--ink); }
+.thread-item::before { content: ""; position: absolute; left: -4px; top: 22px; width: 7px; height: 7px; border-radius: 50%; background: var(--white); border: 1px solid var(--ink); }
 .thread-content-wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .thread-text { font-size: 15px; line-height: 1.6; white-space: pre-wrap; flex: 1; word-break: break-word; }
 .thread-text a { color: #0066cc; text-decoration: underline; }
-.thread-meta-row { display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-top: 2px; }
+.thread-meta-row { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 4px; }
 .thread-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
-.thread-edit-btn, .thread-del-btn { font-size: 11px; color: #ccc; cursor: pointer; padding: 0 4px; display: none; margin-left: 4px; }
-.thread-item:hover .thread-edit-btn,
-.thread-item:hover .thread-del-btn { display: inline-block; }
+/* 小灰笔 + 小灰叉 */
+.thread-icon-btn { font-size: 13px; color: #bbb; cursor: pointer; display: none; padding: 0 2px; user-select: none; }
+.thread-item:hover .thread-icon-btn { display: inline-block; }
 /* 图片网格 */
 .thread-imgs { display: grid; gap: 4px; margin-top: 8px; max-width: 340px; }
 .thread-imgs.cols-1 { grid-template-columns: 1fr; }
@@ -126,24 +132,25 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .thread-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 12px; border: 1px solid var(--line); cursor: pointer; display: block; }
 .thread-imgs.cols-1 .thread-img { aspect-ratio: 4 / 3; }
 /* 大图预览 */
-#lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9900; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+#lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9900; display: flex; align-items: center; justify-content: center; overflow: hidden; touch-action: pan-y; }
 #lightbox.hidden { display: none !important; }
-.lightbox-track { display: flex; height: 100%; width: 100%; transition: transform 0.25s ease; }
+.lightbox-track { display: flex; height: 100%; width: 100%; will-change: transform; }
 .lightbox-slide { flex: 0 0 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.lightbox-slide img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px; }
+.lightbox-slide img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px; -webkit-user-drag: none; }
 .lightbox-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.12); color: #fff; font-size: 22px; display: flex; align-items: center; justify-content: center; z-index: 2; }
 .lightbox-dots { position: absolute; bottom: 24px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; z-index: 2; }
 .lightbox-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); }
 .lightbox-dots span.active { background: #fff; }
 /* 分组 */
-.group-section { margin-bottom: 14px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-.group-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--soft); cursor: pointer; }
-.group-name { font-size: 15px; font-weight: 700; }
-.group-count { font-size: 12px; color: var(--muted); }
-.group-body { padding: 0 14px; }
-.group-del { font-size: 12px; color: #ccc; margin-left: 8px; cursor: pointer; }
-.group-body .thread-item { margin-left: 0; padding-left: 14px; }
-.new-group-btn { font-size: 13px; color: var(--muted); padding: 8px 0; border: 1px dashed var(--line); border-radius: 10px; text-align: center; margin-bottom: 14px; }
+.group-section { margin-bottom: 10px; }
+.group-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+.group-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.group-count { font-size: 12px; color: var(--muted); font-weight: 400; }
+.group-del { font-size: 12px; color: #ccc; margin-left: 10px; cursor: pointer; }
+.group-body { padding-top: 4px; }
+.group-body .thread-item { margin-left: 0; }
+.new-group-btn { font-size: 13px; color: var(--muted); padding: 10px 0; cursor: pointer; }
+.add-to-group-btn { font-size: 12px; color: var(--muted); padding: 6px 0 2px 20px; cursor: pointer; }
 .add-detail { position: relative; padding-left: 20px; border-left: 1px solid transparent; margin-left: 5px; }
 .add-textarea { width: 100%; border: none; background: var(--soft); font-size: 15px; resize: none; padding: 15px; min-height: 80px; border-radius: 12px; margin-bottom: 10px; }
 .add-actions { display: flex; justify-content: space-between; align-items: center; }
@@ -153,7 +160,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .fab:active { cursor: grabbing; transform: scale(0.95); }
 .fab svg { width: 24px; height: 24px; fill: none; stroke: var(--white); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .fab.hidden { display: none !important; }
-.popup-menu { position: absolute; top: 130px; left: 50%; transform: translateX(-50%); background: var(--white); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); z-index: 200; display: none; flex-direction: column; padding: 8px; width: 200px; }
+.popup-menu { position: absolute; top: 180px; left: 50%; transform: translateX(-50%); background: var(--white); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); z-index: 200; display: none; flex-direction: column; padding: 8px; width: 200px; }
 .popup-menu.show { display: flex; }
 .popup-menu button { text-align: left; padding: 12px 15px; font-size: 16px; border-radius: 8px; font-weight: 500; }
 .popup-menu button:hover { background: var(--soft); }
@@ -170,7 +177,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 /* 左滑编辑/删除 */
 .box-card .box-content { position: relative; z-index: 2; background: var(--white); transition: transform 0.25s ease; display: flex; justify-content: space-between; align-items: center; width: 100%; }
 .box-card.swiped .box-content { transform: translateX(-160px); }
-.box-card .box-swipe-actions { position: absolute; top: 0; right: 0; height: 100%; display: flex; transform: translateX(100%); transition: transform 0.25s ease; }
+.box-card .box-swipe-actions { position: absolute; top: 0; right: 0; height: 100%; display: flex; transform: translateX(100%); transition: transform 0.25s ease; z-index: 3; }
 .box-card.swiped .box-swipe-actions { transform: translateX(0); }
 .box-swipe-edit, .box-swipe-delete { width: 80px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #fff; }
 .box-swipe-edit { background: #555; }
@@ -188,10 +195,10 @@ input:focus, textarea:focus, button:focus { outline: none; }
   <div class="letter-card">
     <h2>一封来信</h2>
     <p>这里是别处的世界，不在此处。</p>
-    <p>可以把它当成平行宇宙——如梦幻泡影，如露亦如电。</p>
+    <p>可以把它当成平行宇宙。</p>
+    <p>如梦幻泡影，如露亦如电。</p>
     <div class="letter-actions">
-      <button class="add-submit" id="letterOkBtn" style="padding:10px 22px;">我知道了</button>
-      <button class="letter-skip" id="letterSkipBtn">跳过</button>
+      <button class="letter-ok" id="letterOkBtn">我知道了</button>
     </div>
   </div>
 </div>
@@ -322,12 +329,11 @@ input:focus, textarea:focus, button:focus { outline: none; }
       <div class="box-header">
         <button class="back-btn" id="backToImagineHub">←</button>
         <input type="text" id="boxTitleInput" class="box-title-input" disabled>
-        <span id="editBoxTitleBtn" style="font-size:12px; color:#ccc; margin-left:10px; cursor:pointer;">编辑</span>
+        <span class="title-pencil" id="editBoxTitleBtn">✎</span>
       </div>
       
       <div class="core-imagine">
-        <textarea id="coreInput" class="core-input" placeholder="这里写一句核心想象——点一下就能编辑" rows="2"></textarea>
-        <span class="core-hint" id="coreHint">点击编辑</span>
+        <textarea id="coreInput" class="core-input" placeholder="写下这个盒子的核心想象……" rows="2"></textarea>
       </div>
 
       <div id="groupWrap"></div>
@@ -372,6 +378,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
   var KEY_IMAGINE = 'herLittleAtlas.imagine.v8';
   var KEY_PROFILE = 'herLittleAtlas.profile.v8';
   var KEY_ONBOARDED = 'herLittleAtlas.onboarded.v8';
+  var KEY_CORE_TIP = 'herLittleAtlas.coreTip.v8';
   var $ = function(id) { return document.getElementById(id); };
 
   var entries = [];
@@ -389,7 +396,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     place: '来书写我吧',
     food: '开心果蛋糕',
     mood: '安静',
-    events: '下了一天的雨。早上给阳台的盆栽浇水，放了玉米在栏杆上，有两只灰鸰小鸟来了又走。坐在落地窗前看完雨，回房间放着唱片写作、做瑜伽。\n\n下午在雨声里午休到自然醒，醒来天色已暗。吃了一角开心果蛋糕，泡完脚上床，读了《不能承受的生命之轻》，读完昏昏沉沉又睡了过去。无比平常而安静的一天。\n\n另一个世界的你在看吗？删掉这条不属于你的日记，“你”的故事就可以开始了。'
+    events: '下了一天的雨。早上给阳台的盆栽浇水，放了玉米在栏杆上，两只灰鸰小鸟来了又走。坐在落地窗前看雨后，回房间听着唱片写作、做瑜伽，。\n\n下午在淅沥雨声里午休到自然醒，醒来天色已暗。吃了一角开心果味的蛋糕，泡完脚上床读了会《不能承受的生命之轻》，读得昏昏沉沉又睡了过去。无比平常而安静的一天。\n\n另一个世界的你在看吗？\n删掉这条不属于你的日记，“你”的故事就可以开始了。'
   };
 
   var quotes = [
@@ -410,8 +417,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     '创作': '你想创作什么样的作品？画作、音乐、文字？',
     'default': '你想象中的它是什么样的呢？'
   };
-
-  var GROUP_TYPES = ['爱好', '创作'];
 
   // ================= 初始化 =================
   window.addEventListener('load', function() {
@@ -452,8 +457,15 @@ input:focus, textarea:focus, button:focus { outline: none; }
     userProfile = { name: name, gender: selectedGender };
     localStorage.setItem(KEY_PROFILE, JSON.stringify(userProfile));
     $('welcomeOverlay').classList.add('hidden');
+    // 档案之后 → 日历
     $('loader').style.display = 'flex';
-    startAppFlow();
+    setTimeout(function() {
+      $('loader').classList.add('fade-out');
+      setTimeout(function() {
+        $('loader').style.display = 'none';
+        showCalendar();
+      }, 600);
+    }, 1000);
   });
 
   // 修改档案
@@ -516,8 +528,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
         var cursor = titleEl.querySelector('.cursor');
         cursor.insertAdjacentText('beforebegin', ch);
         i++;
-        var delay = 120 + Math.random() * 180;
-        setTimeout(typeNext, delay);
+        setTimeout(typeNext, 120 + Math.random() * 180);
       } else {
         var cursor = titleEl.querySelector('.cursor');
         setTimeout(function() { if (cursor) cursor.remove(); }, 800);
@@ -526,16 +537,14 @@ input:focus, textarea:focus, button:focus { outline: none; }
       }
     }
     setTimeout(typeNext, 400);
-
-    var tapHandler = function() {
+    intro.addEventListener('click', function() {
       if (!introDone) return;
       intro.classList.add('fade-out');
       setTimeout(function() {
         intro.classList.add('hidden');
         showLetter();
       }, 600);
-    };
-    intro.addEventListener('click', tapHandler, { once: false });
+    });
   }
 
   function showLetter() {
@@ -546,16 +555,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
       letter.classList.add('fade-out');
       setTimeout(function() {
         letter.classList.add('hidden');
-        showLoaderThenCalendar();
-      }, 500);
-    };
-    $('letterSkipBtn').onclick = function() {
-      if (!confirm('确定跳过？之后将不再出现新手引导。')) return;
-      localStorage.setItem(KEY_ONBOARDED, '1');
-      letter.classList.add('fade-out');
-      setTimeout(function() {
-        letter.classList.add('hidden');
-        showLoaderThenCalendar();
+        $('welcomeOverlay').classList.remove('hidden');
       }, 500);
     };
   }
@@ -595,7 +595,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
         overlay.classList.add('hidden');
         $('app').classList.add('loaded');
         window.scrollTo(0, 0);
-        $('fabBtn').classList.remove('hidden');
+        updateFabVisibility();
         renderDiary();
       }, 1000);
     }, { once: true });
@@ -632,13 +632,23 @@ input:focus, textarea:focus, button:focus { outline: none; }
       if (this.getAttribute('data-view') === 'diary') {
         $('diarySection').classList.remove('hidden');
         $('imagineSection').classList.add('hidden');
+        updateFabVisibility();
       } else {
         $('diarySection').classList.add('hidden');
         $('imagineSection').classList.remove('hidden');
+        updateFabVisibility();
         backToImagineHub();
       }
     });
   });
+
+  function updateFabVisibility() {
+    var isDiary = !$('diarySection').classList.contains('hidden');
+    var inWrite = !$('writeSubView').classList.contains('hidden');
+    var inBoxDetail = !$('boxDetail').classList.contains('hidden');
+    if (isDiary && !inWrite) $('fabBtn').classList.remove('hidden');
+    else $('fabBtn').classList.add('hidden');
+  }
 
   // ================= 日记渲染 =================
   function formatDate(s) {
@@ -680,6 +690,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 
     if (!html) html = '<div style="padding:40px 0; color:var(--muted); text-align:center; line-height:2;">这里还空着。<br>点右下角，写下第一个“别处”的今天。</div>';
     $('entriesList').innerHTML = html;
+    updateFabVisibility();
   }
 
   $('searchInput').addEventListener('input', function(e) {
@@ -694,12 +705,13 @@ input:focus, textarea:focus, button:focus { outline: none; }
     $('formTitle').textContent = '记下今天';
     $('diarySubView').classList.add('hidden');
     $('writeSubView').classList.remove('hidden');
-    document.querySelector('.main-tab[data-view="diary"]').click();
+    updateFabVisibility();
   });
 
   $('backBtn').addEventListener('click', function() {
     $('writeSubView').classList.add('hidden');
     $('diarySubView').classList.remove('hidden');
+    updateFabVisibility();
   });
 
   function parseSmartText(text, currentObj) {
@@ -759,6 +771,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     $('diarySubView').classList.add('hidden');
     $('writeSubView').classList.remove('hidden');
     switchMode('normal');
+    updateFabVisibility();
   };
 
   window.deleteEntry = function(id) {
@@ -787,19 +800,15 @@ input:focus, textarea:focus, button:focus { outline: none; }
   $('modeSmart').addEventListener('click', () => switchMode('smart'));
 
   // ================= 想象渲染 =================
-  function supportsGroups(box) {
-    return GROUP_TYPES.indexOf(box.type) > -1 || GROUP_TYPES.indexOf(box.name) > -1;
-  }
-
   function renderHub() {
     var html = imagineBoxes.map(function(box) {
       return '<div class="box-card" data-id="' + box.id + '">'
         + '<div class="box-content">'
         + '<div onclick="openBox(\'' + box.id + '\')" style="flex:1;">'
         + '<div class="box-title">' + escapeHtml(box.name) + '</div>'
-        + '<div class="box-desc">' + (box.details ? box.details.length : 0) + (supportsGroups(box) ? ' 条补充' : ' 条补充') + '</div>'
+        + '<div class="box-desc">' + (box.details ? box.details.length : 0) + ' 条补充</div>'
         + '</div>'
-        + '<div onclick="openBox(\'' + box.id + '\')" style="font-size:18px; color:#ccc;">›</div>'
+        + '<div onclick="openBox(\'' + box.id + '\')" style="font-size:22px; color:#ccc; padding-right:6px;">›</div>'
         + '</div>'
         + '<div class="box-swipe-actions">'
         + '<div class="box-swipe-edit" onclick="editBoxName(\'' + box.id + '\', event)">编辑</div>'
@@ -869,26 +878,34 @@ input:focus, textarea:focus, button:focus { outline: none; }
     $('boxDetail').classList.remove('hidden');
     $('boxTitleInput').value = box.name;
     $('boxTitleInput').disabled = true;
-    $('editBoxTitleBtn').style.display = 'inline';
     $('coreInput').value = box.core || '';
     var prompt = boxPrompts[box.name] || boxPrompts['default'];
     $('coreInput').placeholder = prompt;
-    $('coreHint').style.opacity = box.core ? '1' : '0';
+    if (!box.groups) box.groups = [];
     renderBoxDetail(box);
+    updateFabVisibility();
+    maybeShowCoreTip();
   };
 
+  function maybeShowCoreTip() {
+    if (localStorage.getItem(KEY_CORE_TIP)) return;
+    var el = document.createElement('div');
+    el.className = 'core-bubble';
+    el.textContent = '这里是核心想象，点一下就能写';
+    var wrap = document.querySelector('.core-imagine');
+    wrap.appendChild(el);
+    var hide = function() {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      localStorage.setItem(KEY_CORE_TIP, '1');
+      document.removeEventListener('click', hide);
+    };
+    setTimeout(function() { document.addEventListener('click', hide); }, 100);
+  }
+
   function renderBoxDetail(box) {
-    var useGroups = supportsGroups(box);
-    if (useGroups) {
-      renderGroups(box);
-      $('threadFeed').innerHTML = renderUngroupedThreads(box);
-      $('threadFeed').style.display = 'block';
-    } else {
-      $('groupWrap').innerHTML = '';
-      $('threadFeed').innerHTML = renderFlatThreads(box);
-      $('threadFeed').style.display = 'block';
-    }
-    bindThreadActions(box);
+    renderGroups(box);
+    $('threadFeed').innerHTML = renderUngroupedThreads(box);
+    bindThreadActions();
   }
 
   function threadItemHtml(item, index, prefix) {
@@ -897,47 +914,43 @@ input:focus, textarea:focus, button:focus { outline: none; }
     if (item.images && item.images.length) {
       imgHtml = '<div class="thread-imgs cols-' + Math.min(item.images.length, 3) + '">';
       item.images.forEach(function(src, i) {
-        imgHtml += '<img src="' + src + '" class="thread-img" data-group="' + prefix + '" data-index="' + i + '" onclick="openLightbox(\'' + prefix + '\',' + i + ')">';
+        imgHtml += '<img src="' + src + '" class="thread-img" onclick="openLightbox(\'' + prefix + '\',' + index + ',' + i + ')">';
       });
       imgHtml += '</div>';
     } else if (item.image) {
-      imgHtml = '<div class="thread-imgs cols-1"><img src="' + item.image + '" class="thread-img" data-group="' + prefix + '" data-index="0" onclick="openLightbox(\'' + prefix + '\',0)"></div>';
+      imgHtml = '<div class="thread-imgs cols-1"><img src="' + item.image + '" class="thread-img" onclick="openLightbox(\'' + prefix + '\',' + index + ',0)"></div>';
     }
     return '<div class="thread-item">'
       + '<div class="thread-content-wrap"><div class="thread-text">' + linkify(item.text || '') + '</div></div>'
       + '<div class="thread-meta-row">'
       + '<span class="thread-date">' + dateStr + '</span>'
-      + '<span class="thread-edit-btn" onclick="editThread(\'' + prefix + '\',' + index + ')">编辑</span>'
-      + '<span class="thread-del-btn" onclick="delThread(\'' + prefix + '\',' + index + ')">删除</span>'
+      + '<span class="thread-icon-btn" onclick="editThread(\'' + prefix + '\',' + index + ')">✎</span>'
+      + '<span class="thread-icon-btn" onclick="delThread(\'' + prefix + '\',' + index + ')">×</span>'
       + '</div>'
       + imgHtml
       + '</div>';
   }
 
-  function renderFlatThreads(box) {
+  function renderUngroupedThreads(box) {
     if (!box.details || !box.details.length) return '';
     return box.details.map(function(item, i) { return threadItemHtml(item, i, 'flat'); }).join('');
   }
 
-  function renderUngroupedThreads(box) {
-    if (!box.details || !box.details.length) return '';
-    var html = '<div style="font-size:12px; color:var(--muted); margin:6px 0 8px;">未分组</div>';
-    return html + box.details.map(function(item, i) { return threadItemHtml(item, i, 'flat'); }).join('');
-  }
-
   function renderGroups(box) {
     if (!box.groups) box.groups = [];
-    var html = '<div class="new-group-btn" onclick="addGroup()">+ 新建分组</div>';
+    var html = '';
     box.groups.forEach(function(g, gi) {
       html += '<div class="group-section" data-gi="' + gi + '">'
         + '<div class="group-head" onclick="toggleGroup(' + gi + ')">'
         + '<span class="group-name">' + escapeHtml(g.name) + ' <span class="group-count">(' + (g.threads ? g.threads.length : 0) + ')</span></span>'
-        + '<span><span class="group-del" onclick="delGroup(' + gi + ', event)">删除</span></span>'
+        + '<span class="group-del" onclick="delGroup(' + gi + ', event)">删除</span>'
         + '</div>'
         + '<div class="group-body" id="groupBody' + gi + '">'
         + (g.threads || []).map(function(item, i) { return threadItemHtml(item, i, 'g' + gi); }).join('')
+        + '<div class="add-to-group-btn" onclick="addToGroup(' + gi + ')">+ 加到这一组</div>'
         + '</div></div>';
     });
+    html += '<div class="new-group-btn" onclick="addGroup()">+ 新建分组</div>';
     $('groupWrap').innerHTML = html;
   }
 
@@ -969,9 +982,50 @@ input:focus, textarea:focus, button:focus { outline: none; }
     renderBoxDetail(box);
   };
 
-  function bindThreadActions(box) {
-    // 无额外绑定，按钮已用 inline onclick
+  // 方案 A：把当前输入框内容加到指定分组
+  window.addToGroup = function(gi) {
+    var box = imagineBoxes.find(x => x.id === currentBoxId);
+    if (!box || !box.groups || !box.groups[gi]) return;
+    var text = $('detailText').value.trim();
+    var files = Array.prototype.slice.call($('detailImage').files || []);
+    if (!text && !files.length) { showToast('先写点什么或选张图'); return; }
+    if (files.length > 6) { showToast('最多一次 6 张图片'); files = files.slice(0, 6); }
+    processImages(files, function(images) {
+      var now = new Date();
+      var dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+      box.groups[gi].threads.push({ text: text, images: images, date: dateStr });
+      saveImagine();
+      $('detailText').value = '';
+      $('detailImage').value = '';
+      renderBoxDetail(box);
+    });
+  };
+
+  function processImages(files, cb) {
+    if (!files.length) { cb([]); return; }
+    var results = new Array(files.length);
+    var loaded = 0;
+    files.forEach(function(file, idx) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          var scale = Math.min(1, 800 / Math.max(img.width, img.height));
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          results[idx] = canvas.toDataURL('image/jpeg', 0.7);
+          loaded++;
+          if (loaded === files.length) cb(results.filter(Boolean));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
   }
+
+  function bindThreadActions() {}
 
   function findThread(prefix, index) {
     var box = imagineBoxes.find(x => x.id === currentBoxId);
@@ -1002,16 +1056,16 @@ input:focus, textarea:focus, button:focus { outline: none; }
     renderBoxDetail(t.box);
   };
 
-  // ================= 大图预览 =================
+  // ================= 大图预览（修复滑动卡住） =================
   var lightboxImages = [];
   var lightboxIndex = 0;
-  window.openLightbox = function(prefix, index) {
+  window.openLightbox = function(prefix, index, imgIndex) {
     var t = findThread(prefix, index);
     if (!t) return;
     var item = t.item;
     lightboxImages = item.images && item.images.length ? item.images.slice() : (item.image ? [item.image] : []);
     if (!lightboxImages.length) return;
-    lightboxIndex = index >= lightboxImages.length ? 0 : index;
+    lightboxIndex = imgIndex || 0;
     renderLightbox();
     $('lightbox').classList.remove('hidden');
   };
@@ -1025,14 +1079,15 @@ input:focus, textarea:focus, button:focus { outline: none; }
     dots.innerHTML = lightboxImages.map(function(_, i) {
       return '<span class="' + (i === lightboxIndex ? 'active' : '') + '"></span>';
     }).join('');
-    track.style.transform = 'translateX(' + (-lightboxIndex * 100) + '%)';
     track.style.transition = 'none';
-    requestAnimationFrame(function() { track.style.transition = 'transform 0.25s ease'; });
+    track.style.transform = 'translateX(' + (-lightboxIndex * 100) + '%)';
   }
 
-  function setLightboxIndex(idx) {
+  function setLightboxIndex(idx, animate) {
     lightboxIndex = Math.max(0, Math.min(idx, lightboxImages.length - 1));
     var track = $('lightboxTrack');
+    if (animate) track.style.transition = 'transform 0.25s ease';
+    else track.style.transition = 'none';
     track.style.transform = 'translateX(' + (-lightboxIndex * 100) + '%)';
     var dots = $('lightboxDots').children;
     for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('active', i === lightboxIndex);
@@ -1044,80 +1099,58 @@ input:focus, textarea:focus, button:focus { outline: none; }
 
   (function bindLightboxSwipe() {
     var track = $('lightboxTrack');
-    var startX = 0, startY = 0, dragging = false;
+    var startX = 0, startY = 0, lastX = 0, dragging = false, moved = false;
     track.addEventListener('touchstart', function(e) {
-      startX = e.touches[0].clientX; startY = e.touches[0].clientY; dragging = true;
+      if (e.touches.length !== 1) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      lastX = startX;
+      dragging = true;
+      moved = false;
+      track.style.transition = 'none';
+    }, { passive: true });
+    track.addEventListener('touchmove', function(e) {
+      if (!dragging || e.touches.length !== 1) return;
+      var x = e.touches[0].clientX;
+      var dx = x - startX;
+      lastX = x;
+      if (Math.abs(dx) > 8) moved = true;
+      track.style.transform = 'translateX(calc(' + (-lightboxIndex * 100) + '% + ' + dx + 'px))';
     }, { passive: true });
     track.addEventListener('touchend', function(e) {
       if (!dragging) return;
       dragging = false;
-      var dx = e.changedTouches[0].clientX - startX;
-      var dy = e.changedTouches[0].clientY - startY;
-      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
-        if (dx < 0) setLightboxIndex(lightboxIndex + 1);
-        else setLightboxIndex(lightboxIndex - 1);
+      var dx = lastX - startX;
+      if (Math.abs(dx) > 50) {
+        if (dx < 0) setLightboxIndex(lightboxIndex + 1, true);
+        else setLightboxIndex(lightboxIndex - 1, true);
+      } else {
+        setLightboxIndex(lightboxIndex, true);
       }
     });
   })();
-
-  $('coreInput').addEventListener('input', function() {
-    $('coreHint').style.opacity = this.value ? '1' : '0';
-  });
 
   $('coreInput').addEventListener('blur', function() {
     var box = imagineBoxes.find(x => x.id === currentBoxId);
     if (box) { box.core = this.value; saveImagine(); }
   });
 
-  // 发布（最多 6 张图）
   $('addDetailBtn').addEventListener('click', function() {
+    var box = imagineBoxes.find(x => x.id === currentBoxId);
+    if (!box) return;
     var text = $('detailText').value.trim();
     var files = Array.prototype.slice.call($('detailImage').files || []);
     if (!text && !files.length) return;
     if (files.length > 6) { showToast('最多一次 6 张图片'); files = files.slice(0, 6); }
-
-    var box = imagineBoxes.find(x => x.id === currentBoxId);
-    if (!box) return;
-
-    var done = function(images) {
+    processImages(files, function(images) {
       var now = new Date();
       var dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
-      var newItem = { text: text, images: images, date: dateStr };
-      // 判断当前是否有分组需要放入（简化：默认加入未分组/平铺；若用户想加入分组，后续可扩展选择）
-      var targetGroup = window.__pendingGroupIndex;
-      if (typeof targetGroup === 'number' && box.groups && box.groups[targetGroup]) {
-        box.groups[targetGroup].threads.push(newItem);
-      } else {
-        if (!box.details) box.details = [];
-        box.details.push(newItem);
-      }
+      if (!box.details) box.details = [];
+      box.details.push({ text: text, images: images, date: dateStr });
       saveImagine();
       $('detailText').value = '';
       $('detailImage').value = '';
-      window.__pendingGroupIndex = null;
       renderBoxDetail(box);
-    };
-
-    if (!files.length) { done([]); return; }
-    var results = new Array(files.length);
-    var loaded = 0;
-    files.forEach(function(file, idx) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var img = new Image();
-        img.onload = function() {
-          var canvas = document.createElement('canvas');
-          var scale = Math.min(1, 800 / Math.max(img.width, img.height));
-          canvas.width = img.width * scale;
-          canvas.height = img.height * scale;
-          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-          results[idx] = canvas.toDataURL('image/jpeg', 0.7);
-          loaded++;
-          if (loaded === files.length) done(results.filter(Boolean));
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
     });
   });
 
@@ -1142,6 +1175,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     $('imagineHub').classList.remove('hidden');
     document.querySelectorAll('.box-card.swiped').forEach(function(c) { c.classList.remove('swiped'); });
     renderHub();
+    updateFabVisibility();
   }
 
   $('addBoxBtn').addEventListener('click', function(e) {
@@ -1159,8 +1193,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
         $('boxTypeMenu').classList.remove('show');
         return;
       }
-      var newBox = { id: 'box-' + Date.now(), type: type, name: boxName, core: '', details: [] };
-      if (GROUP_TYPES.indexOf(type) > -1) newBox.groups = [];
+      var newBox = { id: 'box-' + Date.now(), type: type, name: boxName, core: '', details: [], groups: [] };
       imagineBoxes.push(newBox);
       saveImagine();
       $('boxTypeMenu').classList.remove('show');
