@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<title>她的日常图鉴</title>
+<title>她的世界</title>
 <style>
 :root{--ink:#111;--muted:#777;--line:#e8e8e8;--soft:#f7f7f7;--white:#fff}
 *{box-sizing:border-box}
@@ -62,7 +62,6 @@ form{display:flex;flex-direction:column;gap:19px}
 .field textarea{resize:vertical;min-height:150px;line-height:1.75}
 .field input::placeholder,.field textarea::placeholder{color:#aaa}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-.hidden-upload{display:none}
 .form-actions{display:flex;gap:10px;align-items:center;padding-top:2px;flex-wrap:wrap}
 .secondary{border:1px solid #dedede;background:#fff;border-radius:999px;padding:9px 15px;font-size:12px}
 .hint{font-size:11px;color:#999;line-height:1.7;margin:15px 0 0}
@@ -72,13 +71,24 @@ form{display:flex;flex-direction:column;gap:19px}
 footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:space-between;gap:12px}
 .toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 15px;border-radius:999px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10;white-space:nowrap}
 .toast.show{opacity:1}
+
+/* 模式切换按钮与语音按钮 */
+.mode-switch{display:flex;gap:10px;margin-bottom:15px;}
+.mode-btn{flex:1;background:#f7f7f7;border:1px solid #e8e8e8;border-radius:9px;padding:10px;font-size:12px;color:#666;font-weight:600;transition:all .2s;}
+.mode-btn.active{background:#fff;border-color:#111;color:#111;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.input-wrap{position:relative;}
+.mic-btn{position:absolute;bottom:12px;right:12px;background:#fff;border:1px solid #dedede;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#333;transition:all .2s;box-shadow:0 2px 5px rgba(0,0,0,0.05);}
+.mic-btn:hover{border-color:#111;}
+.mic-btn.listening{background:#111;color:#fff;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(17,17,17,0.4)}70%{box-shadow:0 0 0 10px rgba(17,17,17,0)}100%{box-shadow:0 0 0 0 rgba(17,17,17,0)}}
+
 @media(max-width:520px){.app{padding:0 17px 85px}.topbar{height:61px}.intro{padding:27px 0 23px}.stats{margin-bottom:23px}.stat{padding-left:12px}.stat strong{font-size:20px}.entry{padding:20px 0 22px}.two{gap:9px}.top-actions{gap:1px}.top-actions .plain-btn{padding:8px 5px}.primary{padding:9px 13px}footer{flex-direction:column;gap:5px}}
 </style>
 </head>
 <body>
 <div class="app">
   <header class="topbar">
-    <div class="brand">她的日常图鉴<span>HER LITTLE ATLAS</span></div>
+    <div class="brand">她的世界<span>HER LITTLE ATLAS</span></div>
     <div class="top-actions">
       <button class="plain-btn" id="exportBtn" type="button">导出</button>
       <button class="plain-btn" id="importBtn" type="button">导入</button>
@@ -123,17 +133,26 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
       <form id="entryForm" novalidate>
         <input type="hidden" id="entryId">
         <div class="field"><label for="date">日期</label><input id="date" type="date" required></div>
-        <div class="field"><label for="place">她在哪里 <span class="sub">选填</span></label><input id="place" placeholder="例如：银杏林、雁栖湖、家"></div>
-        <div class="two">
-          <div class="field"><label for="food">吃了什么 <span class="sub">选填</span></label><input id="food" placeholder="晚餐、甜点……"></div>
-          <div class="field"><label for="mood">今天的感觉 <span class="sub">选填</span></label><input id="mood" placeholder="平静、好奇……"></div>
-        </div>
-        <div class="field"><label for="events">今天发生了什么 <span class="sub">也可以按时间写行程</span></label><textarea id="events" placeholder="午后去了湖边，捡了几片叶子。日落前回家，在路上挑了晚餐的菜谱……"></textarea></div>
         
-        <!-- 照片功能隐藏，但保留结构 -->
-        <div class="hidden-upload">
-          <label class="upload" for="photos">＋ 添加照片<input id="photos" type="file" accept="image/*" multiple></label>
-          <div class="preview" id="photoPreview"></div>
+        <div class="mode-switch">
+          <button type="button" class="mode-btn active" id="modeNormal">分栏填写</button>
+          <button type="button" class="mode-btn" id="modeSmart">✍️ 智能大段写</button>
+        </div>
+
+        <div id="normalInputs">
+          <div class="field" style="margin-bottom:19px;"><label for="place">她在哪里 <span class="sub">选填</span></label><input id="place" placeholder="比如：家、公司、咖啡馆、公园……"></div>
+          <div class="two" style="margin-bottom:19px;">
+            <div class="field"><label for="food">吃了什么 <span class="sub">选填</span></label><input id="food" placeholder="比如：早餐、面条、蛋糕……"></div>
+            <div class="field"><label for="mood">今天的感觉 <span class="sub">选填</span></label><input id="mood" placeholder="比如：平静、疲惫、开心……"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="events"><span id="eventsLabel">今天发生了什么</span> <span class="sub">可以记录流水账，或者按时间写行程</span></label>
+          <div class="input-wrap">
+            <textarea id="events" placeholder="先随便写点什么……"></textarea>
+            <button type="button" class="mic-btn" id="micBtn" title="点击语音输入">🎤</button>
+          </div>
         </div>
 
         <div class="form-actions">
@@ -151,15 +170,13 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
 <script>
 (function(){
   'use strict';
-  // 千万别改这里的 KEY，否则旧数据会丢
   var KEY='herLittleAtlas.entries.v1';
   function $(id){return document.getElementById(id)}
-  
   var entries=[];
-  var pendingPhotos=[];
-  var editingPhotos=[];
+  var currentMode = 'normal';
+  var isListening = false;
+  var recognition = null;
 
-  // 真实存在的引语库（已核实出处）
   var quotes = [
     { text: "人不应该是插在花瓶里供人观赏的静物，而是蔓延在草原上随风起舞的韵律。", author: "—— 弗吉尼亚·伍尔夫" },
     { text: "生活的最好状态，是冷冷清清的风风火火。", author: "—— 木心" },
@@ -217,13 +234,79 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
     try{window.scrollTo({top:0,behavior:'smooth'})}catch(e){window.scrollTo(0,0)}
   }
 
-  // 随机展示一条引语
   function showRandomQuote(){
-    if(Math.random() > 0.5) return; // 一半概率不展示，保持清爽
+    if(Math.random() > 0.5) return;
     var q = quotes[Math.floor(Math.random() * quotes.length)];
     $('quoteText').textContent = q.text;
     $('quoteAuthor').textContent = q.author;
     $('quoteBox').style.display = 'block';
+  }
+
+  function setMode(mode) {
+    currentMode = mode;
+    if(mode === 'normal') {
+      $('modeNormal').classList.add('active');
+      $('modeSmart').classList.remove('active');
+      $('normalInputs').style.display = 'block';
+      $('eventsLabel').textContent = '今天发生了什么';
+      $('events').placeholder = '先随便写点什么……';
+      $('events').style.minHeight = '150px';
+    } else {
+      $('modeNormal').classList.remove('active');
+      $('modeSmart').classList.add('active');
+      $('normalInputs').style.display = 'none';
+      $('eventsLabel').textContent = '大段自由记录';
+      $('events').placeholder = '在这里大段输入或语音录入今天发生的事。\n点击保存时，系统会自动寻找“地点、食物、心情”关键词并归类。如果没找到，会原样保留在正文中。';
+      $('events').style.minHeight = '250px';
+    }
+  }
+  $('modeNormal').addEventListener('click', function(){ setMode('normal'); });
+  $('modeSmart').addEventListener('click', function(){ setMode('smart'); });
+
+  // 语音输入
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'zh-CN';
+
+    recognition.onstart = function() {
+      isListening = true;
+      $('micBtn').classList.add('listening');
+      showToast('正在倾听...');
+    };
+    recognition.onerror = function() {
+      isListening = false;
+      $('micBtn').classList.remove('listening');
+      showToast('语音识别出错，请检查麦克风权限');
+    };
+    recognition.onend = function() {
+      isListening = false;
+      $('micBtn').classList.remove('listening');
+    };
+    recognition.onresult = function(event) {
+      var finalTranscript = '';
+      for (var i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        }
+      }
+      if (finalTranscript) {
+        var currentText = $('events').value;
+        $('events').value = currentText + (currentText ? ' ' : '') + finalTranscript;
+      }
+    };
+
+    $('micBtn').addEventListener('click', function() {
+      if (isListening) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    });
+  } else {
+    $('micBtn').style.display = 'none';
   }
 
   document.addEventListener('click',function(ev){
@@ -254,55 +337,58 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
     $('entryForm').reset();
     $('entryId').value='';
     $('date').value=today();
-    pendingPhotos=[];
-    editingPhotos=[];
-    $('photoPreview').innerHTML='';
     $('formTitle').textContent='记下今天';
     $('saveBtn').textContent='保存记录';
     $('cancelEdit').style.display='none';
+    setMode('normal');
   }
 
-  function compressImage(file){
-    return new Promise(function(resolve,reject){
-      var reader=new FileReader();
-      reader.onload=function(){
-        var img=new Image();
-        img.onload=function(){
-          var max=1000;
-          var scale=Math.min(1,max/Math.max(img.width,img.height));
-          var c=document.createElement('canvas');
-          c.width=Math.round(img.width*scale);
-          c.height=Math.round(img.height*scale);
-          c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-          try{resolve(c.toDataURL('image/jpeg',.78));}catch(e){reject(e);}
-        };
-        img.onerror=reject;
-        img.src=reader.result;
-      };
-      reader.onerror=reject;
-      reader.readAsDataURL(file);
+  function parseSmartText(text, currentObj) {
+    if (!text.trim()) return currentObj;
+    
+    var lines = text.split('\n');
+    var parsedPlace = currentObj.place;
+    var parsedFood = currentObj.food;
+    var parsedMood = currentObj.mood;
+    var remainingLines = [];
+
+    lines.forEach(line => {
+      let trimmed = line.trim();
+      if (!trimmed) return;
+
+      if (!parsedPlace && (trimmed.includes('去了') || trimmed.includes('在') || trimmed.includes('到了'))) {
+        let match = trimmed.match(/(去了|在|到了)([\u4e00-\u9fa5A-Za-z0-9·]{2,10})/);
+        if (match && match[2]) {
+          parsedPlace = match[2];
+          remainingLines.push(trimmed.replace(match[0], ''));
+          return;
+        }
+      }
+      if (!parsedFood && (trimmed.includes('吃了') || trimmed.includes('喝了') || trimmed.includes('点了'))) {
+        let match = trimmed.match(/(吃了|喝了|点了)([\u4e00-\u9fa5A-Za-z0-9·]{2,10})/);
+        if (match && match[2]) {
+          parsedFood = match[2];
+          remainingLines.push(trimmed.replace(match[0], ''));
+          return;
+        }
+      }
+      if (!parsedMood && (trimmed.includes('感觉') || trimmed.includes('开心') || trimmed.includes('安静') || trimmed.includes('微醺'))) {
+        let match = trimmed.match(/(感觉|觉得)([\u4e00-\u9fa5A-Za-z0-9·]{2,10})/);
+        if (match && match[2]) {
+          parsedMood = match[2];
+          remainingLines.push(trimmed.replace(match[0], ''));
+          return;
+        }
+      }
+      remainingLines.push(trimmed);
     });
-  }
 
-  if($('photos')){
-    $('photos').addEventListener('change',function(ev){
-      var files=Array.prototype.slice.call(ev.target.files||[]);
-      var jobs=files.filter(function(f){return f.type&&f.type.indexOf('image/')===0;})
-                    .map(function(f){return compressImage(f).catch(function(){return null;});});
-      Promise.all(jobs).then(function(results){
-        results.forEach(function(p){if(p)pendingPhotos.push(p)});
-        renderPreview();
-        ev.target.value='';
-      });
-    });
-  }
-
-  function renderPreview(){
-    if(!$('photoPreview')) return;
-    var all=editingPhotos.concat(pendingPhotos);
-    $('photoPreview').innerHTML=all.map(function(p){
-      return '<img src="'+p+'" alt="待保存照片">';
-    }).join('');
+    return {
+      place: parsedPlace,
+      food: parsedFood,
+      mood: parsedMood,
+      events: remainingLines.join('\n').trim() || text
+    };
   }
 
   $('entryForm').addEventListener('submit',function(ev){
@@ -311,9 +397,21 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
     if(!date){showToast('请先选择日期');return;}
 
     var id=$('entryId').value||('e-'+Date.now()+'-'+Math.floor(Math.random()*1000));
-    var photos=editingPhotos.concat(pendingPhotos);
-    var obj={id:id,date:date,place:$('place').value.trim(),food:$('food').value.trim(),
-             mood:$('mood').value.trim(),events:$('events').value.trim(),photos:photos,sample:false};
+    
+    var finalPlace = $('place').value.trim();
+    var finalFood = $('food').value.trim();
+    var finalMood = $('mood').value.trim();
+    var finalEvents = $('events').value.trim();
+
+    if (currentMode === 'smart') {
+      var parsed = parseSmartText(finalEvents, {place: finalPlace, food: finalFood, mood: finalMood});
+      finalPlace = parsed.place || '';
+      finalFood = parsed.food || '';
+      finalMood = parsed.mood || '';
+      finalEvents = parsed.events;
+    }
+
+    var obj={id:id,date:date,place:finalPlace,food:finalFood,mood:finalMood,events:finalEvents,photos:[],sample:false};
 
     var snapshot=entries.slice();
     var idx=entries.findIndex(function(e){return e.id===id});
@@ -323,11 +421,7 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
       saveAll();render();resetForm();switchView('records');showToast('记录已保存');
     }catch(err){
       entries=snapshot;
-      var msg='保存失败';
-      if(err&&(err.name==='QuotaExceededError'||err.code===22||String(err).indexOf('quota')>=0)){
-        msg='存储空间不足：请删除旧内容或先导出备份';
-      }
-      showToast(msg);
+      showToast('保存失败，请检查存储空间');
     }
   });
 
@@ -340,12 +434,10 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
     $('food').value=e.food||'';
     $('mood').value=e.mood||'';
     $('events').value=e.events||'';
-    editingPhotos=(e.photos||[]).slice();
-    pendingPhotos=[];
-    renderPreview();
     $('formTitle').textContent='编辑记录';
     $('saveBtn').textContent='保存修改';
     $('cancelEdit').style.display='inline-block';
+    setMode('normal');
     switchView('write');
   }
   function deleteEntry(id){
@@ -377,7 +469,7 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
     var blob=new Blob([JSON.stringify(entries,null,2)],{type:'application/json'});
     var a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download='她的日常图鉴-备份.json';
+    a.download='她的世界-备份.json';
     document.body.appendChild(a);a.click();a.remove();
     setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
     showToast('备份已导出');
@@ -435,20 +527,12 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
           +(e.mood?'<span class="chip">感觉 · '+escapeHtml(e.mood)+'</span>':'')
           +'</div>';
       }
-      // 照片部分虽然不展示，但为了兼容之前的数据（如果有），这块代码留着。
-      var photos=e.photos||[];
-      var grid=photos.length
-        ?'<div class="photo-grid" style="display:none;">'+photos.map(function(p){
-            return '<img src="'+p+'" alt="日记照片" loading="lazy">';
-          }).join('')+'</div>'
-        :'';
-
       return '<article class="entry">'
         +'<div class="entry-meta"><span>'+escapeHtml(niceDate(e.date))+'</span>'
-        +'<span>'+(photos.length?'含旧照片':'文字记录')+'</span></div>'
+        +'<span>文字记录</span></div>'
         +'<h3>'+escapeHtml(e.place||'这一天')+'</h3>'
         +'<p class="entry-body">'+escapeHtml(diary(e))+'</p>'
-        +chips+grid
+        +chips
         +'<div class="entry-actions">'
         +'<button class="text-btn" type="button" data-action="edit" data-id="'+e.id+'">编辑</button>'
         +'<button class="text-btn" type="button" data-action="copy" data-id="'+e.id+'">复制日记</button>'
@@ -464,12 +548,7 @@ footer{padding:22px 0 0;color:#999;font-size:10px;display:flex;justify-content:s
       if(!Array.isArray(entries))entries=[];
     }catch(e){entries=[]}
 
-    if(!entries.length){
-      entries=[{id:'sample-1',date:'2026-10-15',place:'雁栖湖 · 回家的路上 · 家',food:'自己做的晚餐',mood:'自在、安静',
-        events:'她去雁栖湖边捡秋。湖水很宽，风吹过来，水面泛起细细的波纹。她沿着湖边慢慢走，捡了几片喜欢的叶子。\n\n她在日落前往回走，路上看菜谱，提前在小象超市点好菜。回到家，她洗手、整理食材，在厨房里给自己做了一顿晚餐。\n\n今天没有什么惊天动地的事。她只是看了秋天，吹过湖边的风，认真吃了一顿饭。',
-        photos:[],sample:true}];
-      try{saveAll()}catch(e){}
-    }
+    // 去除了默认的示例假数据，如果为空，就干干净净。
     showRandomQuote();
     render();
   }
