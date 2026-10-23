@@ -6,103 +6,86 @@
 <meta name="theme-color" content="#ffffff">
 <title>生活在别处</title>
 
-<!-- App 图标设置 -->
-<link rel="apple-touch-icon" href="./story.svg">
-<link rel="icon" type="image/svg+xml" href="./story.svg">
+<link rel="apple-touch-icon" href="./story.png">
+<link rel="icon" type="image/png" href="./story.png">
 
 <style>
-:root{
-  --ink:#111;
-  --muted:#888;
-  --line:#eaeaea;
-  --soft:#f9f9f9;
-  --white:#fff;
-}
+:root{--ink:#111;--muted:#888;--line:#eaeaea;--soft:#f9f9f9;--white:#fff;}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{
-  margin:0; background:var(--white); color:var(--ink);
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","PingFang SC",sans-serif;
-  font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased;
-}
-button,input,textarea{font:inherit;color:inherit}
+body{margin:0;background:var(--white);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","PingFang SC",sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+button,input,textarea{font:inherit;color:inherit;font-size:16px !important;} /* 锁定 16px 防止 Safari 放大 */
 button{cursor:pointer;touch-action:manipulation;border:none;background:none;}
-button:focus-visible,input:focus-visible,textarea:focus-visible{outline:none}
-
-/* 强制修复 Safari 缩放 */
-input, textarea { font-size: 16px !important; }
+input:focus, textarea:focus, button:focus { outline: none; }
 
 /* ====== 加载动画：3D 翻书 ====== */
 #loader {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: var(--white); z-index: 9999;
-  display: flex; align-items: center; justify-content: center;
-  transition: opacity 0.6s ease;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.8s ease;
 }
 #loader.fade-out { opacity: 0; pointer-events: none; }
-.book-container { perspective: 1000px; }
-.book {
-  width: 70px; height: 100px; border: 2px solid var(--ink);
-  border-radius: 4px; position: relative; background: var(--white);
-  transform-style: preserve-3d;
+.book-wrap { perspective: 1200px; margin-bottom: 20px; }
+.book-3d {
+  width: 50px; height: 70px; position: relative; transform-style: preserve-3d;
+  background: #fff; border: 2px solid var(--ink); border-radius: 2px;
 }
-.page {
-  position: absolute; top: 0; left: 50%; width: 50%; height: 100%;
-  background: var(--white); border-left: 1px solid var(--ink);
+.book-page {
+  position: absolute; top: -2px; left: 50%; width: 100%; height: calc(100% + 4px);
+  background: #fff; border: 2px solid var(--ink); border-radius: 2px;
   transform-origin: left center;
-  animation: flipPage 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  animation: realFlip 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
 }
-@keyframes flipPage {
+@keyframes realFlip {
   0% { transform: rotateY(0deg); }
   20% { transform: rotateY(0deg); }
   80% { transform: rotateY(-180deg); }
   100% { transform: rotateY(-180deg); }
 }
+.loader-text { font-size: 12px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
 
 /* ====== 日历过渡页 ====== */
 #calendarOverlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: var(--white); z-index: 9000;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease;
-  transform-origin: top center;
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 40px;
 }
-#calendarOverlay.slide-up {
-  transform: rotateX(90deg); opacity: 0; pointer-events: none;
-}
-.calendar-date { font-size: 32px; font-weight: 700; letter-spacing: -.05em; margin-bottom: 8px; }
-.calendar-festival { font-size: 14px; color: var(--muted); letter-spacing: .2em; margin-bottom: 40px; }
-.calendar-quote { font-size: 16px; font-style: italic; color: #333; max-width: 300px; text-align: center; line-height: 1.8; }
-.calendar-author { font-size: 13px; color: var(--muted); margin-top: 15px; }
-.tap-hint { position: absolute; bottom: 50px; font-size: 12px; color: #ccc; animation: pulseHint 2s infinite; }
-@keyframes pulseHint { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+#calendarOverlay.fade-out { opacity: 0; pointer-events: none; }
+.cal-month-year { font-size: 13px; letter-spacing: 0.3em; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; }
+.cal-day { font-size: 80px; font-weight: 800; line-height: 1; letter-spacing: -0.05em; margin-bottom: 20px; }
+.cal-festival { font-size: 15px; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 50px; }
+.cal-line { width: 30px; height: 1px; background: var(--ink); margin-bottom: 40px; }
+.cal-quote { font-size: 16px; line-height: 2; color: #333; max-width: 280px; text-align: justify; }
+.cal-author { font-size: 13px; color: var(--muted); margin-top: 15px; align-self: flex-end; }
+.cal-tap { position: absolute; bottom: 40px; font-size: 12px; color: #aaa; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity: 0.3;} 50%{opacity: 1;} }
 
 /* ====== 主应用 ====== */
-.app { max-width: 680px; margin: 0 auto; min-height: 100vh; padding: 0 20px 90px; opacity: 0; transition: opacity 0.8s ease; }
+.app { max-width: 680px; margin: 0 auto; min-height: 100vh; padding: 0 20px 100px; opacity: 0; transition: opacity 1s; }
 .app.loaded { opacity: 1; }
 
 .topbar { height: 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: rgba(255,255,255,.95); backdrop-filter: blur(10px); z-index: 100; }
 .brand { font-size: 18px; font-weight: 700; letter-spacing: -.04em; }
 .top-actions { display: flex; gap: 12px; }
 .plain-btn { font-size: 13px; color: var(--muted); padding: 5px; }
-.primary-btn { background: var(--ink); color: var(--white); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; }
 
-.main-tabs { display: flex; border-bottom: 1px solid var(--line); height: 50px; margin-bottom: 20px; }
-.main-tab { flex: 1; font-size: 15px; font-weight: 600; color: var(--muted); position: relative; }
+.main-tabs { display: flex; border-bottom: 1px solid var(--line); height: 50px; margin-bottom: 25px; }
+.main-tab { flex: 1; font-size: 16px; font-weight: 600; color: var(--muted); position: relative; }
 .main-tab.active { color: var(--ink); }
 .main-tab.active::after { content: ""; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: var(--ink); }
 
 /* 日记版块 */
-.hero h1 { font-size: 32px; letter-spacing: -.06em; margin: 20px 0 10px; font-weight: 700; }
+.hero h1 { font-size: 28px; letter-spacing: -.05em; margin: 20px 0 10px; font-weight: 700; }
 .hero p { font-size: 15px; color: #666; margin-bottom: 30px; }
-
 .stats { display: flex; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 15px 0; margin-bottom: 20px; }
 .stat { flex: 1; border-right: 1px solid var(--line); padding-left: 15px; }
 .stat:first-child { padding-left: 0; border: none; }
 .stat:last-child { border: none; }
 .stat strong { display: block; font-size: 22px; font-weight: 700; }
 .stat span { font-size: 12px; color: var(--muted); }
-
 .search-bar { width: 100%; border: none; background: var(--soft); border-radius: 10px; padding: 12px 15px; margin-bottom: 20px; }
 
 .entry { padding: 20px 0; border-bottom: 1px solid var(--line); }
@@ -114,88 +97,118 @@ input, textarea { font-size: 16px !important; }
 .entry-actions { display: flex; gap: 15px; }
 .entry-actions button { font-size: 12px; color: var(--muted); }
 
-/* 写日记 */
+/* 写日记表单 */
 .form-group { margin-bottom: 20px; }
 .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-.form-input { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 12px 15px; background: var(--white); }
-.form-textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 12px 15px; min-height: 180px; resize: vertical; line-height: 1.6; }
+.form-input, .form-textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 12px 15px; background: var(--white); }
+.form-textarea { min-height: 180px; resize: vertical; }
 .mode-switch { display: flex; gap: 10px; margin-bottom: 20px; }
-.mode-btn { flex: 1; padding: 10px; background: var(--soft); border-radius: 8px; font-size: 14px; color: var(--muted); font-weight: 600; transition: all 0.2s; }
+.mode-btn { flex: 1; padding: 10px; background: var(--soft); border-radius: 8px; font-size: 14px; color: var(--muted); font-weight: 600; }
 .mode-btn.active { background: var(--white); border: 1px solid var(--ink); color: var(--ink); }
 
 /* 想象版块 */
-.box-list { display: flex; flex-direction: column; gap: 12px; }
+.box-list { display: flex; flex-direction: column; }
 .box-card { padding: 20px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
 .box-title { font-size: 18px; font-weight: 700; }
 .box-desc { font-size: 13px; color: var(--muted); margin-top: 4px; }
-.box-arrow { font-size: 18px; color: #ccc; }
 .add-box-btn { padding: 20px 0; font-size: 16px; font-weight: 600; color: var(--muted); text-align: center; border-bottom: 1px solid var(--line); }
 
-/* 盒子内部（Threads 风格） */
+/* 盒子内部 Threads 风格 */
 .box-header { display: flex; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 .back-btn { font-size: 24px; margin-right: 10px; font-weight: 300; }
 .box-header h2 { font-size: 20px; font-weight: 700; }
-
 .core-imagine { margin-bottom: 30px; }
 .core-input { width: 100%; border: none; background: var(--soft); border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 600; line-height: 1.6; resize: none; }
 .core-input:focus { background: #f0f0f0; }
 
-.thread-feed { display: flex; flex-direction: column; }
-.thread-item { display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--line); position: relative; }
-.thread-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--ink); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0; }
-.thread-content { flex: 1; }
+/* 左侧细线流 */
+.thread-feed { display: flex; flex-direction: column; margin-bottom: 20px; }
+.thread-item { position: relative; padding: 15px 0 15px 20px; border-left: 1px solid #e0e0e0; margin-left: 5px; }
+.thread-item::before { content: ""; position: absolute; left: -4px; top: 22px; width: 7px; height: 7px; border-radius: 50%; background: var(--white); border: 1px solid var(--ink); }
 .thread-text { font-size: 15px; line-height: 1.6; white-space: pre-wrap; margin-bottom: 10px; }
 .thread-img { max-width: 100%; border-radius: 8px; margin-top: 8px; border: 1px solid var(--line); }
 .thread-actions { display: flex; gap: 15px; margin-top: 10px; }
 .thread-actions button { font-size: 12px; color: var(--muted); }
 
-.add-detail { display: flex; gap: 15px; padding: 20px 0; align-items: flex-start; }
-.add-input-wrapper { flex: 1; }
-.add-textarea { width: 100%; border: none; background: var(--white); font-size: 15px; resize: none; padding: 0; min-height: 40px; outline: none; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 10px; }
+.add-detail { position: relative; padding-left: 20px; border-left: 1px solid transparent; margin-left: 5px; }
+.add-textarea { width: 100%; border: none; background: var(--soft); font-size: 15px; resize: none; padding: 15px; min-height: 80px; border-radius: 12px; margin-bottom: 10px; }
 .add-actions { display: flex; justify-content: space-between; align-items: center; }
-.add-img-btn { font-size: 20px; color: var(--muted); cursor: pointer; }
-.add-submit { background: var(--ink); color: var(--white); padding: 5px 15px; border-radius: 15px; font-size: 13px; font-weight: 600; }
+.add-img-btn { font-size: 24px; color: var(--muted); cursor: pointer; }
+.add-submit { background: var(--ink); color: var(--white); padding: 6px 16px; border-radius: 15px; font-size: 14px; font-weight: 600; }
+
+/* 悬浮球 */
+.fab {
+  position: fixed; right: 20px; bottom: 40px; width: 56px; height: 56px;
+  background: var(--ink); border-radius: 50%; z-index: 800;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: grab; touch-action: none; transition: transform 0.1s;
+}
+.fab:active { cursor: grabbing; transform: scale(0.95); }
+.fab svg { width: 24px; height: 24px; fill: none; stroke: var(--white); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* 弹窗与提示 */
 .popup-menu { position: absolute; top: 130px; left: 50%; transform: translateX(-50%); background: var(--white); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); z-index: 200; display: none; flex-direction: column; padding: 8px; width: 200px; }
 .popup-menu.show { display: flex; }
-.popup-menu button { text-align: left; padding: 12px 15px; font-size: 15px; border-radius: 8px; font-weight: 500; }
+.popup-menu button { text-align: left; padding: 12px 15px; font-size: 16px; border-radius: 8px; font-weight: 500; }
 .popup-menu button:hover { background: var(--soft); }
-
-.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%); background: var(--ink); color: var(--white); padding: 10px 20px; border-radius: 20px; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 9999; white-space: nowrap; }
+.toast { position: fixed; left: 50%; bottom: 100px; transform: translateX(-50%); background: var(--ink); color: var(--white); padding: 10px 20px; border-radius: 20px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 9999; white-space: nowrap; }
 .toast.show { opacity: 1; }
-
 .hidden { display: none !important; }
+
+/* 首次欢迎界面 */
+#welcomeOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background:var(--white); z-index:9500; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center; }
+#welcomeOverlay h2 { font-size: 24px; margin-bottom: 10px; }
+#welcomeOverlay p { color: var(--muted); margin-bottom: 30px; font-size: 15px; }
+.welcome-input { width: 100%; max-width: 300px; border: none; border-bottom: 1px solid var(--ink); font-size: 24px; text-align: center; padding: 10px; margin-bottom: 30px; background: transparent; font-weight: 700; }
+.gender-select { display: flex; gap: 15px; margin-bottom: 40px; }
+.gender-btn { padding: 8px 20px; border: 1px solid var(--line); border-radius: 20px; font-size: 15px; color: var(--muted); transition: all 0.2s; }
+.gender-btn.active { border-color: var(--ink); color: var(--ink); background: var(--soft); }
 </style>
 </head>
 <body>
 
+<!-- 欢迎界面 -->
+<div id="welcomeOverlay" class="hidden">
+  <h2>欢迎来到别处</h2>
+  <p>这是一个脱离此刻的想象世界，请先设定你的档案。</p>
+  <input type="text" id="welcomeName" class="welcome-input" placeholder="你的名字/昵称" maxlength="10">
+  <div class="gender-select">
+    <button class="gender-btn" data-g="男">男</button>
+    <button class="gender-btn" data-g="女">女</button>
+    <button class="gender-btn active" data-g="Ta">无性别</button>
+  </div>
+  <button class="add-submit" id="welcomeBtn" style="padding:12px 40px; font-size:16px;">进入世界</button>
+</div>
+
 <!-- 加载动画 -->
 <div id="loader">
-  <div class="book-container">
-    <div class="book">
-      <div class="page"></div>
+  <div class="book-wrap">
+    <div class="book-3d">
+      <div class="book-page"></div>
     </div>
   </div>
+  <div class="loader-text">Life is Elsewhere</div>
 </div>
 
 <!-- 日历过渡页 -->
 <div id="calendarOverlay" class="hidden">
-  <div class="calendar-date" id="calDate">10月24日</div>
-  <div class="calendar-festival" id="calFestival">霜降</div>
-  <div class="calendar-quote" id="calQuote">生活在别处。</div>
-  <div class="calendar-author" id="calAuthor">—— 米兰·昆德拉</div>
-  <div class="tap-hint">点击任意位置掀开</div>
+  <div class="cal-month-year" id="calMonth">OCTOBER 2026</div>
+  <div class="cal-day" id="calDay">24</div>
+  <div class="cal-festival" id="calFestival">宜记录，宜想象</div>
+  <div class="cal-line"></div>
+  <div class="cal-quote" id="calQuote">生活在别处。</div>
+  <div class="cal-author" id="calAuthor">—— 米兰·昆德拉</div>
+  <div class="cal-tap">轻触任意位置</div>
 </div>
 
 <div class="app" id="app">
   <header class="topbar">
     <div class="brand">生活在别处</div>
-    <div class="top-actions" id="topActions">
+    <div class="top-actions">
       <button class="plain-btn" id="exportBtn">导出</button>
       <button class="plain-btn" id="importBtn">导入</button>
       <input type="file" id="importFile" accept="application/json" hidden>
-      <button class="primary-btn" id="newBtn">写记录</button>
     </div>
   </header>
 
@@ -208,7 +221,7 @@ input, textarea { font-size: 16px !important; }
   <div id="diarySection">
     <div id="diarySubView">
       <div class="hero">
-        <h1>她在好好生活。</h1>
+        <h1 id="greetingTitle">Ta在好好生活。</h1>
         <p>去过的地方，吃过的东西，走过的路，以及那些不必特别、但值得记下来的日子。</p>
       </div>
       
@@ -248,7 +261,7 @@ input, textarea { font-size: 16px !important; }
         </div>
 
         <div style="display:flex; gap:10px;">
-          <button type="submit" class="primary-btn" style="padding:12px 24px; font-size:15px;">保存记录</button>
+          <button type="submit" class="add-submit" style="padding:12px 24px; font-size:16px;">保存记录</button>
           <button type="button" class="plain-btn" id="backBtn" style="border:1px solid var(--line); border-radius:20px; padding:10px 20px;">返回</button>
         </div>
       </form>
@@ -279,23 +292,24 @@ input, textarea { font-size: 16px !important; }
       <div class="thread-feed" id="threadFeed"></div>
 
       <div class="add-detail">
-        <div class="thread-avatar">她</div>
-        <div class="add-input-wrapper">
-          <textarea id="detailText" class="add-textarea" placeholder="添砖加瓦……"></textarea>
-          <div class="add-actions">
-            <label class="add-img-btn">
-              +
-              <input type="file" id="detailImage" accept="image/*" style="display:none;">
-            </label>
-            <button class="add-submit" id="addDetailBtn">发布</button>
-          </div>
+        <textarea id="detailText" class="add-textarea" placeholder="添砖加瓦……"></textarea>
+        <div class="add-actions">
+          <label class="add-img-btn">
+            +
+            <input type="file" id="detailImage" accept="image/*" style="display:none;">
+          </label>
+          <button class="add-submit" id="addDetailBtn">发布</button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- 选择新增盒子 -->
+<!-- 悬浮球 -->
+<div class="fab" id="fabBtn">
+  <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+</div>
+
 <div class="popup-menu" id="boxTypeMenu">
   <button data-type="房子">房子</button>
   <button data-type="衣柜">衣柜</button>
@@ -309,17 +323,19 @@ input, textarea { font-size: 16px !important; }
 <script>
 (function(){
   'use strict';
-  var KEY_DIARY = 'herLittleAtlas.entries.v2';
-  var KEY_IMAGINE = 'herLittleAtlas.imagine.v2';
+  // 因为更新了用户档案，清理了旧的数据键名，使用全新的 v3 避免冲突
+  var KEY_DIARY = 'herLittleAtlas.entries.v3';
+  var KEY_IMAGINE = 'herLittleAtlas.imagine.v3';
+  var KEY_PROFILE = 'herLittleAtlas.profile.v3';
   var $ = function(id) { return document.getElementById(id); };
 
   var entries = [];
   var imagineBoxes = [];
+  var userProfile = { name: '', gender: 'Ta' };
   var currentBoxId = null;
   var currentSearchQuery = '';
   var currentMode = 'normal';
 
-  // 文学与电影摘录
   var quotes = [
     { text: "生活在别处。", author: "—— 米兰·昆德拉" },
     { text: "去爱，去失去，去感受，去生活。", author: "—— 电影《时时刻刻》" },
@@ -337,27 +353,80 @@ input, textarea { font-size: 16px !important; }
     'default': '你想象中的它是什么样的呢？'
   };
 
-  // ================= 初始化与日历过渡 =================
-  window.addEventListener('load', function(){
-    setTimeout(function(){
+  // ================= 初始化 =================
+  window.addEventListener('load', function() {
+    initData();
+  });
+
+  function initData() {
+    try {
+      var p = localStorage.getItem(KEY_PROFILE);
+      if (!p) {
+        // 第一次访问，显示引导
+        $('loader').style.display = 'none';
+        $('welcomeOverlay').classList.remove('hidden');
+        return;
+      }
+      userProfile = JSON.parse(p);
+      
+      var d = localStorage.getItem(KEY_DIARY);
+      entries = d ? JSON.parse(d) : [];
+      var i = localStorage.getItem(KEY_IMAGINE);
+      imagineBoxes = i ? JSON.parse(i) : [];
+    } catch(e) {}
+
+    startAppFlow();
+  }
+
+  // 欢迎页面逻辑
+  var selectedGender = 'Ta';
+  document.querySelectorAll('.gender-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      selectedGender = this.getAttribute('data-g');
+    });
+  });
+
+  $('welcomeBtn').addEventListener('click', function() {
+    var name = $('welcomeName').value.trim();
+    if (!name) { showToast('请填写昵称'); return; }
+    userProfile = { name: name, gender: selectedGender };
+    localStorage.setItem(KEY_PROFILE, JSON.stringify(userProfile));
+    $('welcomeOverlay').classList.add('hidden');
+    $('loader').style.display = 'flex';
+    startAppFlow();
+  });
+
+  function startAppFlow() {
+    // 动态更新主页问候语
+    var pronoun = userProfile.gender === 'Ta' ? 'Ta' : userProfile.gender;
+    var displayName = userProfile.name || pronoun;
+    $('greetingTitle').textContent = displayName + '在好好生活。';
+
+    // 启动加载动画
+    setTimeout(function() {
       $('loader').classList.add('fade-out');
-      setTimeout(function(){
+      setTimeout(function() {
         $('loader').style.display = 'none';
         showCalendar();
       }, 600);
-    }, 2000); // 加载动画停留2秒
-  });
+    }, 2000); // 动画停留 2 秒
+  }
 
+  // ================= 日历过渡 =================
   function showCalendar() {
     var d = new Date();
-    var months = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
-    $('calDate').textContent = months[d.getMonth()] + d.getDate() + "日";
+    var months = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+    $('calMonth').textContent = months[d.getMonth()] + " " + d.getFullYear();
+    $('calDay').textContent = d.getDate();
     
-    // 简单节日判断（可扩展）
     var m = d.getMonth() + 1;
     var day = d.getDate();
-    if (m === 10 && day === 24) $('calFestival').textContent = "霜降";
-    else $('calFestival').textContent = "宜记录，宜想象";
+    var festival = "宜记录，宜想象";
+    if (m === 10 && day === 24) festival = "霜降";
+    if (m === 1 && day === 1) festival = "元旦";
+    $('calFestival').textContent = festival;
 
     var q = quotes[Math.floor(Math.random() * quotes.length)];
     $('calQuote').textContent = q.text;
@@ -365,16 +434,14 @@ input, textarea { font-size: 16px !important; }
 
     var overlay = $('calendarOverlay');
     overlay.classList.remove('hidden');
-    // 强制重绘
-    void overlay.offsetWidth;
-    overlay.style.opacity = '1';
-
+    
+    // 点击淡出
     overlay.addEventListener('click', function() {
-      overlay.classList.add('slide-up');
+      overlay.classList.add('fade-out');
       setTimeout(function() {
         overlay.classList.add('hidden');
         $('app').classList.add('loaded');
-      }, 800);
+      }, 1200);
     }, { once: true });
   }
 
@@ -397,17 +464,15 @@ input, textarea { font-size: 16px !important; }
       if (this.getAttribute('data-view') === 'diary') {
         $('diarySection').classList.remove('hidden');
         $('imagineSection').classList.add('hidden');
-        $('newBtn').style.display = 'block';
       } else {
         $('diarySection').classList.add('hidden');
         $('imagineSection').classList.remove('hidden');
-        $('newBtn').style.display = 'none';
         backToImagineHub();
       }
     });
   });
 
-  // ================= 日记模块逻辑 =================
+  // ================= 日记逻辑 =================
   function formatDate(s) {
     if (!s) return '';
     var d = new Date(s + 'T12:00:00');
@@ -456,13 +521,15 @@ input, textarea { font-size: 16px !important; }
     renderDiary();
   });
 
-  $('newBtn').addEventListener('click', function() {
+  $('fabBtn').addEventListener('click', function() {
     $('entryForm').reset();
     $('entryId').value = '';
     $('date').value = new Date().toISOString().split('T')[0];
     $('formTitle').textContent = '记下今天';
     $('diarySubView').classList.add('hidden');
     $('writeSubView').classList.remove('hidden');
+    // 切回日记标签
+    document.querySelector('.main-tab[data-view="diary"]').click();
   });
 
   $('backBtn').addEventListener('click', function() {
@@ -470,17 +537,50 @@ input, textarea { font-size: 16px !important; }
     $('diarySubView').classList.remove('hidden');
   });
 
+  function parseSmartText(text, currentObj) {
+    if (!text.trim()) return currentObj;
+    var lines = text.split('\n');
+    var parsedPlace = currentObj.place; var parsedFood = currentObj.food; var parsedMood = currentObj.mood;
+    var remainingLines = [];
+    lines.forEach(line => {
+      let trimmed = line.trim();
+      if (!trimmed) return;
+      // 优化的正则，避免死循环
+      if (!parsedPlace && (trimmed.includes('去了') || trimmed.includes('在') || trimmed.includes('到了'))) {
+        let match = trimmed.match(/(去了|在|到了)([\u4e00-\u9fa5A-Za-z0-9·]{2,10})/);
+        if (match && match[2]) { parsedPlace = match[2]; remainingLines.push(trimmed.replace(match[0], '')); return; }
+      }
+      if (!parsedFood && (trimmed.includes('吃了') || trimmed.includes('喝了') || trimmed.includes('点了'))) {
+        let match = trimmed.match(/(吃了|喝了|点了)([\u4e00-\u9fa5A-Za-z0-9·]{2,10})/);
+        if (match && match[2]) { parsedFood = match[2]; remainingLines.push(trimmed.replace(match[0], '')); return; }
+      }
+      if (!parsedMood && (trimmed.includes('感觉') || trimmed.includes('开心') || trimmed.includes('安静') || trimmed.includes('微醺'))) {
+        let match = trimmed.match(/(感觉|觉得)([\u4e00-\u9fa5A-Za-z0-9·]{2,10})/);
+        if (match && match[2]) { parsedMood = match[2]; remainingLines.push(trimmed.replace(match[0], '')); return; }
+      }
+      remainingLines.push(trimmed);
+    });
+    return { place: parsedPlace, food: parsedFood, mood: parsedMood, events: remainingLines.join('\n').trim() || text };
+  }
+
   $('entryForm').addEventListener('submit', function(e) {
     e.preventDefault();
     var id = $('entryId').value || ('e-' + Date.now());
+    
+    var finalPlace = $('place').value.trim();
+    var finalFood = $('food').value.trim();
+    var finalMood = $('mood').value.trim();
+    var finalEvents = $('events').value.trim();
+
+    if (currentMode === 'smart') {
+      var parsed = parseSmartText(finalEvents, {place: finalPlace, food: finalFood, mood: finalMood});
+      finalPlace = parsed.place || ''; finalFood = parsed.food || ''; finalMood = parsed.mood || ''; finalEvents = parsed.events;
+    }
+
     var obj = {
-      id: id,
-      date: $('date').value,
-      place: $('place').value,
-      food: $('food').value,
-      mood: $('mood').value,
-      events: $('events').value
+      id: id, date: $('date').value, place: finalPlace, food: finalFood, mood: finalMood, events: finalEvents
     };
+    
     var idx = entries.findIndex(x => x.id === id);
     if (idx > -1) entries[idx] = obj; else entries.push(obj);
     saveDiary(); renderDiary();
@@ -500,6 +600,7 @@ input, textarea { font-size: 16px !important; }
     $('formTitle').textContent = '编辑记录';
     $('diarySubView').classList.add('hidden');
     $('writeSubView').classList.remove('hidden');
+    switchMode('normal');
   };
 
   window.deleteEntry = function(id) {
@@ -508,13 +609,32 @@ input, textarea { font-size: 16px !important; }
     saveDiary(); renderDiary();
   };
 
-  // ================= 想象模块逻辑 =================
+  function switchMode(mode) {
+    currentMode = mode;
+    if (mode === 'normal') {
+      $('modeNormal').classList.add('active');
+      $('modeSmart').classList.remove('active');
+      $('normalInputs').style.display = 'block';
+      $('eventsLabel').textContent = '发生了什么';
+      $('events').placeholder = '先随便写点什么……';
+    } else {
+      $('modeNormal').classList.remove('active');
+      $('modeSmart').classList.add('active');
+      $('normalInputs').style.display = 'none';
+      $('eventsLabel').textContent = '大段记录';
+      $('events').placeholder = '在这里写下或者粘贴一大段话，保存时会自动拆分……';
+    }
+  }
+  $('modeNormal').addEventListener('click', () => switchMode('normal'));
+  $('modeSmart').addEventListener('click', () => switchMode('smart'));
+
+  // ================= 想象逻辑 =================
   function renderHub() {
     var html = imagineBoxes.map(function(box) {
       return '<div class="box-card" onclick="openBox(\'' + box.id + '\')">'
         + '<div><div class="box-title">' + box.name + '</div>'
         + '<div class="box-desc">' + (box.details ? box.details.length : 0) + ' 条补充</div></div>'
-        + '<div class="box-arrow">›</div></div>';
+        + '<div style="font-size:18px; color:#ccc;">›</div></div>';
     }).join('');
     $('boxList').innerHTML = html;
   }
@@ -540,12 +660,10 @@ input, textarea { font-size: 16px !important; }
     if (box.details && box.details.length > 0) {
       html = box.details.map(function(item, index) {
         return '<div class="thread-item">'
-          + '<div class="thread-avatar">她</div>'
-          + '<div class="thread-content">'
           + '<div class="thread-text">' + item.text + '</div>'
           + (item.image ? '<img src="' + item.image + '" class="thread-img">' : '')
           + '<div class="thread-actions"><button onclick="delThread(' + index + ')">删除</button></div>'
-          + '</div></div>';
+          + '</div>';
       }).join('');
     }
     $('threadFeed').innerHTML = html;
@@ -606,7 +724,6 @@ input, textarea { font-size: 16px !important; }
     renderHub();
   }
 
-  // 添加盒子
   $('addBoxBtn').addEventListener('click', function(e) {
     e.stopPropagation();
     $('boxTypeMenu').classList.toggle('show');
@@ -640,18 +757,100 @@ input, textarea { font-size: 16px !important; }
     }
   });
 
-  // 启动渲染
-  function initData() {
-    try {
-      var d = localStorage.getItem(KEY_DIARY);
-      entries = d ? JSON.parse(d) : [];
-      var i = localStorage.getItem(KEY_IMAGINE);
-      imagineBoxes = i ? JSON.parse(i) : [];
-    } catch(e) {}
-    renderDiary(); renderHub();
+  // ================= 导入导出修复 =================
+  $('exportBtn').addEventListener('click', function() {
+    var data = { profile: userProfile, diary: entries, imagine: imagineBoxes };
+    var blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '生活在别处_备份.json';
+    a.click();
+    showToast('导出成功');
+  });
+
+  $('importBtn').addEventListener('click', function() {
+    $('importFile').click();
+  });
+
+  $('importFile').addEventListener('change', function(e) {
+    var f = e.target.files[0]; if (!f) return;
+    var r = new FileReader();
+    r.onload = function(ev) {
+      try {
+        var data = JSON.parse(ev.target.result);
+        if (confirm('导入将覆盖当前所有数据，确定吗？')) {
+          if (data.profile) { userProfile = data.profile; localStorage.setItem(KEY_PROFILE, JSON.stringify(userProfile)); }
+          if (data.diary) { entries = data.diary; saveDiary(); }
+          if (data.imagine) { imagineBoxes = data.imagine; saveImagine(); }
+          showToast('导入成功，即将刷新');
+          setTimeout(() => location.reload(), 1500);
+        }
+      } catch(err) { showToast('文件格式错误'); }
+      e.target.value = '';
+    };
+    r.readAsText(f);
+  });
+
+  // ================= 拖拽悬浮球 =================
+  var fab = $('fabBtn');
+  var isDragging = false;
+  var startX, startY, startLeft, startTop;
+
+  fab.addEventListener('touchstart', startDrag, {passive: false});
+  fab.addEventListener('mousedown', startDrag);
+
+  function startDrag(e) {
+    isDragging = false;
+    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    var rect = fab.getBoundingClientRect();
+    startX = clientX; startY = clientY;
+    startLeft = rect.left; startTop = rect.top;
+    
+    document.addEventListener('touchmove', onDrag, {passive: false});
+    document.addEventListener('touchend', endDrag);
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', endDrag);
   }
 
-  initData();
+  function onDrag(e) {
+    if (!startX) return;
+    e.preventDefault();
+    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    var dx = clientX - startX;
+    var dy = clientY - startY;
+    
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
+    
+    fab.style.left = (startLeft + dx) + 'px';
+    fab.style.top = (startTop + dy) + 'px';
+    fab.style.right = 'auto';
+    fab.style.bottom = 'auto';
+  }
+
+  function endDrag() {
+    document.removeEventListener('touchmove', onDrag);
+    document.removeEventListener('touchend', endDrag);
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', endDrag);
+    startX = null;
+    
+    // 吸附边缘
+    var rect = fab.getBoundingClientRect();
+    var vw = window.innerWidth;
+    var targetLeft = rect.left + rect.width/2 > vw/2 ? vw - rect.width - 20 : 20;
+    fab.style.left = targetLeft + 'px';
+    fab.style.top = Math.max(20, Math.min(rect.top, window.innerHeight - rect.height - 20)) + 'px';
+  }
+
+  fab.addEventListener('click', function(e) {
+    if (isDragging) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+
 })();
 </script>
 </body>
