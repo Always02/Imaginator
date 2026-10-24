@@ -35,32 +35,31 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .intro-tap { margin-top: 40px; font-size: 13px; color: var(--muted); letter-spacing: 0.15em; opacity: 0; transition: opacity 0.8s; }
 .intro-tap.show { opacity: 1; animation: pulse 2s infinite; }
 
-/* 来信 */
+/* 来信（修复闪烁：统一用动画控制透明度，固定递增延迟，fill-mode both） */
 #letterOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 9700; display: flex; align-items: center; justify-content: center; padding: 30px; transition: opacity 0.5s ease; }
 #letterOverlay.fade-out { opacity: 0; pointer-events: none; }
 .letter-card { max-width: 380px; width: 100%; text-align: center; position: relative; }
-.letter-card h2 { margin: 0 0 32px; font-size: 13px; font-weight: 600; letter-spacing: 0.35em; color: var(--muted); opacity: 0; animation: letterFade 0.9s ease 0.1s forwards; }
+.letter-card h2 { margin: 0 0 32px; font-size: 13px; font-weight: 600; letter-spacing: 0.35em; color: var(--muted); opacity: 0; animation: letterFade 0.9s ease 0.1s both; }
 .letter-fog { position: relative; }
-.letter-fog p { font-size: 16px; line-height: 1.9; color: #333; margin: 0 0 8px; opacity: 0; animation: letterFade 0.9s ease forwards; }
+.letter-fog p { font-size: 16px; line-height: 1.9; color: #333; margin: 0 0 8px; opacity: 0; animation: letterFade 0.9s ease both; }
 .letter-fog p:nth-child(1) { animation-delay: 0.35s; }
-.letter-fog p:nth-child(2) { animation-delay: 0.75s; opacity: 0.85; }
-.letter-fog p:nth-child(3) { animation-delay: 1.15s; opacity: 0.7; }
-/* 雾气：让下面的字若隐若现 */
+.letter-fog p:nth-child(2) { animation-delay: 0.75s; }
+.letter-fog p:nth-child(3) { animation-delay: 1.15s; }
 .letter-fog::after { content: ""; position: absolute; left: -20px; right: -20px; bottom: -30px; height: 80px; background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 70%, #fff 100%); pointer-events: none; }
-.letter-actions { margin-top: 52px; text-align: center; opacity: 0; animation: letterFade 0.9s ease 1.55s forwards; }
+.letter-actions { margin-top: 52px; text-align: center; opacity: 0; animation: letterFade 0.9s ease 1.55s both; }
 .letter-ok { font-size: 16px; color: var(--ink); padding: 6px 12px; }
 @keyframes letterFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-/* 品牌浮层 */
-#brandOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); z-index: 9600; display: flex; align-items: center; justify-content: center; padding: 40px; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+/* 品牌浮层：白框 + 背景模糊 + 变暗 */
+#brandOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.28); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 9600; display: flex; align-items: center; justify-content: center; padding: 40px; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
 #brandOverlay.show { opacity: 1; pointer-events: auto; }
-.brand-msg { font-size: 18px; line-height: 2; text-align: center; color: #333; white-space: pre-line; }
+.brand-msg-box { background: #fff; border-radius: 18px; padding: 34px 28px; max-width: 340px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.18); text-align: center; }
+.brand-msg { font-size: 17px; line-height: 2; color: #333; white-space: pre-line; }
 
-/* 日历过渡（柔和淡入淡出，无位移） */
-#calendarOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 9000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 1s ease; padding: 40px; }
-#calendarOverlay.fade-out { opacity: 0; pointer-events: none; }
-#calendarOverlay { opacity: 0; transition: opacity 0.8s ease; }
+/* 日历过渡 */
+#calendarOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 9000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 1s ease; padding: 40px; opacity: 0; }
 #calendarOverlay.visible { opacity: 1; }
+#calendarOverlay.fade-out { opacity: 0; pointer-events: none; }
 .cal-month-year { font-size: 13px; letter-spacing: 0.3em; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; }
 .cal-day { font-size: 80px; font-weight: 800; line-height: 1; letter-spacing: -0.05em; margin-bottom: 20px; }
 .cal-festival { font-size: 15px; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 50px; }
@@ -107,9 +106,16 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .mode-btn { flex: 1; padding: 10px; background: var(--soft); border-radius: 8px; font-size: 14px; color: var(--muted); font-weight: 600; }
 .mode-btn.active { background: var(--white); border: 1px solid var(--ink); color: var(--ink); }
 .box-list { display: flex; flex-direction: column; }
-.box-card { padding: 20px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
+.box-card { padding: 20px 0; border-bottom: 1px solid var(--line); position: relative; overflow: hidden; }
+.box-content { position: relative; z-index: 2; background: var(--white); display: flex; justify-content: space-between; align-items: center; width: 100%; }
 .box-title { font-size: 18px; font-weight: 700; color: var(--ink); }
 .box-desc { font-size: 13px; color: var(--muted); margin-top: 4px; }
+/* 左滑操作层：绝对定位在右侧覆盖，内容不移动 */
+.box-swipe-actions { position: absolute; top: 0; right: 0; height: 100%; display: flex; z-index: 3; transform: translateX(100%); transition: transform 0.25s ease; }
+.box-card.swiped .box-swipe-actions { transform: translateX(0); }
+.box-swipe-edit, .box-swipe-delete { width: 70px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #fff; }
+.box-swipe-edit { background: #555; }
+.box-swipe-delete { background: var(--ink); }
 .add-box-btn { padding: 20px 0; font-size: 16px; font-weight: 600; color: var(--muted); text-align: center; border-bottom: 1px solid var(--line); }
 .box-header { display: flex; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 .back-btn { font-size: 24px; margin-right: 10px; font-weight: 300; }
@@ -124,20 +130,21 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .core-bubble, .group-bubble { position: absolute; background: var(--ink); color: #fff; font-size: 12px; padding: 8px 12px; border-radius: 10px; white-space: nowrap; z-index: 8; }
 .core-bubble { left: 16px; top: -6px; transform: translateY(-100%); }
 .core-bubble::after { content: ""; position: absolute; left: 18px; bottom: -4px; width: 8px; height: 8px; background: var(--ink); transform: rotate(45deg); }
-.group-bubble { left: 36px; bottom: 100%; margin-bottom: 6px; }
+.group-bubble { left: 0; bottom: 100%; margin-bottom: 4px; }
 .group-bubble::after { content: ""; position: absolute; left: 12px; bottom: -4px; width: 8px; height: 8px; background: var(--ink); transform: rotate(45deg); }
 .thread-feed { display: flex; flex-direction: column; margin-bottom: 20px; }
 .thread-item { position: relative; padding: 15px 0 15px 20px; border-left: 1px solid #e0e0e0; margin-left: 5px; }
-/* 圆圈中心对准直线 */
 .thread-item::before { content: ""; position: absolute; left: -4.5px; top: 22px; width: 8px; height: 8px; border-radius: 50%; background: var(--white); border: 1px solid var(--ink); }
 .thread-content-wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .thread-text { font-size: 15px; line-height: 1.6; white-space: pre-wrap; flex: 1; word-break: break-word; }
 .thread-text a { color: #0066cc; text-decoration: underline; }
-.thread-meta-row { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 4px; }
-.thread-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
-.thread-icon-btn { display: none; cursor: pointer; color: #bbb; padding: 0 2px; }
+/* 图标区：日期上方一行，默认隐藏，点 thread 切换 */
+.thread-icon-row { display: none; justify-content: flex-end; gap: 12px; margin-bottom: 2px; }
+.thread-item.show-icons .thread-icon-row { display: flex; }
+.thread-icon-btn { cursor: pointer; color: #bbb; padding: 0 2px; line-height: 1; }
 .thread-icon-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
-.thread-item:hover .thread-icon-btn { display: inline-block; }
+.thread-date-row { text-align: right; }
+.thread-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
 /* 图片网格 */
 .thread-imgs { display: grid; gap: 4px; margin-top: 8px; max-width: 340px; }
 .thread-imgs.cols-1 { grid-template-columns: 1fr; }
@@ -164,8 +171,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .group-body { padding-top: 4px; position: relative; }
 .group-body .thread-item { margin-left: 0; }
 .new-group-btn { font-size: 12px; color: #bbb; padding: 10px 0; cursor: pointer; }
-.add-to-group-btn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; margin-top: 8px; margin-left: 20px; color: #ccc; font-size: 16px; cursor: pointer; border-radius: 50%; }
-.add-to-group-btn:hover { background: var(--soft); }
 /* 发布区分组选择 */
 .post-group-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--muted); }
 .post-group-select { font-size: 13px; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; background: var(--white); }
@@ -206,15 +211,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .gender-btn.active { border-color: var(--ink); color: var(--ink); background: var(--soft); }
 .reset-link { display: block; margin: 20px auto 0; font-size: 12px; color: #ccc; cursor: pointer; }
 .data-note { display: block; margin: 14px auto 0; font-size: 11px; color: #ccc; line-height: 1.6; }
-
-/* 左滑编辑/删除 */
-.box-card .box-content { position: relative; z-index: 2; background: var(--white); transition: transform 0.25s ease; display: flex; justify-content: space-between; align-items: center; width: 100%; }
-.box-card.swiped .box-content { transform: translateX(-160px); }
-.box-card .box-swipe-actions { position: absolute; top: 0; right: 0; height: 100%; display: flex; transform: translateX(100%); transition: transform 0.25s ease; z-index: 3; }
-.box-card.swiped .box-swipe-actions { transform: translateX(0); }
-.box-swipe-edit, .box-swipe-delete { width: 80px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #fff; }
-.box-swipe-edit { background: #555; }
-.box-swipe-delete { background: var(--ink); }
 </style>
 </head>
 <body>
@@ -239,7 +235,9 @@ input:focus, textarea:focus, button:focus { outline: none; }
 </div>
 
 <div id="brandOverlay">
-  <div class="brand-msg" id="brandMsg"></div>
+  <div class="brand-msg-box">
+    <div class="brand-msg" id="brandMsg"></div>
+  </div>
 </div>
 
 <div id="welcomeOverlay" class="modal-overlay hidden">
@@ -263,7 +261,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     <div class="gender-select">
       <button class="gender-btn" data-g="男">男</button>
       <button class="gender-btn" data-g="女">女</button>
-      <button class="gender-btn" data-g="Ta">无性别</button>
+      <button class="gender-btn active" data-g="Ta">无性别</button>
     </div>
     <button class="add-submit" id="saveProfileBtn" style="width:100%; padding:12px; font-size:16px;">保存修改</button>
     <span class="reset-link" id="resetOnboardBtn">重置新手引导</span>
@@ -430,9 +428,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
   var KEY_PROFILE = 'herLittleAtlas.profile.v8';
   var KEY_ONBOARDED = 'herLittleAtlas.onboarded.v8';
   var KEY_CORE_TIP = 'herLittleAtlas.coreTip.v8';
-  var KEY_GROUP_TIP = 'herLittleAtlas.groupTip.v8';
   var KEY_GROUP_TIP2 = 'herLittleAtlas.groupTip2.v8';
-  var KEY_DATA_NOTE = 'herLittleAtlas.dataNote.v8';
   var $ = function(id) { return document.getElementById(id); };
 
   var entries = [];
@@ -452,7 +448,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     place: '来书写我吧',
     food: '开心果蛋糕',
     mood: '安静',
-    events: '下了一天的雨。早上给阳台的盆栽浇水，放了玉米在栏杆上，两只灰鸰小鸟来了一会儿又走了。坐在落地窗前看雨，回房间写作，做瑜伽，听唱片。\n\n下午在雨里午休到自然醒，醒来天色已暗。吃了一角开心果蛋糕，跑步，泡脚，上床读《不能承受的生命之轻》，读得昏昏沉沉又睡过去。无比平常而安静的一天。\n\n另一个世界的你在看吗？\n删掉这条不属于你的日记，“你”的故事就可以开始了。'
+    events: '下了一天的雨。早上给阳台的盆栽浇水，放了玉米在栏杆上，两只灰鸰小鸟来了又走。坐在落地窗前看雨后，回房间听着唱片写作、做瑜伽。\n\n下午在淅沥雨声里午休到自然醒，醒来天色已暗。吃了一角开心果味的蛋糕，泡完脚上床读了会《不能承受的生命之轻》，读得昏昏沉沉又睡了过去。无比平常而安静的一天。\n\n另一个世界的你在看吗？\n删掉这条不属于你的日记，“你”的故事就可以开始了。'
   };
 
   var quotes = [
@@ -657,7 +653,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     }, 50);
   });
 
-  // ================= 日历过渡（柔和淡入淡出） =================
+  // ================= 日历过渡 =================
   function showCalendar() {
     var d = new Date();
     var months = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
@@ -992,25 +988,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     setTimeout(function() { document.addEventListener('click', hide); }, 100);
   }
 
-  function maybeShowGroupTip() {
-    if (localStorage.getItem(KEY_GROUP_TIP)) return;
-    if (!$('groupWrap').querySelector('.group-section')) return;
-    var firstGroup = $('groupWrap').querySelector('.group-section');
-    var plusBtn = firstGroup.querySelector('.add-to-group-btn');
-    if (!plusBtn) return;
-    var el = document.createElement('div');
-    el.className = 'group-bubble';
-    el.textContent = '点这里的 + 可以把内容加到这一组';
-    plusBtn.parentNode.style.position = 'relative';
-    plusBtn.parentNode.appendChild(el);
-    var hide = function() {
-      if (el.parentNode) el.parentNode.removeChild(el);
-      localStorage.setItem(KEY_GROUP_TIP, '1');
-      document.removeEventListener('click', hide);
-    };
-    setTimeout(function() { document.addEventListener('click', hide); }, 100);
-  }
-
   function maybeShowGroupTip2() {
     if (localStorage.getItem(KEY_GROUP_TIP2)) return;
     if (!$('groupWrap').querySelector('.group-section')) return;
@@ -1020,9 +997,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     el.textContent = '点击标题可编辑组名，点击空白处可展开/收起列表';
     firstGroup.style.position = 'relative';
     firstGroup.appendChild(el);
-    el.style.left = '0';
-    el.style.bottom = '100%';
-    el.style.marginBottom = '4px';
     var hide = function() {
       if (el.parentNode) el.parentNode.removeChild(el);
       localStorage.setItem(KEY_GROUP_TIP2, '1');
@@ -1035,7 +1009,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     renderGroups(box);
     $('threadFeed').innerHTML = renderUngroupedThreads(box);
     renderPostGroupSelect(box);
-    maybeShowGroupTip();
     maybeShowGroupTip2();
   }
 
@@ -1066,17 +1039,22 @@ input:focus, textarea:focus, button:focus { outline: none; }
     } else if (item.image) {
       imgHtml = '<div class="thread-imgs cols-1"><img src="' + item.image + '" class="thread-img" onclick="openLightbox(\'' + prefix + '\',' + index + ',0)"></div>';
     }
-    return '<div class="thread-item">'
-      + '<div class="thread-content-wrap"><div class="thread-text">' + linkify(item.text || '') + '</div></div>'
-      + '<div class="thread-meta-row">'
-      + '<span class="thread-date">' + dateStr + '</span>'
-      + '<span class="thread-icon-btn" onclick="editThread(\'' + prefix + '\',' + index + ')"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></span>'
-      + '<span class="thread-icon-btn" onclick="openMoveSheet(\'' + prefix + '\',' + index + ')"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"></circle></svg></span>'
-      + '<span class="thread-icon-btn" onclick="delThread(\'' + prefix + '\',' + index + ')"><svg viewBox="0 0 24 24"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg></span>'
+    return '<div class="thread-item" onclick="toggleThreadIcons(this, event)">'
+      + '<div class="thread-icon-row">'
+      + '<span class="thread-icon-btn" onclick="editThread(\'' + prefix + '\',' + index + ', event)"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></span>'
+      + '<span class="thread-icon-btn" onclick="openMoveSheet(\'' + prefix + '\',' + index + ', event)"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"></circle></svg></span>'
+      + '<span class="thread-icon-btn" onclick="delThread(\'' + prefix + '\',' + index + ', event)"><svg viewBox="0 0 24 24"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg></span>'
       + '</div>'
+      + '<div class="thread-content-wrap"><div class="thread-text">' + linkify(item.text || '') + '</div></div>'
+      + '<div class="thread-date-row"><span class="thread-date">' + dateStr + '</span></div>'
       + imgHtml
       + '</div>';
   }
+
+  window.toggleThreadIcons = function(el, event) {
+    if (event && event.target.closest('.thread-icon-btn')) return;
+    el.classList.toggle('show-icons');
+  };
 
   function renderUngroupedThreads(box) {
     if (!box.details || !box.details.length) return '';
@@ -1094,7 +1072,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
         + '</div>'
         + '<div class="group-body" id="groupBody' + gi + '">'
         + (g.threads || []).map(function(item, i) { return threadItemHtml(item, i, 'g' + gi); }).join('')
-        + '<div class="add-to-group-btn" onclick="addToGroup(' + gi + ')">+</div>'
         + '</div></div>';
     });
     html += '<div class="new-group-btn" onclick="addGroup()">+ 新建分组</div>';
@@ -1144,26 +1121,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     renderBoxDetail(box);
   };
 
-  window.addToGroup = function(gi) {
-    var box = imagineBoxes.find(x => x.id === currentBoxId);
-    if (!box || !box.groups || !box.groups[gi]) return;
-    var text = $('detailText').value.trim();
-    var files = pendingFiles.slice();
-    if (!text && !files.length) { showToast('先写点什么或选张图'); return; }
-    if (files.length > 6) { showToast('最多一次 6 张图片'); files = files.slice(0, 6); }
-    processImages(files, function(images) {
-      var now = new Date();
-      var dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
-      box.groups[gi].threads.push({ text: text, images: images, date: dateStr });
-      saveImagine();
-      $('detailText').value = '';
-      pendingFiles = [];
-      $('detailImage').value = '';
-      renderImgPreview();
-      renderBoxDetail(box);
-    });
-  };
-
   function processImages(files, cb) {
     if (!files.length) { cb([]); return; }
     var results = new Array(files.length);
@@ -1188,8 +1145,9 @@ input:focus, textarea:focus, button:focus { outline: none; }
     });
   }
 
-  // ================= 移动到分组（方案 3-A） =================
-  window.openMoveSheet = function(prefix, index) {
+  // ================= 移动到分组 =================
+  window.openMoveSheet = function(prefix, index, event) {
+    if (event) event.stopPropagation();
     var t = findThread(prefix, index);
     if (!t) return;
     var box = t.box;
@@ -1210,9 +1168,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     if (!t) { closeMoveSheet(); return; }
     var box = t.box;
     var item = t.item;
-    // 从原位置删除
     t.list.splice(moveContext.index, 1);
-    // 加到目标
     if (target === -1) {
       if (!box.details) box.details = [];
       box.details.push(item);
@@ -1240,7 +1196,8 @@ input:focus, textarea:focus, button:focus { outline: none; }
     return { box: box, list: box.groups[gi].threads, index: index, item: box.groups[gi].threads[index] };
   }
 
-  window.editThread = function(prefix, index) {
+  window.editThread = function(prefix, index, event) {
+    if (event) event.stopPropagation();
     var t = findThread(prefix, index);
     if (!t) return;
     var newText = prompt('修改内容：', t.item.text);
@@ -1251,7 +1208,8 @@ input:focus, textarea:focus, button:focus { outline: none; }
     }
   };
 
-  window.delThread = function(prefix, index) {
+  window.delThread = function(prefix, index, event) {
+    if (event) event.stopPropagation();
     if (!confirm('删除这条补充吗？')) return;
     var t = findThread(prefix, index);
     if (!t) return;
