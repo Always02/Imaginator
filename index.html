@@ -38,20 +38,29 @@ input:focus, textarea:focus, button:focus { outline: none; }
 /* 来信 */
 #letterOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 9700; display: flex; align-items: center; justify-content: center; padding: 30px; transition: opacity 0.5s ease; }
 #letterOverlay.fade-out { opacity: 0; pointer-events: none; }
-.letter-card { max-width: 380px; width: 100%; text-align: center; }
-.letter-card h2 { margin: 0 0 26px; font-size: 13px; font-weight: 600; letter-spacing: 0.35em; color: var(--muted); }
-.letter-card p { font-size: 16px; line-height: 2.2; color: #333; margin: 0 0 6px; }
-.letter-actions { margin-top: 40px; text-align: center; }
+.letter-card { max-width: 380px; width: 100%; text-align: center; position: relative; }
+.letter-card h2 { margin: 0 0 32px; font-size: 13px; font-weight: 600; letter-spacing: 0.35em; color: var(--muted); opacity: 0; animation: letterFade 0.9s ease 0.1s forwards; }
+.letter-fog { position: relative; }
+.letter-fog p { font-size: 16px; line-height: 1.9; color: #333; margin: 0 0 8px; opacity: 0; animation: letterFade 0.9s ease forwards; }
+.letter-fog p:nth-child(1) { animation-delay: 0.35s; }
+.letter-fog p:nth-child(2) { animation-delay: 0.75s; opacity: 0.85; }
+.letter-fog p:nth-child(3) { animation-delay: 1.15s; opacity: 0.7; }
+/* 雾气：让下面的字若隐若现 */
+.letter-fog::after { content: ""; position: absolute; left: -20px; right: -20px; bottom: -30px; height: 80px; background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 70%, #fff 100%); pointer-events: none; }
+.letter-actions { margin-top: 52px; text-align: center; opacity: 0; animation: letterFade 0.9s ease 1.55s forwards; }
 .letter-ok { font-size: 16px; color: var(--ink); padding: 6px 12px; }
+@keyframes letterFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
 /* 品牌浮层 */
 #brandOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); z-index: 9600; display: flex; align-items: center; justify-content: center; padding: 40px; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
 #brandOverlay.show { opacity: 1; pointer-events: auto; }
 .brand-msg { font-size: 18px; line-height: 2; text-align: center; color: #333; white-space: pre-line; }
 
-/* 日历过渡 */
+/* 日历过渡（柔和淡入淡出，无位移） */
 #calendarOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 9000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 1s ease; padding: 40px; }
 #calendarOverlay.fade-out { opacity: 0; pointer-events: none; }
+#calendarOverlay { opacity: 0; transition: opacity 0.8s ease; }
+#calendarOverlay.visible { opacity: 1; }
 .cal-month-year { font-size: 13px; letter-spacing: 0.3em; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; }
 .cal-day { font-size: 80px; font-weight: 800; line-height: 1; letter-spacing: -0.05em; margin-bottom: 20px; }
 .cal-festival { font-size: 15px; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 50px; }
@@ -102,14 +111,10 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .box-title { font-size: 18px; font-weight: 700; color: var(--ink); }
 .box-desc { font-size: 13px; color: var(--muted); margin-top: 4px; }
 .add-box-btn { padding: 20px 0; font-size: 16px; font-weight: 600; color: var(--muted); text-align: center; border-bottom: 1px solid var(--line); }
-.box-header { display: flex; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.box-header { display: flex; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 .back-btn { font-size: 24px; margin-right: 10px; font-weight: 300; }
-.box-title-wrap { display: inline-flex; align-items: center; }
-.box-title-input { font-size: 20px; font-weight: 700; border: none; background: transparent; width: auto; max-width: 220px; padding: 0; color: #111 !important; }
+.box-title-input { font-size: 20px; font-weight: 700; border: none; background: transparent; width: auto; max-width: 240px; padding: 0; color: #111 !important; }
 .box-title-input:disabled { color: #111 !important; }
-.box-title-input:not(:disabled) { border-bottom: 1px solid #111; }
-.title-pencil { display: inline-flex; align-items: center; margin-left: 4px; cursor: pointer; color: #bbb; }
-.title-pencil svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 /* core 引言感 */
 .core-imagine { margin-bottom: 30px; position: relative; padding-left: 16px; }
 .core-imagine::before { content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 2px; background: #999; border-radius: 2px; }
@@ -117,14 +122,14 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .core-input:focus { background: transparent; }
 /* 气泡 */
 .core-bubble, .group-bubble { position: absolute; background: var(--ink); color: #fff; font-size: 12px; padding: 8px 12px; border-radius: 10px; white-space: nowrap; z-index: 8; }
-.core-bubble { left: 16px; top: -12px; transform: translateY(-100%); }
-.core-bubble::after, .group-bubble::after { content: ""; position: absolute; width: 8px; height: 8px; background: var(--ink); transform: rotate(45deg); }
-.core-bubble::after { left: 18px; bottom: -4px; }
-.group-bubble { left: 20px; bottom: -6px; transform: translateY(100%); }
-.group-bubble::after { left: 18px; top: -4px; }
+.core-bubble { left: 16px; top: -6px; transform: translateY(-100%); }
+.core-bubble::after { content: ""; position: absolute; left: 18px; bottom: -4px; width: 8px; height: 8px; background: var(--ink); transform: rotate(45deg); }
+.group-bubble { left: 36px; bottom: 100%; margin-bottom: 6px; }
+.group-bubble::after { content: ""; position: absolute; left: 12px; bottom: -4px; width: 8px; height: 8px; background: var(--ink); transform: rotate(45deg); }
 .thread-feed { display: flex; flex-direction: column; margin-bottom: 20px; }
 .thread-item { position: relative; padding: 15px 0 15px 20px; border-left: 1px solid #e0e0e0; margin-left: 5px; }
-.thread-item::before { content: ""; position: absolute; left: -4px; top: 22px; width: 7px; height: 7px; border-radius: 50%; background: var(--white); border: 1px solid var(--ink); }
+/* 圆圈中心对准直线 */
+.thread-item::before { content: ""; position: absolute; left: -4.5px; top: 22px; width: 8px; height: 8px; border-radius: 50%; background: var(--white); border: 1px solid var(--ink); }
 .thread-content-wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .thread-text { font-size: 15px; line-height: 1.6; white-space: pre-wrap; flex: 1; word-break: break-word; }
 .thread-text a { color: #0066cc; text-decoration: underline; }
@@ -151,16 +156,19 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .lightbox-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); }
 .lightbox-dots span.active { background: #fff; }
 /* 分组 */
-.group-section { margin-bottom: 6px; }
+.group-section { margin-bottom: 6px; position: relative; }
 .group-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); }
 .group-name { font-size: 14px; font-weight: 700; color: var(--ink); cursor: text; }
 .group-count { font-size: 12px; color: var(--muted); font-weight: 400; }
 .group-del { font-size: 12px; color: #ccc; margin-left: 10px; cursor: pointer; }
-.group-body { padding-top: 4px; }
+.group-body { padding-top: 4px; position: relative; }
 .group-body .thread-item { margin-left: 0; }
 .new-group-btn { font-size: 12px; color: #bbb; padding: 10px 0; cursor: pointer; }
 .add-to-group-btn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; margin-top: 8px; margin-left: 20px; color: #ccc; font-size: 16px; cursor: pointer; border-radius: 50%; }
 .add-to-group-btn:hover { background: var(--soft); }
+/* 发布区分组选择 */
+.post-group-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--muted); }
+.post-group-select { font-size: 13px; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; background: var(--white); }
 .add-detail { position: relative; padding-left: 20px; border-left: 1px solid transparent; margin-left: 5px; }
 .add-textarea { width: 100%; border: none; background: var(--soft); font-size: 15px; resize: none; padding: 15px; min-height: 80px; border-radius: 12px; margin-bottom: 10px; }
 .add-actions { display: flex; justify-content: space-between; align-items: center; }
@@ -172,6 +180,13 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .img-preview-item { position: relative; width: 56px; height: 56px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
 .img-preview-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .img-preview-remove { position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; border-radius: 50%; background: rgba(0,0,0,0.55); color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+/* 底部选组弹层 */
+#groupSheet { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 16px 16px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.15); z-index: 9600; padding: 16px 20px 30px; transform: translateY(100%); transition: transform 0.25s ease; }
+#groupSheet.show { transform: translateY(0); }
+.group-sheet-title { font-size: 13px; color: var(--muted); margin-bottom: 12px; text-align: center; }
+.group-sheet-item { padding: 14px 8px; font-size: 16px; border-bottom: 1px solid var(--line); cursor: pointer; text-align: center; }
+.group-sheet-item:last-child { border-bottom: none; }
+.group-sheet-cancel { padding: 14px 8px; font-size: 15px; color: var(--muted); text-align: center; cursor: pointer; margin-top: 6px; }
 .fab { position: fixed; right: 20px; bottom: 40px; width: 56px; height: 56px; background: var(--ink); border-radius: 50%; z-index: 800; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; cursor: grab; touch-action: none; transition: transform 0.1s, left 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .fab:active { cursor: grabbing; transform: scale(0.95); }
 .fab svg { width: 24px; height: 24px; fill: none; stroke: var(--white); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -190,6 +205,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .gender-btn { padding: 8px 20px; border: 1px solid var(--line); border-radius: 20px; font-size: 15px; color: var(--muted); transition: all 0.2s; }
 .gender-btn.active { border-color: var(--ink); color: var(--ink); background: var(--soft); }
 .reset-link { display: block; margin: 20px auto 0; font-size: 12px; color: #ccc; cursor: pointer; }
+.data-note { display: block; margin: 14px auto 0; font-size: 11px; color: #ccc; line-height: 1.6; }
 
 /* 左滑编辑/删除 */
 .box-card .box-content { position: relative; z-index: 2; background: var(--white); transition: transform 0.25s ease; display: flex; justify-content: space-between; align-items: center; width: 100%; }
@@ -211,9 +227,11 @@ input:focus, textarea:focus, button:focus { outline: none; }
 <div id="letterOverlay" class="hidden">
   <div class="letter-card">
     <h2>一封来信</h2>
-    <p>这里是别处的世界，不在此处。</p>
-    <p>可以把它当成平行宇宙。</p>
-    <p>如梦幻泡影，如露亦如电。</p>
+    <div class="letter-fog">
+      <p>这里是别处的世界，不在此处。</p>
+      <p>可以把它当成平行宇宙。</p>
+      <p>如梦幻泡影，如露亦如电。</p>
+    </div>
     <div class="letter-actions">
       <button class="letter-ok" id="letterOkBtn">我知道了</button>
     </div>
@@ -249,6 +267,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     </div>
     <button class="add-submit" id="saveProfileBtn" style="width:100%; padding:12px; font-size:16px;">保存修改</button>
     <span class="reset-link" id="resetOnboardBtn">重置新手引导</span>
+    <span class="data-note">数据只保存在这台设备，建议定期导出备份。</span>
   </div>
 </div>
 
@@ -350,10 +369,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     <div id="boxDetail" class="hidden">
       <div class="box-header">
         <button class="back-btn" id="backToImagineHub">←</button>
-        <span class="box-title-wrap">
-          <input type="text" id="boxTitleInput" class="box-title-input" disabled>
-          <span class="title-pencil" id="editBoxTitleBtn"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></span>
-        </span>
+        <input type="text" id="boxTitleInput" class="box-title-input" disabled>
       </div>
       
       <div class="core-imagine">
@@ -364,6 +380,10 @@ input:focus, textarea:focus, button:focus { outline: none; }
       <div class="thread-feed" id="threadFeed"></div>
 
       <div class="add-detail">
+        <div class="post-group-row" id="postGroupRow" style="display:none;">
+          <span>发到：</span>
+          <select id="postGroupSelect" class="post-group-select"></select>
+        </div>
         <div class="img-preview-row" id="imgPreviewRow"></div>
         <textarea id="detailText" class="add-textarea" placeholder="添砖加瓦……"></textarea>
         <div class="add-actions">
@@ -394,6 +414,12 @@ input:focus, textarea:focus, button:focus { outline: none; }
   <div class="lightbox-dots" id="lightboxDots"></div>
 </div>
 
+<div id="groupSheet">
+  <div class="group-sheet-title">移动到分组</div>
+  <div id="groupSheetList"></div>
+  <div class="group-sheet-cancel" id="groupSheetCancel">取消</div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -405,6 +431,8 @@ input:focus, textarea:focus, button:focus { outline: none; }
   var KEY_ONBOARDED = 'herLittleAtlas.onboarded.v8';
   var KEY_CORE_TIP = 'herLittleAtlas.coreTip.v8';
   var KEY_GROUP_TIP = 'herLittleAtlas.groupTip.v8';
+  var KEY_GROUP_TIP2 = 'herLittleAtlas.groupTip2.v8';
+  var KEY_DATA_NOTE = 'herLittleAtlas.dataNote.v8';
   var $ = function(id) { return document.getElementById(id); };
 
   var entries = [];
@@ -416,6 +444,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
   var selectedGender = 'Ta';
   var introDone = false;
   var pendingFiles = [];
+  var moveContext = null;
 
   var presetEntry = {
     id: 'e-preset-rain',
@@ -423,7 +452,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     place: '来书写我吧',
     food: '开心果蛋糕',
     mood: '安静',
-    events: '下了一天的雨。早上给阳台的盆栽浇水，放了玉米在栏杆上，两只灰鸰小鸟来了又走。坐在落地窗前看雨后，回房间听着唱片写作、做瑜伽。\n\n下午在淅沥雨声里午休到自然醒，醒来天色已暗。吃了一角开心果味的蛋糕，泡完脚上床读了会《不能承受的生命之轻》，读得昏昏沉沉又睡了过去。无比平常而安静的一天。\n\n另一个世界的你在看吗？\n删掉这条不属于你的日记，“你”的故事就可以开始了。'
+    events: '下了一天的雨。早上给阳台的盆栽浇水，放了玉米在栏杆上，两只灰鸰小鸟来了一会儿又走了。坐在落地窗前看雨，回房间写作，做瑜伽，听唱片。\n\n下午在雨里午休到自然醒，醒来天色已暗。吃了一角开心果蛋糕，跑步，泡脚，上床读《不能承受的生命之轻》，读得昏昏沉沉又睡过去。无比平常而安静的一天。\n\n另一个世界的你在看吗？\n删掉这条不属于你的日记，“你”的故事就可以开始了。'
   };
 
   var quotes = [
@@ -469,7 +498,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     startAppFlow();
   });
 
-  // 首次欢迎（打字 → 来信 → 档案）
   document.querySelectorAll('#welcomeOverlay .gender-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       document.querySelectorAll('#welcomeOverlay .gender-btn').forEach(b => b.classList.remove('active'));
@@ -484,7 +512,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     userProfile = { name: name, gender: selectedGender };
     localStorage.setItem(KEY_PROFILE, JSON.stringify(userProfile));
     $('welcomeOverlay').classList.add('hidden');
-    // 档案之后 → 日历
     $('loader').style.display = 'flex';
     setTimeout(function() {
       $('loader').classList.add('fade-out');
@@ -495,7 +522,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     }, 1000);
   });
 
-  // 修改档案
   $('profileBtn').addEventListener('click', function() {
     $('profileName').value = userProfile.name;
     document.querySelectorAll('#profileOverlay .gender-btn').forEach(b => {
@@ -536,16 +562,15 @@ input:focus, textarea:focus, button:focus { outline: none; }
     $('imagineTitle').textContent = displayName + '的世界，不止现在。';
   }
 
-  // ================= 开场流程（强制顺序） =================
+  // ================= 开场流程 =================
   function startAppFlow() {
     updatePronouns();
     var onboarded = localStorage.getItem(KEY_ONBOARDED);
     var hasProfile = localStorage.getItem(KEY_PROFILE);
     if (!onboarded) {
-      playIntro(); // 打字 → 来信 → 我知道了 → 检查档案
+      playIntro();
     } else {
       if (!hasProfile) {
-        // 有 onboarded 但没档案：先弹档案，再日历
         $('loader').style.display = 'none';
         $('welcomeOverlay').classList.remove('hidden');
         renderDiary();
@@ -596,7 +621,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
       letter.classList.add('fade-out');
       setTimeout(function() {
         letter.classList.add('hidden');
-        // 来信之后：检查档案
         var hasProfile = localStorage.getItem(KEY_PROFILE);
         if (!hasProfile) {
           $('welcomeOverlay').classList.remove('hidden');
@@ -620,7 +644,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     }, 1200);
   }
 
-  // 品牌点击：随机三句浮层
   $('brandBtn').addEventListener('click', function() {
     var msg = brandMessages[Math.floor(Math.random() * brandMessages.length)];
     $('brandMsg').textContent = msg;
@@ -634,7 +657,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     }, 50);
   });
 
-  // ================= 日历过渡 =================
+  // ================= 日历过渡（柔和淡入淡出） =================
   function showCalendar() {
     var d = new Date();
     var months = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
@@ -651,7 +674,11 @@ input:focus, textarea:focus, button:focus { outline: none; }
     $('calAuthor').textContent = q.author;
     var overlay = $('calendarOverlay');
     overlay.classList.remove('hidden');
+    requestAnimationFrame(function() {
+      overlay.classList.add('visible');
+    });
     overlay.addEventListener('click', function() {
+      overlay.classList.remove('visible');
       overlay.classList.add('fade-out');
       setTimeout(function() {
         overlay.classList.add('hidden');
@@ -659,7 +686,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
         window.scrollTo(0, 0);
         updateFabVisibility();
         renderDiary();
-      }, 1000);
+      }, 900);
     }, { once: true });
   }
 
@@ -939,6 +966,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     $('boxDetail').classList.remove('hidden');
     $('boxTitleInput').value = box.name;
     $('boxTitleInput').disabled = true;
+    $('boxTitleInput').style.color = '#111';
     $('coreInput').value = box.core || '';
     var prompt = boxPrompts[box.name] || boxPrompts['default'];
     $('coreInput').placeholder = prompt;
@@ -967,11 +995,14 @@ input:focus, textarea:focus, button:focus { outline: none; }
   function maybeShowGroupTip() {
     if (localStorage.getItem(KEY_GROUP_TIP)) return;
     if (!$('groupWrap').querySelector('.group-section')) return;
+    var firstGroup = $('groupWrap').querySelector('.group-section');
+    var plusBtn = firstGroup.querySelector('.add-to-group-btn');
+    if (!plusBtn) return;
     var el = document.createElement('div');
     el.className = 'group-bubble';
     el.textContent = '点这里的 + 可以把内容加到这一组';
-    var firstGroup = $('groupWrap').querySelector('.group-section');
-    firstGroup.appendChild(el);
+    plusBtn.parentNode.style.position = 'relative';
+    plusBtn.parentNode.appendChild(el);
     var hide = function() {
       if (el.parentNode) el.parentNode.removeChild(el);
       localStorage.setItem(KEY_GROUP_TIP, '1');
@@ -980,10 +1011,47 @@ input:focus, textarea:focus, button:focus { outline: none; }
     setTimeout(function() { document.addEventListener('click', hide); }, 100);
   }
 
+  function maybeShowGroupTip2() {
+    if (localStorage.getItem(KEY_GROUP_TIP2)) return;
+    if (!$('groupWrap').querySelector('.group-section')) return;
+    var firstGroup = $('groupWrap').querySelector('.group-section');
+    var el = document.createElement('div');
+    el.className = 'group-bubble';
+    el.textContent = '点击标题可编辑组名，点击空白处可展开/收起列表';
+    firstGroup.style.position = 'relative';
+    firstGroup.appendChild(el);
+    el.style.left = '0';
+    el.style.bottom = '100%';
+    el.style.marginBottom = '4px';
+    var hide = function() {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      localStorage.setItem(KEY_GROUP_TIP2, '1');
+      document.removeEventListener('click', hide);
+    };
+    setTimeout(function() { document.addEventListener('click', hide); }, 100);
+  }
+
   function renderBoxDetail(box) {
     renderGroups(box);
     $('threadFeed').innerHTML = renderUngroupedThreads(box);
+    renderPostGroupSelect(box);
     maybeShowGroupTip();
+    maybeShowGroupTip2();
+  }
+
+  function renderPostGroupSelect(box) {
+    var row = $('postGroupRow');
+    var sel = $('postGroupSelect');
+    if (!box.groups || !box.groups.length) {
+      row.style.display = 'none';
+      return;
+    }
+    row.style.display = 'flex';
+    var html = '<option value="-1">未分组</option>';
+    box.groups.forEach(function(g, i) {
+      html += '<option value="' + i + '">' + escapeHtml(g.name) + '</option>';
+    });
+    sel.innerHTML = html;
   }
 
   function threadItemHtml(item, index, prefix) {
@@ -1003,6 +1071,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
       + '<div class="thread-meta-row">'
       + '<span class="thread-date">' + dateStr + '</span>'
       + '<span class="thread-icon-btn" onclick="editThread(\'' + prefix + '\',' + index + ')"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></span>'
+      + '<span class="thread-icon-btn" onclick="openMoveSheet(\'' + prefix + '\',' + index + ')"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"></circle></svg></span>'
       + '<span class="thread-icon-btn" onclick="delThread(\'' + prefix + '\',' + index + ')"><svg viewBox="0 0 24 24"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg></span>'
       + '</div>'
       + imgHtml
@@ -1030,7 +1099,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     });
     html += '<div class="new-group-btn" onclick="addGroup()">+ 新建分组</div>';
     $('groupWrap').innerHTML = html;
-    // 绑定组头点击展开（点组名和删除以外区域）
     $('groupWrap').querySelectorAll('.group-head').forEach(function(head, gi) {
       head.addEventListener('click', function(e) {
         if (e.target.closest('.group-name') || e.target.closest('.group-del')) return;
@@ -1119,6 +1187,49 @@ input:focus, textarea:focus, button:focus { outline: none; }
       reader.readAsDataURL(file);
     });
   }
+
+  // ================= 移动到分组（方案 3-A） =================
+  window.openMoveSheet = function(prefix, index) {
+    var t = findThread(prefix, index);
+    if (!t) return;
+    var box = t.box;
+    if (!box.groups || !box.groups.length) { showToast('还没有分组'); return; }
+    moveContext = { prefix: prefix, index: index };
+    var list = $('groupSheetList');
+    var html = '<div class="group-sheet-item" onclick="doMove(-1)">未分组</div>';
+    box.groups.forEach(function(g, i) {
+      html += '<div class="group-sheet-item" onclick="doMove(' + i + ')">' + escapeHtml(g.name) + '</div>';
+    });
+    list.innerHTML = html;
+    $('groupSheet').classList.add('show');
+  };
+
+  window.doMove = function(target) {
+    if (!moveContext) return;
+    var t = findThread(moveContext.prefix, moveContext.index);
+    if (!t) { closeMoveSheet(); return; }
+    var box = t.box;
+    var item = t.item;
+    // 从原位置删除
+    t.list.splice(moveContext.index, 1);
+    // 加到目标
+    if (target === -1) {
+      if (!box.details) box.details = [];
+      box.details.push(item);
+    } else {
+      if (!box.groups[target].threads) box.groups[target].threads = [];
+      box.groups[target].threads.push(item);
+    }
+    saveImagine();
+    closeMoveSheet();
+    renderBoxDetail(box);
+  };
+
+  function closeMoveSheet() {
+    $('groupSheet').classList.remove('show');
+    moveContext = null;
+  }
+  $('groupSheetCancel').addEventListener('click', closeMoveSheet);
 
   function findThread(prefix, index) {
     var box = imagineBoxes.find(x => x.id === currentBoxId);
@@ -1225,7 +1336,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     if (box) { box.core = this.value; saveImagine(); }
   });
 
-  // 图片选择 + 实时小预览
   $('detailImage').addEventListener('change', function(e) {
     var files = Array.prototype.slice.call(e.target.files || []);
     if (!files.length) return;
@@ -1267,38 +1377,25 @@ input:focus, textarea:focus, button:focus { outline: none; }
     var text = $('detailText').value.trim();
     var files = pendingFiles.slice();
     if (!text && !files.length) return;
+    var targetGroup = parseInt($('postGroupSelect').value, 10);
     processImages(files, function(images) {
       var now = new Date();
       var dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
-      if (!box.details) box.details = [];
-      box.details.push({ text: text, images: images, date: dateStr });
+      var item = { text: text, images: images, date: dateStr };
+      if (targetGroup >= 0 && box.groups && box.groups[targetGroup]) {
+        if (!box.groups[targetGroup].threads) box.groups[targetGroup].threads = [];
+        box.groups[targetGroup].threads.push(item);
+      } else {
+        if (!box.details) box.details = [];
+        box.details.push(item);
+      }
       saveImagine();
       $('detailText').value = '';
       pendingFiles = [];
+      $('detailImage').value = '';
       renderImgPreview();
       renderBoxDetail(box);
     });
-  });
-
-  $('editBoxTitleBtn').addEventListener('click', function() {
-    $('boxTitleInput').disabled = false;
-    $('boxTitleInput').focus();
-  });
-  $('boxTitleInput').addEventListener('click', function() {
-    if (this.disabled) {
-      this.disabled = false;
-      this.focus();
-    }
-  });
-
-  $('boxTitleInput').addEventListener('blur', function() {
-    var box = imagineBoxes.find(x => x.id === currentBoxId);
-    if (box) {
-      box.name = this.value.trim() || box.name;
-      this.value = box.name;
-      saveImagine();
-      this.disabled = true;
-    }
   });
 
   $('backToImagineHub').addEventListener('click', backToImagineHub);
