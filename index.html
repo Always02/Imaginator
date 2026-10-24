@@ -51,10 +51,11 @@ input:focus, textarea:focus, button:focus { outline: none; }
 @keyframes letterFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
 /* 品牌浮层 */
-#brandOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.28); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 9600; display: flex; align-items: center; justify-content: center; padding: 40px; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+#brandOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.18); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 9600; display: flex; align-items: center; justify-content: center; padding: 40px; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
 #brandOverlay.show { opacity: 1; pointer-events: auto; }
-.brand-msg-box { background: #fff; border-radius: 18px; padding: 34px 28px; max-width: 340px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.18); text-align: center; }
+.brand-msg-box { background: #fff; border-radius: 18px; padding: 34px 28px 26px; max-width: 340px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.15); text-align: center; }
 .brand-msg { font-size: 17px; line-height: 2; color: #333; white-space: pre-line; }
+.brand-sig { margin-top: 22px; font-size: 11px; color: #ccc; letter-spacing: 0.2em; }
 
 /* 日历过渡 */
 #calendarOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 9000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 1s ease; padding: 40px; opacity: 0; }
@@ -138,13 +139,13 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .thread-content-wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .thread-text { font-size: 15px; line-height: 1.6; white-space: pre-wrap; flex: 1; word-break: break-word; }
 .thread-text a { color: #0066cc; text-decoration: underline; }
-/* meta 行：图标组固定占位 + 日期，位置不变 */
-.thread-meta-row { display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-top: 4px; }
+/* meta 行：图标槽贴左、日期贴右，固定占位，位置不变 */
+.thread-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
 .thread-icon-slot { display: inline-flex; gap: 12px; visibility: hidden; }
 .thread-item.show-icons .thread-icon-slot { visibility: visible; }
 .thread-icon-btn { cursor: pointer; color: #bbb; padding: 0 2px; line-height: 1; display: inline-flex; align-items: center; }
 .thread-icon-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
-.thread-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.thread-date { font-size: 11px; color: var(--muted); white-space: nowrap; margin-left: auto; }
 /* 图片网格 */
 .thread-imgs { display: grid; gap: 4px; margin-top: 8px; max-width: 340px; }
 .thread-imgs.cols-1 { grid-template-columns: 1fr; }
@@ -180,6 +181,18 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .add-img-btn { display: inline-flex; align-items: center; cursor: pointer; color: var(--muted); }
 .add-img-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .add-submit { background: var(--ink); color: var(--white); padding: 6px 16px; border-radius: 15px; font-size: 14px; font-weight: 600; }
+/* 放大键 */
+.expand-btn { position: absolute; right: 10px; bottom: 46px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: #bbb; cursor: pointer; z-index: 2; }
+.expand-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+/* 半屏编辑层 */
+#expandSheet { position: fixed; left: 0; right: 0; bottom: 0; height: 68vh; background: #fff; border-radius: 18px 18px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.18); z-index: 9700; display: flex; flex-direction: column; padding: 16px 20px 24px; transform: translateY(100%); transition: transform 0.28s ease; }
+#expandSheet.show { transform: translateY(0); }
+.expand-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.expand-title { font-size: 13px; color: var(--muted); }
+.expand-shrink { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #bbb; cursor: pointer; }
+.expand-shrink svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.expand-textarea { flex: 1; width: 100%; border: none; background: var(--soft); border-radius: 12px; padding: 15px; font-size: 15px; line-height: 1.7; resize: none; }
+.expand-counter { text-align: right; font-size: 11px; color: #ccc; margin-top: 6px; }
 /* 图片小预览 */
 .img-preview-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
 .img-preview-item { position: relative; width: 56px; height: 56px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
@@ -209,7 +222,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .gender-select { display: flex; gap: 15px; margin-bottom: 30px; justify-content: center; }
 .gender-btn { padding: 8px 20px; border: 1px solid var(--line); border-radius: 20px; font-size: 15px; color: var(--muted); transition: all 0.2s; }
 .gender-btn.active { border-color: var(--ink); color: var(--ink); background: var(--soft); }
-.reset-link { display: block; margin: 20px auto 0; font-size: 12px; color: #ccc; cursor: pointer; }
+.reset-link { display: inline-block; margin: 20px 6px 0; font-size: 12px; color: #ccc; cursor: pointer; }
 .data-note { display: block; margin: 14px auto 0; font-size: 11px; color: #ccc; line-height: 1.6; }
 .profile-actions { display: flex; gap: 10px; }
 .profile-actions .add-submit { flex: 1; }
@@ -240,6 +253,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 <div id="brandOverlay">
   <div class="brand-msg-box">
     <div class="brand-msg" id="brandMsg"></div>
+    <div class="brand-sig">· elsewhere ·</div>
   </div>
 </div>
 
@@ -270,7 +284,10 @@ input:focus, textarea:focus, button:focus { outline: none; }
       <button class="profile-cancel" id="cancelProfileBtn">取消</button>
       <button class="add-submit" id="saveProfileBtn">保存修改</button>
     </div>
-    <span class="reset-link" id="resetOnboardBtn">重置新手引导</span>
+    <div>
+      <span class="reset-link" id="resetOnboardBtn">重置新手引导</span>
+      <span class="reset-link" id="clearWorldBtn">清空这个世界</span>
+    </div>
     <span class="data-note">数据只保存在这台设备，建议定期导出备份。</span>
   </div>
 </div>
@@ -389,7 +406,12 @@ input:focus, textarea:focus, button:focus { outline: none; }
           <select id="postGroupSelect" class="post-group-select"></select>
         </div>
         <div class="img-preview-row" id="imgPreviewRow"></div>
-        <textarea id="detailText" class="add-textarea" placeholder="添砖加瓦……" maxlength="1500"></textarea>
+        <div style="position:relative;">
+          <textarea id="detailText" class="add-textarea" placeholder="添砖加瓦……" maxlength="1500"></textarea>
+          <span class="expand-btn" id="expandBtn" title="放大填写">
+            <svg viewBox="0 0 24 24"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg>
+          </span>
+        </div>
         <div class="add-actions">
           <label class="add-img-btn">
             <svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
@@ -400,6 +422,17 @@ input:focus, textarea:focus, button:focus { outline: none; }
       </div>
     </div>
   </div>
+</div>
+
+<div id="expandSheet">
+  <div class="expand-head">
+    <span class="expand-title">添砖加瓦</span>
+    <span class="expand-shrink" id="expandShrink">
+      <svg viewBox="0 0 24 24"><path d="M9 3H3v6"></path><path d="M15 21h6v-6"></path><path d="M3 3l7 7"></path><path d="M21 21l-7-7"></path></svg>
+    </span>
+  </div>
+  <textarea id="expandTextarea" class="expand-textarea" maxlength="1500"></textarea>
+  <div class="expand-counter" id="expandCounter">0 / 1500</div>
 </div>
 
 <div class="popup-menu" id="boxTypeMenu">
@@ -479,7 +512,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
   var brandMessages = [
     "Život je jinde……\n何以将我送往想象的彼岸。",
     "你在想什么呢？",
-    "在到处之间找我"
+    "在到处之间找我。"
   ];
 
   // ================= 初始化 =================
@@ -558,6 +591,14 @@ input:focus, textarea:focus, button:focus { outline: none; }
   $('resetOnboardBtn').addEventListener('click', function() {
     if (!confirm('重置新手引导？下次打开会重新看到开场和来信。')) return;
     localStorage.removeItem(KEY_ONBOARDED);
+    location.reload();
+  });
+
+  $('clearWorldBtn').addEventListener('click', function() {
+    if (!confirm('确定清空这个世界？档案、新手引导、日记、想象都会删除，无法恢复。')) return;
+    Object.keys(localStorage).forEach(function(k) {
+      if (k.indexOf('herLittleAtlas.') === 0) localStorage.removeItem(k);
+    });
     location.reload();
   });
 
@@ -1308,6 +1349,24 @@ input:focus, textarea:focus, button:focus { outline: none; }
   $('coreInput').addEventListener('blur', function() {
     var box = imagineBoxes.find(x => x.id === currentBoxId);
     if (box) { box.core = this.value; saveImagine(); }
+  });
+
+  // ================= 放大填写 =================
+  $('expandBtn').addEventListener('click', function() {
+    var sheet = $('expandSheet');
+    $('expandTextarea').value = $('detailText').value;
+    $('expandCounter').textContent = $('expandTextarea').value.length + ' / 1500';
+    sheet.classList.add('show');
+    setTimeout(function() { $('expandTextarea').focus(); }, 200);
+  });
+
+  $('expandShrink').addEventListener('click', function() {
+    $('detailText').value = $('expandTextarea').value;
+    $('expandSheet').classList.remove('show');
+  });
+
+  $('expandTextarea').addEventListener('input', function() {
+    $('expandCounter').textContent = this.value.length + ' / 1500';
   });
 
   $('detailImage').addEventListener('change', function(e) {
