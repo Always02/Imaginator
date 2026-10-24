@@ -42,8 +42,12 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .letter-card h2 { margin: 0 0 26px; font-size: 13px; font-weight: 600; letter-spacing: 0.35em; color: var(--muted); }
 .letter-card p { font-size: 16px; line-height: 2.2; color: #333; margin: 0 0 6px; }
 .letter-actions { margin-top: 40px; text-align: center; }
-.letter-ok { font-size: 16px; color: var(--ink); padding: 6px 12px; border-bottom: 1px solid transparent; }
-.letter-ok:active { opacity: 0.5; }
+.letter-ok { font-size: 16px; color: var(--ink); padding: 6px 12px; }
+
+/* 品牌浮层 */
+#brandOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); z-index: 9600; display: flex; align-items: center; justify-content: center; padding: 40px; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+#brandOverlay.show { opacity: 1; pointer-events: auto; }
+.brand-msg { font-size: 18px; line-height: 2; text-align: center; color: #333; white-space: pre-line; }
 
 /* 日历过渡 */
 #calendarOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 9000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 1s ease; padding: 40px; }
@@ -61,7 +65,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .app { max-width: 680px; margin: 0 auto; min-height: 100vh; padding: 0 20px 100px; opacity: 0; transition: opacity 0.8s; }
 .app.loaded { opacity: 1; }
 .topbar { height: 72px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: rgba(255,255,255,.95); backdrop-filter: blur(10px); z-index: 100; margin-bottom: 20px; }
-.brand { font-size: 16px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+.brand { font-size: 16px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
 .top-actions { display: flex; gap: 15px; }
 .plain-btn { font-size: 13px; color: var(--muted); padding: 5px; }
 .main-tabs { display: flex; border-bottom: 1px solid var(--line); height: 50px; margin-bottom: 30px; }
@@ -98,21 +102,26 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .box-title { font-size: 18px; font-weight: 700; color: var(--ink); }
 .box-desc { font-size: 13px; color: var(--muted); margin-top: 4px; }
 .add-box-btn { padding: 20px 0; font-size: 16px; font-weight: 600; color: var(--muted); text-align: center; border-bottom: 1px solid var(--line); }
-.box-header { display: flex; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.box-header { display: flex; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
 .back-btn { font-size: 24px; margin-right: 10px; font-weight: 300; }
-.box-title-input { font-size: 20px; font-weight: 700; border: none; background: transparent; width: 200px; padding: 0; color: var(--ink);}
-.box-title-input:disabled { color: var(--ink); }
-.box-title-input:not(:disabled) { border-bottom: 1px solid var(--ink); }
-/* 标题旁小灰笔 */
-.title-pencil { font-size: 15px; color: #bbb; margin-left: 8px; cursor: pointer; user-select: none; }
+.box-title-wrap { display: inline-flex; align-items: center; }
+.box-title-input { font-size: 20px; font-weight: 700; border: none; background: transparent; width: auto; max-width: 220px; padding: 0; color: #111 !important; }
+.box-title-input:disabled { color: #111 !important; }
+.box-title-input:not(:disabled) { border-bottom: 1px solid #111; }
+.title-pencil { display: inline-flex; align-items: center; margin-left: 4px; cursor: pointer; color: #bbb; }
+.title-pencil svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 /* core 引言感 */
 .core-imagine { margin-bottom: 30px; position: relative; padding-left: 16px; }
-.core-imagine::before { content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 2px; background: var(--ink); border-radius: 2px; }
+.core-imagine::before { content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 2px; background: #999; border-radius: 2px; }
 .core-input { width: 100%; border: none; background: transparent; padding: 12px 4px; font-size: 17px; font-weight: 600; line-height: 1.8; resize: none; }
 .core-input:focus { background: transparent; }
-/* core 引导气泡 */
-.core-bubble { position: absolute; left: 16px; top: -12px; transform: translateY(-100%); background: var(--ink); color: #fff; font-size: 12px; padding: 8px 12px; border-radius: 10px; white-space: nowrap; z-index: 5; }
-.core-bubble::after { content: ""; position: absolute; left: 18px; bottom: -4px; width: 8px; height: 8px; background: var(--ink); transform: rotate(45deg); }
+/* 气泡 */
+.core-bubble, .group-bubble { position: absolute; background: var(--ink); color: #fff; font-size: 12px; padding: 8px 12px; border-radius: 10px; white-space: nowrap; z-index: 8; }
+.core-bubble { left: 16px; top: -12px; transform: translateY(-100%); }
+.core-bubble::after, .group-bubble::after { content: ""; position: absolute; width: 8px; height: 8px; background: var(--ink); transform: rotate(45deg); }
+.core-bubble::after { left: 18px; bottom: -4px; }
+.group-bubble { left: 20px; bottom: -6px; transform: translateY(100%); }
+.group-bubble::after { left: 18px; top: -4px; }
 .thread-feed { display: flex; flex-direction: column; margin-bottom: 20px; }
 .thread-item { position: relative; padding: 15px 0 15px 20px; border-left: 1px solid #e0e0e0; margin-left: 5px; }
 .thread-item::before { content: ""; position: absolute; left: -4px; top: 22px; width: 7px; height: 7px; border-radius: 50%; background: var(--white); border: 1px solid var(--ink); }
@@ -121,8 +130,8 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .thread-text a { color: #0066cc; text-decoration: underline; }
 .thread-meta-row { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 4px; }
 .thread-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
-/* 小灰笔 + 小灰叉 */
-.thread-icon-btn { font-size: 13px; color: #bbb; cursor: pointer; display: none; padding: 0 2px; user-select: none; }
+.thread-icon-btn { display: none; cursor: pointer; color: #bbb; padding: 0 2px; }
+.thread-icon-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
 .thread-item:hover .thread-icon-btn { display: inline-block; }
 /* 图片网格 */
 .thread-imgs { display: grid; gap: 4px; margin-top: 8px; max-width: 340px; }
@@ -142,20 +151,27 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .lightbox-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); }
 .lightbox-dots span.active { background: #fff; }
 /* 分组 */
-.group-section { margin-bottom: 10px; }
-.group-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
-.group-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.group-section { margin-bottom: 6px; }
+.group-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.group-name { font-size: 14px; font-weight: 700; color: var(--ink); cursor: text; }
 .group-count { font-size: 12px; color: var(--muted); font-weight: 400; }
 .group-del { font-size: 12px; color: #ccc; margin-left: 10px; cursor: pointer; }
 .group-body { padding-top: 4px; }
 .group-body .thread-item { margin-left: 0; }
-.new-group-btn { font-size: 13px; color: var(--muted); padding: 10px 0; cursor: pointer; }
-.add-to-group-btn { font-size: 12px; color: var(--muted); padding: 6px 0 2px 20px; cursor: pointer; }
+.new-group-btn { font-size: 12px; color: #bbb; padding: 10px 0; cursor: pointer; }
+.add-to-group-btn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; margin-top: 8px; margin-left: 20px; color: #ccc; font-size: 16px; cursor: pointer; border-radius: 50%; }
+.add-to-group-btn:hover { background: var(--soft); }
 .add-detail { position: relative; padding-left: 20px; border-left: 1px solid transparent; margin-left: 5px; }
 .add-textarea { width: 100%; border: none; background: var(--soft); font-size: 15px; resize: none; padding: 15px; min-height: 80px; border-radius: 12px; margin-bottom: 10px; }
 .add-actions { display: flex; justify-content: space-between; align-items: center; }
-.add-img-btn { font-size: 24px; color: var(--muted); cursor: pointer; }
+.add-img-btn { display: inline-flex; align-items: center; cursor: pointer; color: var(--muted); }
+.add-img-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .add-submit { background: var(--ink); color: var(--white); padding: 6px 16px; border-radius: 15px; font-size: 14px; font-weight: 600; }
+/* 图片小预览 */
+.img-preview-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.img-preview-item { position: relative; width: 56px; height: 56px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+.img-preview-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.img-preview-remove { position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; border-radius: 50%; background: rgba(0,0,0,0.55); color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .fab { position: fixed; right: 20px; bottom: 40px; width: 56px; height: 56px; background: var(--ink); border-radius: 50%; z-index: 800; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; cursor: grab; touch-action: none; transition: transform 0.1s, left 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .fab:active { cursor: grabbing; transform: scale(0.95); }
 .fab svg { width: 24px; height: 24px; fill: none; stroke: var(--white); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -173,6 +189,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .gender-select { display: flex; gap: 15px; margin-bottom: 30px; justify-content: center; }
 .gender-btn { padding: 8px 20px; border: 1px solid var(--line); border-radius: 20px; font-size: 15px; color: var(--muted); transition: all 0.2s; }
 .gender-btn.active { border-color: var(--ink); color: var(--ink); background: var(--soft); }
+.reset-link { display: block; margin: 20px auto 0; font-size: 12px; color: #ccc; cursor: pointer; }
 
 /* 左滑编辑/删除 */
 .box-card .box-content { position: relative; z-index: 2; background: var(--white); transition: transform 0.25s ease; display: flex; justify-content: space-between; align-items: center; width: 100%; }
@@ -203,6 +220,10 @@ input:focus, textarea:focus, button:focus { outline: none; }
   </div>
 </div>
 
+<div id="brandOverlay">
+  <div class="brand-msg" id="brandMsg"></div>
+</div>
+
 <div id="welcomeOverlay" class="modal-overlay hidden">
   <div class="modal-content">
     <h2 style="margin-top:0;">欢迎来到别处</h2>
@@ -227,6 +248,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
       <button class="gender-btn" data-g="Ta">无性别</button>
     </div>
     <button class="add-submit" id="saveProfileBtn" style="width:100%; padding:12px; font-size:16px;">保存修改</button>
+    <span class="reset-link" id="resetOnboardBtn">重置新手引导</span>
   </div>
 </div>
 
@@ -251,7 +273,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 
 <div class="app" id="app">
   <header class="topbar">
-    <div class="brand">ELSEWHERE</div>
+    <div class="brand" id="brandBtn">ELSEWHERE</div>
     <div class="top-actions">
       <button class="plain-btn" id="profileBtn">档案</button>
       <button class="plain-btn" id="exportBtn">导出</button>
@@ -328,8 +350,10 @@ input:focus, textarea:focus, button:focus { outline: none; }
     <div id="boxDetail" class="hidden">
       <div class="box-header">
         <button class="back-btn" id="backToImagineHub">←</button>
-        <input type="text" id="boxTitleInput" class="box-title-input" disabled>
-        <span class="title-pencil" id="editBoxTitleBtn">✎</span>
+        <span class="box-title-wrap">
+          <input type="text" id="boxTitleInput" class="box-title-input" disabled>
+          <span class="title-pencil" id="editBoxTitleBtn"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></span>
+        </span>
       </div>
       
       <div class="core-imagine">
@@ -340,10 +364,11 @@ input:focus, textarea:focus, button:focus { outline: none; }
       <div class="thread-feed" id="threadFeed"></div>
 
       <div class="add-detail">
+        <div class="img-preview-row" id="imgPreviewRow"></div>
         <textarea id="detailText" class="add-textarea" placeholder="添砖加瓦……"></textarea>
         <div class="add-actions">
           <label class="add-img-btn">
-            +
+            <svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
             <input type="file" id="detailImage" accept="image/*" multiple style="display:none;">
           </label>
           <button class="add-submit" id="addDetailBtn">发布</button>
@@ -379,6 +404,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
   var KEY_PROFILE = 'herLittleAtlas.profile.v8';
   var KEY_ONBOARDED = 'herLittleAtlas.onboarded.v8';
   var KEY_CORE_TIP = 'herLittleAtlas.coreTip.v8';
+  var KEY_GROUP_TIP = 'herLittleAtlas.groupTip.v8';
   var $ = function(id) { return document.getElementById(id); };
 
   var entries = [];
@@ -389,6 +415,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
   var currentMode = 'normal';
   var selectedGender = 'Ta';
   var introDone = false;
+  var pendingFiles = [];
 
   var presetEntry = {
     id: 'e-preset-rain',
@@ -396,7 +423,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     place: '来书写我吧',
     food: '开心果蛋糕',
     mood: '安静',
-    events: '下了一天的雨。早上给阳台的盆栽浇水，放了玉米在栏杆上，两只灰鸰小鸟来了又走。坐在落地窗前看雨后，回房间听着唱片写作、做瑜伽，。\n\n下午在淅沥雨声里午休到自然醒，醒来天色已暗。吃了一角开心果味的蛋糕，泡完脚上床读了会《不能承受的生命之轻》，读得昏昏沉沉又睡了过去。无比平常而安静的一天。\n\n另一个世界的你在看吗？\n删掉这条不属于你的日记，“你”的故事就可以开始了。'
+    events: '下了一天的雨。早上给阳台的盆栽浇水，放了玉米在栏杆上，两只灰鸰小鸟来了又走。坐在落地窗前看雨后，回房间听着唱片写作、做瑜伽。\n\n下午在淅沥雨声里午休到自然醒，醒来天色已暗。吃了一角开心果味的蛋糕，泡完脚上床读了会《不能承受的生命之轻》，读得昏昏沉沉又睡了过去。无比平常而安静的一天。\n\n另一个世界的你在看吗？\n删掉这条不属于你的日记，“你”的故事就可以开始了。'
   };
 
   var quotes = [
@@ -418,6 +445,12 @@ input:focus, textarea:focus, button:focus { outline: none; }
     'default': '你想象中的它是什么样的呢？'
   };
 
+  var brandMessages = [
+    "Život je jinde……\n何以将我送往想象的彼岸。",
+    "你在想什么呢？",
+    "在到处之间找我"
+  ];
+
   // ================= 初始化 =================
   window.addEventListener('load', function() {
     try {
@@ -429,20 +462,14 @@ input:focus, textarea:focus, button:focus { outline: none; }
         localStorage.setItem(KEY_DIARY, JSON.stringify(entries));
       }
       var p = localStorage.getItem(KEY_PROFILE);
-      if (!p) {
-        $('loader').style.display = 'none';
-        $('welcomeOverlay').classList.remove('hidden');
-        renderDiary();
-        return;
-      }
-      userProfile = JSON.parse(p);
+      if (p) userProfile = JSON.parse(p);
       var i = localStorage.getItem(KEY_IMAGINE);
       imagineBoxes = i ? JSON.parse(i) : [];
     } catch(e) { console.log(e); }
     startAppFlow();
   });
 
-  // 首次欢迎
+  // 首次欢迎（打字 → 来信 → 档案）
   document.querySelectorAll('#welcomeOverlay .gender-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       document.querySelectorAll('#welcomeOverlay .gender-btn').forEach(b => b.classList.remove('active'));
@@ -496,6 +523,12 @@ input:focus, textarea:focus, button:focus { outline: none; }
     showToast('档案已更新');
   });
 
+  $('resetOnboardBtn').addEventListener('click', function() {
+    if (!confirm('重置新手引导？下次打开会重新看到开场和来信。')) return;
+    localStorage.removeItem(KEY_ONBOARDED);
+    location.reload();
+  });
+
   function updatePronouns() {
     var pronoun = userProfile.gender === 'Ta' ? 'Ta' : userProfile.gender;
     var displayName = userProfile.name || pronoun;
@@ -503,14 +536,22 @@ input:focus, textarea:focus, button:focus { outline: none; }
     $('imagineTitle').textContent = displayName + '的世界，不止现在。';
   }
 
-  // ================= 开场流程 =================
+  // ================= 开场流程（强制顺序） =================
   function startAppFlow() {
     updatePronouns();
     var onboarded = localStorage.getItem(KEY_ONBOARDED);
+    var hasProfile = localStorage.getItem(KEY_PROFILE);
     if (!onboarded) {
-      playIntro();
+      playIntro(); // 打字 → 来信 → 我知道了 → 检查档案
     } else {
-      showLoaderThenCalendar();
+      if (!hasProfile) {
+        // 有 onboarded 但没档案：先弹档案，再日历
+        $('loader').style.display = 'none';
+        $('welcomeOverlay').classList.remove('hidden');
+        renderDiary();
+      } else {
+        showLoaderThenCalendar();
+      }
     }
   }
 
@@ -555,7 +596,14 @@ input:focus, textarea:focus, button:focus { outline: none; }
       letter.classList.add('fade-out');
       setTimeout(function() {
         letter.classList.add('hidden');
-        $('welcomeOverlay').classList.remove('hidden');
+        // 来信之后：检查档案
+        var hasProfile = localStorage.getItem(KEY_PROFILE);
+        if (!hasProfile) {
+          $('welcomeOverlay').classList.remove('hidden');
+          renderDiary();
+        } else {
+          showLoaderThenCalendar();
+        }
       }, 500);
     };
   }
@@ -571,6 +619,20 @@ input:focus, textarea:focus, button:focus { outline: none; }
       }, 600);
     }, 1200);
   }
+
+  // 品牌点击：随机三句浮层
+  $('brandBtn').addEventListener('click', function() {
+    var msg = brandMessages[Math.floor(Math.random() * brandMessages.length)];
+    $('brandMsg').textContent = msg;
+    var ov = $('brandOverlay');
+    ov.classList.add('show');
+    setTimeout(function() {
+      ov.addEventListener('click', function hide() {
+        ov.classList.remove('show');
+        ov.removeEventListener('click', hide);
+      });
+    }, 50);
+  });
 
   // ================= 日历过渡 =================
   function showCalendar() {
@@ -645,7 +707,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
   function updateFabVisibility() {
     var isDiary = !$('diarySection').classList.contains('hidden');
     var inWrite = !$('writeSubView').classList.contains('hidden');
-    var inBoxDetail = !$('boxDetail').classList.contains('hidden');
     if (isDiary && !inWrite) $('fabBtn').classList.remove('hidden');
     else $('fabBtn').classList.add('hidden');
   }
@@ -882,6 +943,8 @@ input:focus, textarea:focus, button:focus { outline: none; }
     var prompt = boxPrompts[box.name] || boxPrompts['default'];
     $('coreInput').placeholder = prompt;
     if (!box.groups) box.groups = [];
+    pendingFiles = [];
+    renderImgPreview();
     renderBoxDetail(box);
     updateFabVisibility();
     maybeShowCoreTip();
@@ -892,8 +955,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     var el = document.createElement('div');
     el.className = 'core-bubble';
     el.textContent = '这里是核心想象，点一下就能写';
-    var wrap = document.querySelector('.core-imagine');
-    wrap.appendChild(el);
+    document.querySelector('.core-imagine').appendChild(el);
     var hide = function() {
       if (el.parentNode) el.parentNode.removeChild(el);
       localStorage.setItem(KEY_CORE_TIP, '1');
@@ -902,10 +964,26 @@ input:focus, textarea:focus, button:focus { outline: none; }
     setTimeout(function() { document.addEventListener('click', hide); }, 100);
   }
 
+  function maybeShowGroupTip() {
+    if (localStorage.getItem(KEY_GROUP_TIP)) return;
+    if (!$('groupWrap').querySelector('.group-section')) return;
+    var el = document.createElement('div');
+    el.className = 'group-bubble';
+    el.textContent = '点这里的 + 可以把内容加到这一组';
+    var firstGroup = $('groupWrap').querySelector('.group-section');
+    firstGroup.appendChild(el);
+    var hide = function() {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      localStorage.setItem(KEY_GROUP_TIP, '1');
+      document.removeEventListener('click', hide);
+    };
+    setTimeout(function() { document.addEventListener('click', hide); }, 100);
+  }
+
   function renderBoxDetail(box) {
     renderGroups(box);
     $('threadFeed').innerHTML = renderUngroupedThreads(box);
-    bindThreadActions();
+    maybeShowGroupTip();
   }
 
   function threadItemHtml(item, index, prefix) {
@@ -924,8 +1002,8 @@ input:focus, textarea:focus, button:focus { outline: none; }
       + '<div class="thread-content-wrap"><div class="thread-text">' + linkify(item.text || '') + '</div></div>'
       + '<div class="thread-meta-row">'
       + '<span class="thread-date">' + dateStr + '</span>'
-      + '<span class="thread-icon-btn" onclick="editThread(\'' + prefix + '\',' + index + ')">✎</span>'
-      + '<span class="thread-icon-btn" onclick="delThread(\'' + prefix + '\',' + index + ')">×</span>'
+      + '<span class="thread-icon-btn" onclick="editThread(\'' + prefix + '\',' + index + ')"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></span>'
+      + '<span class="thread-icon-btn" onclick="delThread(\'' + prefix + '\',' + index + ')"><svg viewBox="0 0 24 24"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg></span>'
       + '</div>'
       + imgHtml
       + '</div>';
@@ -941,23 +1019,39 @@ input:focus, textarea:focus, button:focus { outline: none; }
     var html = '';
     box.groups.forEach(function(g, gi) {
       html += '<div class="group-section" data-gi="' + gi + '">'
-        + '<div class="group-head" onclick="toggleGroup(' + gi + ')">'
-        + '<span class="group-name">' + escapeHtml(g.name) + ' <span class="group-count">(' + (g.threads ? g.threads.length : 0) + ')</span></span>'
+        + '<div class="group-head">'
+        + '<span class="group-name" onclick="editGroupName(' + gi + ', event)">' + escapeHtml(g.name) + ' <span class="group-count">(' + (g.threads ? g.threads.length : 0) + ')</span></span>'
         + '<span class="group-del" onclick="delGroup(' + gi + ', event)">删除</span>'
         + '</div>'
         + '<div class="group-body" id="groupBody' + gi + '">'
         + (g.threads || []).map(function(item, i) { return threadItemHtml(item, i, 'g' + gi); }).join('')
-        + '<div class="add-to-group-btn" onclick="addToGroup(' + gi + ')">+ 加到这一组</div>'
+        + '<div class="add-to-group-btn" onclick="addToGroup(' + gi + ')">+</div>'
         + '</div></div>';
     });
     html += '<div class="new-group-btn" onclick="addGroup()">+ 新建分组</div>';
     $('groupWrap').innerHTML = html;
+    // 绑定组头点击展开（点组名和删除以外区域）
+    $('groupWrap').querySelectorAll('.group-head').forEach(function(head, gi) {
+      head.addEventListener('click', function(e) {
+        if (e.target.closest('.group-name') || e.target.closest('.group-del')) return;
+        var body = $('groupBody' + gi);
+        if (!body) return;
+        body.style.display = body.style.display === 'none' ? 'block' : 'none';
+      });
+    });
   }
 
-  window.toggleGroup = function(gi) {
-    var body = $('groupBody' + gi);
-    if (!body) return;
-    body.style.display = body.style.display === 'none' ? 'block' : 'none';
+  window.editGroupName = function(gi, event) {
+    if (event) event.stopPropagation();
+    var box = imagineBoxes.find(x => x.id === currentBoxId);
+    if (!box || !box.groups || !box.groups[gi]) return;
+    var g = box.groups[gi];
+    var newName = prompt('修改分组名称：', g.name);
+    if (newName !== null && newName.trim() !== '') {
+      g.name = newName.trim();
+      saveImagine();
+      renderBoxDetail(box);
+    }
   };
 
   window.addGroup = function() {
@@ -982,12 +1076,11 @@ input:focus, textarea:focus, button:focus { outline: none; }
     renderBoxDetail(box);
   };
 
-  // 方案 A：把当前输入框内容加到指定分组
   window.addToGroup = function(gi) {
     var box = imagineBoxes.find(x => x.id === currentBoxId);
     if (!box || !box.groups || !box.groups[gi]) return;
     var text = $('detailText').value.trim();
-    var files = Array.prototype.slice.call($('detailImage').files || []);
+    var files = pendingFiles.slice();
     if (!text && !files.length) { showToast('先写点什么或选张图'); return; }
     if (files.length > 6) { showToast('最多一次 6 张图片'); files = files.slice(0, 6); }
     processImages(files, function(images) {
@@ -996,7 +1089,9 @@ input:focus, textarea:focus, button:focus { outline: none; }
       box.groups[gi].threads.push({ text: text, images: images, date: dateStr });
       saveImagine();
       $('detailText').value = '';
+      pendingFiles = [];
       $('detailImage').value = '';
+      renderImgPreview();
       renderBoxDetail(box);
     });
   };
@@ -1024,8 +1119,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
       reader.readAsDataURL(file);
     });
   }
-
-  function bindThreadActions() {}
 
   function findThread(prefix, index) {
     var box = imagineBoxes.find(x => x.id === currentBoxId);
@@ -1056,7 +1149,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     renderBoxDetail(t.box);
   };
 
-  // ================= 大图预览（修复滑动卡住） =================
+  // ================= 大图预览 =================
   var lightboxImages = [];
   var lightboxIndex = 0;
   window.openLightbox = function(prefix, index, imgIndex) {
@@ -1086,8 +1179,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
   function setLightboxIndex(idx, animate) {
     lightboxIndex = Math.max(0, Math.min(idx, lightboxImages.length - 1));
     var track = $('lightboxTrack');
-    if (animate) track.style.transition = 'transform 0.25s ease';
-    else track.style.transition = 'none';
+    track.style.transition = animate ? 'transform 0.25s ease' : 'none';
     track.style.transform = 'translateX(' + (-lightboxIndex * 100) + '%)';
     var dots = $('lightboxDots').children;
     for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('active', i === lightboxIndex);
@@ -1099,14 +1191,13 @@ input:focus, textarea:focus, button:focus { outline: none; }
 
   (function bindLightboxSwipe() {
     var track = $('lightboxTrack');
-    var startX = 0, startY = 0, lastX = 0, dragging = false, moved = false;
+    var startX = 0, startY = 0, lastX = 0, dragging = false;
     track.addEventListener('touchstart', function(e) {
       if (e.touches.length !== 1) return;
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
       lastX = startX;
       dragging = true;
-      moved = false;
       track.style.transition = 'none';
     }, { passive: true });
     track.addEventListener('touchmove', function(e) {
@@ -1114,10 +1205,9 @@ input:focus, textarea:focus, button:focus { outline: none; }
       var x = e.touches[0].clientX;
       var dx = x - startX;
       lastX = x;
-      if (Math.abs(dx) > 8) moved = true;
       track.style.transform = 'translateX(calc(' + (-lightboxIndex * 100) + '% + ' + dx + 'px))';
     }, { passive: true });
-    track.addEventListener('touchend', function(e) {
+    track.addEventListener('touchend', function() {
       if (!dragging) return;
       dragging = false;
       var dx = lastX - startX;
@@ -1135,13 +1225,48 @@ input:focus, textarea:focus, button:focus { outline: none; }
     if (box) { box.core = this.value; saveImagine(); }
   });
 
+  // 图片选择 + 实时小预览
+  $('detailImage').addEventListener('change', function(e) {
+    var files = Array.prototype.slice.call(e.target.files || []);
+    if (!files.length) return;
+    var total = pendingFiles.length + files.length;
+    if (total > 6) {
+      showToast('最多一次 6 张图片');
+      files = files.slice(0, 6 - pendingFiles.length);
+    }
+    pendingFiles = pendingFiles.concat(files);
+    e.target.value = '';
+    renderImgPreview();
+  });
+
+  function renderImgPreview() {
+    var row = $('imgPreviewRow');
+    row.innerHTML = '';
+    pendingFiles.forEach(function(file, idx) {
+      var url = URL.createObjectURL(file);
+      var item = document.createElement('div');
+      item.className = 'img-preview-item';
+      var img = document.createElement('img');
+      img.src = url;
+      var rm = document.createElement('div');
+      rm.className = 'img-preview-remove';
+      rm.textContent = '×';
+      rm.onclick = function() {
+        pendingFiles.splice(idx, 1);
+        renderImgPreview();
+      };
+      item.appendChild(img);
+      item.appendChild(rm);
+      row.appendChild(item);
+    });
+  }
+
   $('addDetailBtn').addEventListener('click', function() {
     var box = imagineBoxes.find(x => x.id === currentBoxId);
     if (!box) return;
     var text = $('detailText').value.trim();
-    var files = Array.prototype.slice.call($('detailImage').files || []);
+    var files = pendingFiles.slice();
     if (!text && !files.length) return;
-    if (files.length > 6) { showToast('最多一次 6 张图片'); files = files.slice(0, 6); }
     processImages(files, function(images) {
       var now = new Date();
       var dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
@@ -1149,7 +1274,8 @@ input:focus, textarea:focus, button:focus { outline: none; }
       box.details.push({ text: text, images: images, date: dateStr });
       saveImagine();
       $('detailText').value = '';
-      $('detailImage').value = '';
+      pendingFiles = [];
+      renderImgPreview();
       renderBoxDetail(box);
     });
   });
@@ -1157,6 +1283,12 @@ input:focus, textarea:focus, button:focus { outline: none; }
   $('editBoxTitleBtn').addEventListener('click', function() {
     $('boxTitleInput').disabled = false;
     $('boxTitleInput').focus();
+  });
+  $('boxTitleInput').addEventListener('click', function() {
+    if (this.disabled) {
+      this.disabled = false;
+      this.focus();
+    }
   });
 
   $('boxTitleInput').addEventListener('blur', function() {
