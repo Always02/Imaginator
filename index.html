@@ -139,13 +139,17 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .thread-content-wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .thread-text { font-size: 15px; line-height: 1.6; white-space: pre-wrap; flex: 1; word-break: break-word; }
 .thread-text a { color: #0066cc; text-decoration: underline; }
-/* meta 行：图标槽贴左、日期贴右，固定占位，位置不变 */
-.thread-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
+/* meta 行：日期右侧图标，点 thread 显示，短 thread 时图标与正文留出间距 */
+.thread-meta-row { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 10px; min-height: 18px; }
+.thread-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
 .thread-icon-slot { display: inline-flex; gap: 12px; visibility: hidden; }
 .thread-item.show-icons .thread-icon-slot { visibility: visible; }
 .thread-icon-btn { cursor: pointer; color: #bbb; padding: 0 2px; line-height: 1; display: inline-flex; align-items: center; }
 .thread-icon-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
-.thread-date { font-size: 11px; color: var(--muted); white-space: nowrap; margin-left: auto; }
+/* thread 内联编辑 */
+.thread-inline-edit { width: 100%; border: none; background: var(--soft); border-radius: 10px; padding: 10px 12px; font-size: 15px; line-height: 1.6; resize: vertical; min-height: 60px; }
+.thread-inline-actions { display: flex; justify-content: flex-end; gap: 14px; margin-top: 6px; font-size: 13px; color: var(--muted); }
+.thread-inline-actions span { cursor: pointer; }
 /* 图片网格 */
 .thread-imgs { display: grid; gap: 4px; margin-top: 8px; max-width: 340px; }
 .thread-imgs.cols-1 { grid-template-columns: 1fr; }
@@ -163,15 +167,19 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .lightbox-dots { position: absolute; bottom: 24px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; z-index: 2; }
 .lightbox-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); }
 .lightbox-dots span.active { background: #fff; }
-/* 分组 */
-.group-section { margin-bottom: 6px; position: relative; }
-.group-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); }
-.group-name { font-size: 14px; font-weight: 700; color: var(--ink); cursor: text; }
-.group-count { font-size: 12px; color: var(--muted); font-weight: 400; }
-.group-del { font-size: 12px; color: #ccc; margin-left: 10px; cursor: pointer; }
-.group-body { padding-top: 4px; position: relative; }
+/* 分组 B：弱化标题式 */
+.new-group-btn { font-size: 12px; color: #bbb; padding: 8px 0 12px; cursor: pointer; }
+.group-section { margin-bottom: 10px; }
+.group-head { display: flex; align-items: center; justify-content: flex-start; gap: 6px; padding: 6px 0; }
+.group-tri { font-size: 9px; color: #ccc; width: 12px; text-align: center; transition: transform 0.2s ease; }
+.group-tri.open { transform: rotate(90deg); }
+.group-name { font-size: 12.5px; font-weight: 600; color: #999; letter-spacing: 0.05em; cursor: text; }
+.group-count { font-size: 11px; color: #bbb; font-weight: 400; margin-left: 4px; }
+.group-del { font-size: 11px; color: #ccc; margin-left: 8px; cursor: pointer; visibility: hidden; }
+.group-head.editing .group-del { visibility: visible; }
+.group-name-input { font-size: 12.5px; font-weight: 600; color: #999; border: none; border-bottom: 1px solid #ccc; background: transparent; padding: 0; width: 100px; }
+.group-body { padding-top: 2px; }
 .group-body .thread-item { margin-left: 0; }
-.new-group-btn { font-size: 12px; color: #bbb; padding: 10px 0; cursor: pointer; }
 /* 发布区分组选择 */
 .post-group-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--muted); }
 .post-group-select { font-size: 13px; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; background: var(--white); }
@@ -205,6 +213,22 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .group-sheet-item { padding: 14px 8px; font-size: 16px; border-bottom: 1px solid var(--line); cursor: pointer; text-align: center; }
 .group-sheet-item:last-child { border-bottom: none; }
 .group-sheet-cancel { padding: 14px 8px; font-size: 15px; color: var(--muted); text-align: center; cursor: pointer; margin-top: 6px; }
+/* 自定义日历弹层 */
+#calSheet { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 18px 18px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.18); z-index: 9700; padding: 18px 20px 28px; transform: translateY(100%); transition: transform 0.28s ease; }
+#calSheet.show { transform: translateY(0); }
+.calsheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.calsheet-title { font-size: 15px; font-weight: 700; }
+.calsheet-nav { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; color: #999; cursor: pointer; }
+.calsheet-nav svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.calsheet-week { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 11px; color: #bbb; margin-bottom: 6px; }
+.calsheet-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.calsheet-cell { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 50%; cursor: pointer; color: var(--ink); }
+.calsheet-cell.empty { cursor: default; }
+.calsheet-cell.today { color: #999; }
+.calsheet-cell.sel { background: var(--ink); color: #fff; }
+.calsheet-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+.calsheet-today { font-size: 13px; color: var(--muted); cursor: pointer; padding: 6px 10px; }
+.calsheet-done { font-size: 14px; font-weight: 600; color: var(--ink); cursor: pointer; padding: 6px 14px; }
 .fab { position: fixed; right: 20px; bottom: 40px; width: 56px; height: 56px; background: var(--ink); border-radius: 50%; z-index: 800; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; cursor: grab; touch-action: none; transition: transform 0.1s, left 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .fab:active { cursor: grabbing; transform: scale(0.95); }
 .fab svg { width: 24px; height: 24px; fill: none; stroke: var(--white); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -227,6 +251,16 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .profile-actions { display: flex; gap: 10px; }
 .profile-actions .add-submit { flex: 1; }
 .profile-cancel { flex: 1; padding: 12px; border: 1px solid var(--line); border-radius: 15px; font-size: 16px; color: var(--muted); background: var(--white); }
+/* 日记写作页优化 */
+.date-display { display: block; text-align: center; font-size: 16px; font-weight: 600; padding: 10px 0; cursor: pointer; color: var(--ink); }
+.write-row { display: flex; gap: 12px; }
+.write-row .form-group { flex: 1; }
+.inline-edit { border: none; border-bottom: 1px dashed var(--line); background: transparent; padding: 2px 0; font-size: 15px; width: 100%; }
+.inline-edit:focus { border-bottom-color: var(--ink); }
+.events-wrap { position: relative; }
+/* 开发者日志 */
+.dev-log p { font-size: 13px; line-height: 1.9; color: #555; text-align: left; margin: 0 0 12px; }
+.dev-ver { font-size: 12px; color: #999; margin-bottom: 6px; text-align: left; }
 </style>
 </head>
 <body>
@@ -284,11 +318,30 @@ input:focus, textarea:focus, button:focus { outline: none; }
       <button class="profile-cancel" id="cancelProfileBtn">取消</button>
       <button class="add-submit" id="saveProfileBtn">保存修改</button>
     </div>
-    <div>
-      <span class="reset-link" id="resetOnboardBtn">重置新手引导</span>
-      <span class="reset-link" id="clearWorldBtn">清空这个世界</span>
-    </div>
     <span class="data-note">数据只保存在这台设备，建议定期导出备份。</span>
+  </div>
+</div>
+
+<div id="dataOverlay" class="modal-overlay hidden">
+  <div class="modal-content">
+    <h2 style="margin-top:0;">数据</h2>
+    <div class="profile-actions" style="margin-bottom:14px;">
+      <button class="profile-cancel" id="dataExportBtn">导出</button>
+      <button class="profile-cancel" id="dataImportBtn">导入</button>
+    </div>
+    <span class="reset-link" id="resetOnboardBtn">重置新手引导</span>
+    <span class="reset-link" id="clearWorldBtn">清空这个世界</span>
+  </div>
+</div>
+
+<div id="devOverlay" class="modal-overlay hidden">
+  <div class="modal-content">
+    <h2 style="margin-top:0;">开发者</h2>
+    <div class="dev-log">
+      <div class="dev-ver">v1.0</div>
+      <p>完成开屏流程、来信、档案与日历过渡。日记支持分栏与智能书写、两端对齐、搜索与字数限制。想象页支持盒子、核心想象、thread 时间线、分组与移动到分组、多图网格与大图预览。全局改为自定义日历、内联编辑，新增数据导出导入、开发者日志与句子库扩充。</p>
+    </div>
+    <button class="add-submit" id="devCloseBtn" style="width:100%; padding:12px;">关闭</button>
   </div>
 </div>
 
@@ -316,9 +369,8 @@ input:focus, textarea:focus, button:focus { outline: none; }
     <div class="brand" id="brandBtn">ELSEWHERE</div>
     <div class="top-actions">
       <button class="plain-btn" id="profileBtn">档案</button>
-      <button class="plain-btn" id="exportBtn">导出</button>
-      <button class="plain-btn" id="importBtn">导入</button>
-      <input type="file" id="importFile" accept="application/json" hidden>
+      <button class="plain-btn" id="dataBtn">数据</button>
+      <button class="plain-btn" id="devBtn">开发者</button>
     </div>
   </header>
 
@@ -345,13 +397,15 @@ input:focus, textarea:focus, button:focus { outline: none; }
     </div>
 
     <div id="writeSubView" class="hidden">
-      <h2 id="formTitle" style="font-size:24px; margin-bottom:20px;">记下今天</h2>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <button type="button" class="plain-btn" id="backBtn" style="font-size:15px;">← 返回</button>
+        <h2 id="formTitle" style="font-size:18px; margin:0;">记下这天</h2>
+        <span style="width:44px;"></span>
+      </div>
       <form id="entryForm">
         <input type="hidden" id="entryId">
-        <div class="form-group">
-          <label>日期</label>
-          <input type="date" id="date" class="form-input" required>
-        </div>
+        <div class="date-display" id="dateDisplay">2026年10月23日</div>
+        <input type="hidden" id="date" value="2026-10-23">
 
         <div class="mode-switch">
           <button type="button" class="mode-btn active" id="modeNormal">分栏填写</button>
@@ -359,19 +413,32 @@ input:focus, textarea:focus, button:focus { outline: none; }
         </div>
 
         <div id="normalInputs">
-          <div class="form-group"><label>在哪里</label><input type="text" id="place" class="form-input" placeholder="家、公司、咖啡馆……"></div>
-          <div class="form-group"><label>吃了什么</label><input type="text" id="food" class="form-input" placeholder="晚餐、甜点……"></div>
-          <div class="form-group"><label>感觉</label><input type="text" id="mood" class="form-input" placeholder="平静、疲惫……"></div>
+          <div class="write-row">
+            <div class="form-group">
+              <label>在哪里</label>
+              <input type="text" id="place" class="inline-edit" placeholder="家、公司、咖啡馆……">
+            </div>
+            <div class="form-group">
+              <label>吃了什么</label>
+              <input type="text" id="food" class="inline-edit" placeholder="晚餐、甜点……">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>感觉</label>
+            <input type="text" id="mood" class="inline-edit" placeholder="平静、疲惫……">
+          </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group events-wrap">
           <label id="eventsLabel">发生了什么</label>
-          <textarea id="events" class="form-textarea" placeholder="先随便写点什么……" maxlength="1000"></textarea>
+          <textarea id="events" class="form-textarea" placeholder="先随便写点什么……" maxlength="1000" style="min-height:120px;"></textarea>
+          <span class="expand-btn" id="eventsExpandBtn" style="bottom:8px;">
+            <svg viewBox="0 0 24 24"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg>
+          </span>
         </div>
 
         <div style="display:flex; gap:10px;">
           <button type="submit" class="add-submit" style="padding:12px 24px; font-size:16px;">保存记录</button>
-          <button type="button" class="plain-btn" id="backBtn" style="border:1px solid var(--line); border-radius:20px; padding:10px 20px;">返回</button>
         </div>
       </form>
     </div>
@@ -381,7 +448,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     <div id="imagineHub">
       <div class="hero">
         <h1 id="imagineTitle">Ta的世界，不止现在。</h1>
-        <p>在脑海中构建未来的居所、穿着、职业与爱好。把这些渴望收集起来。</p>
+        <p>在脑海中构建未来的居所、穿着、职业与爱好。<br>把这些渴望收集起来。</p>
       </div>
       <div class="box-list" id="boxList"></div>
       <div class="add-box-btn" id="addBoxBtn">添加新想象</div>
@@ -426,13 +493,29 @@ input:focus, textarea:focus, button:focus { outline: none; }
 
 <div id="expandSheet">
   <div class="expand-head">
-    <span class="expand-title">添砖加瓦</span>
+    <span class="expand-title" id="expandTitle">添砖加瓦</span>
     <span class="expand-shrink" id="expandShrink">
-      <svg viewBox="0 0 24 24"><path d="M9 3H3v6"></path><path d="M15 21h6v-6"></path><path d="M3 3l7 7"></path><path d="M21 21l-7-7"></path></svg>
+      <svg viewBox="0 0 24 24"><path d="M4 14l8 8 8-8"></path></svg>
     </span>
   </div>
   <textarea id="expandTextarea" class="expand-textarea" maxlength="1500"></textarea>
   <div class="expand-counter" id="expandCounter">0 / 1500</div>
+</div>
+
+<div id="calSheet">
+  <div class="calsheet-head">
+    <span class="calsheet-nav" id="calPrev"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"></path></svg></span>
+    <span class="calsheet-title" id="calTitle">2026年10月</span>
+    <span class="calsheet-nav" id="calNext"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg></span>
+  </div>
+  <div class="calsheet-week">
+    <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+  </div>
+  <div class="calsheet-grid" id="calGrid"></div>
+  <div class="calsheet-foot">
+    <span class="calsheet-today" id="calToday">今天</span>
+    <span class="calsheet-done" id="calDone">完成</span>
+  </div>
 </div>
 
 <div class="popup-menu" id="boxTypeMenu">
@@ -468,6 +551,8 @@ input:focus, textarea:focus, button:focus { outline: none; }
   var KEY_ONBOARDED = 'herLittleAtlas.onboarded.v8';
   var KEY_CORE_TIP = 'herLittleAtlas.coreTip.v8';
   var KEY_GROUP_TIP2 = 'herLittleAtlas.groupTip2.v8';
+  var KEY_DRAFT_DIARY = 'herLittleAtlas.draft.diary.v8';
+  var KEY_DRAFT_THREAD = 'herLittleAtlas.draft.thread.v8';
   var $ = function(id) { return document.getElementById(id); };
 
   var entries = [];
@@ -480,6 +565,8 @@ input:focus, textarea:focus, button:focus { outline: none; }
   var introDone = false;
   var pendingFiles = [];
   var moveContext = null;
+  var expandTarget = 'thread';
+  var calYear = 0, calMonth = 0, calSel = '';
 
   var presetEntry = {
     id: 'e-preset-rain',
@@ -496,8 +583,31 @@ input:focus, textarea:focus, button:focus { outline: none; }
     { text: "希望是本无所谓有，无所谓无的。这正如地上的路；其实地上本没有路，走的人多了，也便成了路。", author: "—— 鲁迅" },
     { text: "我们读诗写诗，并不是因为它们好玩，而是因为我们是人类的一份子。人类是充满激情的。", author: "—— 电影《死亡诗社》" },
     { text: "如果冬天来了，春天还会远吗？", author: "—— 雪莱" },
-    { text: "对未来的真正慷慨，是把一切都献给现在。", author: "—— 加缪" }
-  ];
+    { text: "对未来的真正慷慨，是把一切都献给现在。", author: "—— 加缪" },
+    { text: "人是为了活着本身而活着，而不是为了活着之外的任何事物而活着。", author: "—— 余华《活着》" },
+    { text: "我们一路奋战，不是为了改变世界，而是为了不让世界改变我们。", author: "—— 电影《熔炉》" },
+    { text: "所有的告别，都是对生命的某种挥霍。", author: "—— 电影《少年派的奇幻漂流》" },
+    { text: "在隆冬，我终于知道，我身上有一个不可战胜的夏天。", author: "—— 加缪《重返蒂帕札》" },
+    { text: "不要走在我前面，我可能跟不上；不要走在我后面，我可能不会引路；请走在我身边，做我的朋友。", author: "—— 加缪" },
+    { text: "当你凝视深渊时，深渊也在凝视着你。", author: "—— 尼采《善恶的彼岸》" },
+    { text: "那些听不见音乐的人，认为跳舞的人疯了。", author: "—— 尼采" },
+    { text: "你活着的时候应付不了生活，就应该用一只手挡开点笼罩着你的命运的绝望，但同时，你可以用另一只手草草记下你在废墟中看到的一切。", author: "—— 卡夫卡日记" },
+    { text: "我用尽了全力，过着平凡的一生。", author: "—— 毛姆《月亮与六便士》" },
+    { text: "未来走到我们中间，为了能在它发生之前很久就先行改变我们。", author: "—— 里尔克" },
+    { text: "我怕配不上自己所受的苦难。", author: "—— 陀思妥耶夫斯基" },
+    { text: "要爱具体的人，不要爱抽象的人；要爱生活本身，胜于爱生活的意义。", author: "—— 陀思妥耶夫斯基《卡拉马佐夫兄弟》" },
+    { text: "我的心略大于整个宇宙。", author: "—— 佩索阿《惶然录》" },
+    { text: "我们都生活在阴沟里，但仍有人仰望星空。", author: "—— 王尔德《温德米尔夫人的扇子》" },
+    { text: "他人即地狱。", author: "—— 萨特《禁闭》" },
+    { text: "我步入丛林，因为我希望活得有意义……我希望活得深刻，汲取生命所有的精髓。", author: "—— 梭罗《瓦尔登湖》" },
+    { text: "希望你们也找到自己的路，找到自己的步伐、步调，任何方向，任何东西都行。", author: "—— 电影《死亡诗社》" },
+    { text: "行到水穷处，坐看云起时。", author: "—— 王维《终南别业》" },
+    { text: "落花无言，人淡如菊。", author: "—— 司空图《诗品二十四则·典雅》" },
+    { text: "醉后不知天在水，满船清梦压星河。", author: "—— 唐温如《题龙阳县青草湖》" },
+    { text: "人闲桂花落，夜静春山空。月出惊山鸟，时鸣春涧中。", author: "—— 王维《鸟鸣涧》" },
+    { text: "松月生夜凉，风泉满清听。", author: "—— 孟浩然《宿业师山房期丁大不至》" },
+    { text: "半窗山月白，一枕竹风凉。", author: "—— 释子益" }
+ ];
 
   var boxPrompts = {
     '房子': '你理想中的房子在哪？户型多大？窗外是什么风景？',
@@ -514,6 +624,18 @@ input:focus, textarea:focus, button:focus { outline: none; }
     "你在想什么呢？",
     "在到处之间找我。"
   ];
+
+  var solarTerms = {
+    '01-05':'小寒','01-20':'大寒','02-04':'立春','02-19':'雨水','03-05':'惊蛰','03-20':'春分',
+    '04-05':'清明','04-20':'谷雨','05-05':'立夏','05-21':'小满','06-06':'芒种','06-21':'夏至',
+    '07-07':'小暑','07-23':'大暑','08-08':'立秋','08-23':'处暑','09-08':'白露','09-23':'秋分',
+    '10-08':'寒露','10-23':'霜降','11-07':'立冬','11-22':'小雪','12-07':'大雪','12-22':'冬至'
+  };
+  var festivals = {
+    '01-01':'元旦','02-14':'情人节','03-08':'妇女节','04-01':'愚人节','05-01':'劳动节','05-04':'青年节',
+    '06-01':'儿童节','07-01':'建党节','08-01':'建军节','09-10':'教师节','10-01':'国庆节',
+    '12-24':'平安夜','12-25':'圣诞节','04-23':'世界读书日','10-24':'联合国日','12-01':'世界艾滋病日'
+  };
 
   // ================= 初始化 =================
   window.addEventListener('load', function() {
@@ -588,6 +710,21 @@ input:focus, textarea:focus, button:focus { outline: none; }
     $('profileOverlay').classList.add('hidden');
   });
 
+  $('dataBtn').addEventListener('click', function() {
+    $('dataOverlay').classList.remove('hidden');
+  });
+  $('dataOverlay').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.add('hidden');
+  });
+  $('dataExportBtn').addEventListener('click', function() {
+    $('dataOverlay').classList.add('hidden');
+    exportData();
+  });
+  $('dataImportBtn').addEventListener('click', function() {
+    $('dataOverlay').classList.add('hidden');
+    $('importFile').click();
+  });
+
   $('resetOnboardBtn').addEventListener('click', function() {
     if (!confirm('重置新手引导？下次打开会重新看到开场和来信。')) return;
     localStorage.removeItem(KEY_ONBOARDED);
@@ -600,6 +737,13 @@ input:focus, textarea:focus, button:focus { outline: none; }
       if (k.indexOf('herLittleAtlas.') === 0) localStorage.removeItem(k);
     });
     location.reload();
+  });
+
+  $('devBtn').addEventListener('click', function() {
+    $('devOverlay').classList.remove('hidden');
+  });
+  $('devCloseBtn').addEventListener('click', function() {
+    $('devOverlay').classList.add('hidden');
   });
 
   function updatePronouns() {
@@ -710,11 +854,10 @@ input:focus, textarea:focus, button:focus { outline: none; }
     var months = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
     $('calMonth').textContent = months[d.getMonth()] + " " + d.getFullYear();
     $('calDay').textContent = d.getDate();
-    var m = d.getMonth() + 1;
-    var day = d.getDate();
-    var festival = "宜记录，宜想象";
-    if (m === 10 && day === 24) festival = "霜降";
-    if (m === 1 && day === 1) festival = "元旦";
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    var key = m + '-' + day;
+    var festival = solarTerms[key] || festivals[key] || "宜记录，宜想象";
     $('calFestival').textContent = festival;
     var q = quotes[Math.floor(Math.random() * quotes.length)];
     $('calQuote').textContent = q.text;
@@ -747,7 +890,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     toastTimer = setTimeout(function() { el.classList.remove('show'); }, 2000);
   }
 
-  // ================= 链接封装 =================
   function escapeHtml(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
@@ -792,6 +934,12 @@ input:focus, textarea:focus, button:focus { outline: none; }
     return d.toLocaleDateString('zh-CN', {year:'numeric', month:'long', day:'numeric'});
   }
 
+  function totalThreadCount(box) {
+    var n = box.details ? box.details.length : 0;
+    if (box.groups) box.groups.forEach(function(g) { n += (g.threads ? g.threads.length : 0); });
+    return n;
+  }
+
   function renderDiary() {
     $('daysCount').textContent = entries.length;
     $('entriesCount').textContent = entries.length;
@@ -833,15 +981,113 @@ input:focus, textarea:focus, button:focus { outline: none; }
     renderDiary();
   });
 
-  $('fabBtn').addEventListener('click', function() {
+  // ================= 自定义日历 =================
+  function openCalSheet() {
+    var v = $('date').value || new Date().toISOString().split('T')[0];
+    var parts = v.split('-');
+    calYear = parseInt(parts[0], 10);
+    calMonth = parseInt(parts[1], 10) - 1;
+    calSel = v;
+    renderCal();
+    $('calSheet').classList.add('show');
+  }
+
+  function renderCal() {
+    $('calTitle').textContent = calYear + '年' + (calMonth + 1) + '月';
+    var first = new Date(calYear, calMonth, 1);
+    var startWeek = (first.getDay() + 6) % 7; // 周一开头
+    var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+    var todayStr = new Date().toISOString().split('T')[0];
+    var html = '';
+    for (var i = 0; i < startWeek; i++) html += '<div class="calsheet-cell empty"></div>';
+    for (var d = 1; d <= daysInMonth; d++) {
+      var ds = calYear + '-' + String(calMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+      var cls = 'calsheet-cell';
+      if (ds === todayStr) cls += ' today';
+      if (ds === calSel) cls += ' sel';
+      html += '<div class="' + cls + '" data-date="' + ds + '">' + d + '</div>';
+    }
+    $('calGrid').innerHTML = html;
+    $('calGrid').querySelectorAll('.calsheet-cell[data-date]').forEach(function(cell) {
+      cell.addEventListener('click', function() {
+        calSel = this.getAttribute('data-date');
+        renderCal();
+      });
+    });
+  }
+
+  $('calPrev').addEventListener('click', function() {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderCal();
+  });
+  $('calNext').addEventListener('click', function() {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    renderCal();
+  });
+  $('calToday').addEventListener('click', function() {
+    var t = new Date();
+    calYear = t.getFullYear(); calMonth = t.getMonth();
+    calSel = t.toISOString().split('T')[0];
+    renderCal();
+  });
+  $('calDone').addEventListener('click', function() {
+    if (calSel) {
+      $('date').value = calSel;
+      $('dateDisplay').textContent = formatDate(calSel);
+    }
+    $('calSheet').classList.remove('show');
+  });
+
+  $('dateDisplay').addEventListener('click', openCalSheet);
+
+  // ================= 日记写作 =================
+  function openWrite(entry) {
     $('entryForm').reset();
-    $('entryId').value = '';
-    $('date').value = new Date().toISOString().split('T')[0];
-    $('formTitle').textContent = '记下今天';
+    if (entry) {
+      $('entryId').value = entry.id;
+      $('date').value = entry.date;
+      $('place').value = entry.place || '';
+      $('food').value = entry.food || '';
+      $('mood').value = entry.mood || '';
+      $('events').value = entry.events || '';
+      $('formTitle').textContent = '编辑记录';
+    } else {
+      $('entryId').value = '';
+      var draft = loadDiaryDraft();
+      var today = new Date().toISOString().split('T')[0];
+      $('date').value = draft.date || today;
+      $('place').value = draft.place || '';
+      $('food').value = draft.food || '';
+      $('mood').value = draft.mood || '';
+      $('events').value = draft.events || '';
+      $('formTitle').textContent = '记下这天';
+    }
+    $('dateDisplay').textContent = formatDate($('date').value);
+    switchMode('normal');
     $('diarySubView').classList.add('hidden');
     $('writeSubView').classList.remove('hidden');
     updateFabVisibility();
+  }
+
+  function loadDiaryDraft() {
+    try { return JSON.parse(localStorage.getItem(KEY_DRAFT_DIARY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveDiaryDraft() {
+    var d = {
+      date: $('date').value, place: $('place').value, food: $('food').value,
+      mood: $('mood').value, events: $('events').value
+    };
+    localStorage.setItem(KEY_DRAFT_DIARY, JSON.stringify(d));
+  }
+  function clearDiaryDraft() { localStorage.removeItem(KEY_DRAFT_DIARY); }
+
+  ['place','food','mood','events'].forEach(function(id) {
+    $(id).addEventListener('input', saveDiaryDraft);
   });
+
+  $('fabBtn').addEventListener('click', function() { openWrite(null); });
 
   $('backBtn').addEventListener('click', function() {
     $('writeSubView').classList.add('hidden');
@@ -889,7 +1135,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     var obj = { id: id, date: $('date').value, place: finalPlace, food: finalFood, mood: finalMood, events: finalEvents };
     var idx = entries.findIndex(x => x.id === id);
     if (idx > -1) entries[idx] = obj; else entries.push(obj);
-    saveDiary(); renderDiary();
+    saveDiary(); clearDiaryDraft(); renderDiary();
     $('backBtn').click();
     showToast('保存成功');
   });
@@ -897,17 +1143,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
   window.editEntry = function(id) {
     var e = entries.find(x => x.id === id);
     if (!e) return;
-    $('entryId').value = e.id;
-    $('date').value = e.date;
-    $('place').value = e.place || '';
-    $('food').value = e.food || '';
-    $('mood').value = e.mood || '';
-    $('events').value = e.events || '';
-    $('formTitle').textContent = '编辑记录';
-    $('diarySubView').classList.add('hidden');
-    $('writeSubView').classList.remove('hidden');
-    switchMode('normal');
-    updateFabVisibility();
+    openWrite(e);
   };
 
   window.deleteEntry = function(id) {
@@ -935,6 +1171,17 @@ input:focus, textarea:focus, button:focus { outline: none; }
   $('modeNormal').addEventListener('click', () => switchMode('normal'));
   $('modeSmart').addEventListener('click', () => switchMode('smart'));
 
+  // 事件框放大
+  $('eventsExpandBtn').addEventListener('click', function() {
+    expandTarget = 'events';
+    $('expandTitle').textContent = '发生了什么';
+    $('expandTextarea').maxLength = 1000;
+    $('expandTextarea').value = $('events').value;
+    $('expandCounter').textContent = $('events').value.length + ' / 1000';
+    $('expandSheet').classList.add('show');
+    setTimeout(function() { $('expandTextarea').focus(); }, 200);
+  });
+
   // ================= 想象渲染 =================
   function renderHub() {
     var html = imagineBoxes.map(function(box) {
@@ -942,7 +1189,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
         + '<div class="box-content">'
         + '<div onclick="openBox(\'' + box.id + '\')" style="flex:1;">'
         + '<div class="box-title">' + escapeHtml(box.name) + '</div>'
-        + '<div class="box-desc">' + (box.details ? box.details.length : 0) + ' 条补充</div>'
+        + '<div class="box-desc">' + totalThreadCount(box) + ' 条想象</div>'
         + '</div>'
         + '<div onclick="openBox(\'' + box.id + '\')" style="font-size:22px; color:#ccc; padding-right:6px;">›</div>'
         + '</div>'
@@ -1021,10 +1268,24 @@ input:focus, textarea:focus, button:focus { outline: none; }
     if (!box.groups) box.groups = [];
     pendingFiles = [];
     renderImgPreview();
+    // 恢复该盒子草稿
+    var d = loadThreadDraft(id);
+    $('detailText').value = d.text || '';
     renderBoxDetail(box);
     updateFabVisibility();
     maybeShowCoreTip();
   };
+
+  function threadDraftKey(id) { return KEY_DRAFT_THREAD + '.' + id; }
+  function loadThreadDraft(id) {
+    try { return JSON.parse(localStorage.getItem(threadDraftKey(id)) || '{}'); } catch(e) { return {}; }
+  }
+  function saveThreadDraft() {
+    if (!currentBoxId) return;
+    localStorage.setItem(threadDraftKey(currentBoxId), JSON.stringify({ text: $('detailText').value }));
+  }
+  function clearThreadDraft(id) { localStorage.removeItem(threadDraftKey(id)); }
+  $('detailText').addEventListener('input', saveThreadDraft);
 
   function maybeShowCoreTip() {
     if (localStorage.getItem(KEY_CORE_TIP)) return;
@@ -1091,15 +1352,15 @@ input:focus, textarea:focus, button:focus { outline: none; }
     } else if (item.image) {
       imgHtml = '<div class="thread-imgs cols-1"><img src="' + item.image + '" class="thread-img" onclick="openLightbox(\'' + prefix + '\',' + index + ',0)"></div>';
     }
-    return '<div class="thread-item" onclick="toggleThreadIcons(this, event)">'
+    return '<div class="thread-item" onclick="toggleThreadIcons(this, event)" data-prefix="' + prefix + '" data-index="' + index + '">'
       + '<div class="thread-content-wrap"><div class="thread-text">' + linkify(item.text || '') + '</div></div>'
       + '<div class="thread-meta-row">'
+      + '<span class="thread-date">' + dateStr + '</span>'
       + '<span class="thread-icon-slot">'
       + '<span class="thread-icon-btn" onclick="editThread(\'' + prefix + '\',' + index + ', event)"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></span>'
       + '<span class="thread-icon-btn" onclick="openMoveSheet(\'' + prefix + '\',' + index + ', event)"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"></circle></svg></span>'
       + '<span class="thread-icon-btn" onclick="delThread(\'' + prefix + '\',' + index + ', event)"><svg viewBox="0 0 24 24"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg></span>'
       + '</span>'
-      + '<span class="thread-date">' + dateStr + '</span>'
       + '</div>'
       + imgHtml
       + '</div>';
@@ -1118,41 +1379,57 @@ input:focus, textarea:focus, button:focus { outline: none; }
   function renderGroups(box) {
     if (!box.groups) box.groups = [];
     var html = '';
+    // 新建分组放最上面
+    html += '<div class="new-group-btn" onclick="addGroup()">+ 新建分组</div>';
     box.groups.forEach(function(g, gi) {
       html += '<div class="group-section" data-gi="' + gi + '">'
-        + '<div class="group-head">'
-        + '<span class="group-name" onclick="editGroupName(' + gi + ', event)">' + escapeHtml(g.name) + ' <span class="group-count">(' + (g.threads ? g.threads.length : 0) + ')</span></span>'
+        + '<div class="group-head" data-gi="' + gi + '">'
+        + '<span class="group-tri open">▸</span>'
+        + '<span class="group-name" onclick="startEditGroup(' + gi + ', event)">' + escapeHtml(g.name) + '</span>'
+        + '<span class="group-count">· ' + (g.threads ? g.threads.length : 0) + '</span>'
         + '<span class="group-del" onclick="delGroup(' + gi + ', event)">删除</span>'
         + '</div>'
         + '<div class="group-body" id="groupBody' + gi + '">'
         + (g.threads || []).map(function(item, i) { return threadItemHtml(item, i, 'g' + gi); }).join('')
         + '</div></div>';
     });
-    html += '<div class="new-group-btn" onclick="addGroup()">+ 新建分组</div>';
     $('groupWrap').innerHTML = html;
-    $('groupWrap').querySelectorAll('.group-head').forEach(function(head, gi) {
+    $('groupWrap').querySelectorAll('.group-head').forEach(function(head) {
       head.addEventListener('click', function(e) {
-        if (e.target.closest('.group-name') || e.target.closest('.group-del')) return;
+        if (e.target.closest('.group-name') || e.target.closest('.group-del') || e.target.closest('input')) return;
+        var gi = head.getAttribute('data-gi');
         var body = $('groupBody' + gi);
+        var tri = head.querySelector('.group-tri');
         if (!body) return;
-        body.style.display = body.style.display === 'none' ? 'block' : 'none';
+        var isHidden = body.style.display === 'none';
+        body.style.display = isHidden ? 'block' : 'none';
+        if (tri) tri.classList.toggle('open', isHidden);
       });
     });
   }
 
-  window.editGroupName = function(gi, event) {
+  window.startEditGroup = function(gi, event) {
     if (event) event.stopPropagation();
     var box = imagineBoxes.find(x => x.id === currentBoxId);
     if (!box || !box.groups || !box.groups[gi]) return;
+    var head = $('groupWrap').querySelector('.group-head[data-gi="' + gi + '"]');
+    if (!head) return;
     var g = box.groups[gi];
-    var newName = prompt('修改分组名称（最多 8 字）：', g.name);
-    if (newName === null) return;
-    newName = newName.trim().slice(0, 8);
-    if (newName !== '') {
-      g.name = newName;
+    head.classList.add('editing');
+    head.innerHTML = '<span class="group-tri open">▸</span>'
+      + '<input class="group-name-input" maxlength="8" value="' + escapeHtml(g.name) + '">'
+      + '<span class="group-del" onclick="delGroup(' + gi + ', event)">删除</span>';
+    var input = head.querySelector('.group-name-input');
+    input.focus();
+    input.select();
+    var commit = function() {
+      var v = input.value.trim().slice(0, 8);
+      if (v) g.name = v;
       saveImagine();
       renderBoxDetail(box);
-    }
+    };
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', function(e) { if (e.key === 'Enter') input.blur(); });
   };
 
   window.addGroup = function() {
@@ -1172,7 +1449,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     var box = imagineBoxes.find(x => x.id === currentBoxId);
     if (!box || !box.groups) return;
     var g = box.groups[gi];
-    if (!confirm('删除分组「' + g.name + '」？组内 ' + (g.threads ? g.threads.length : 0) + ' 条补充也会一并删除。')) return;
+    if (!confirm('删除分组「' + g.name + '」？组内 ' + (g.threads ? g.threads.length : 0) + ' 条想象也会一并删除。')) return;
     box.groups.splice(gi, 1);
     saveImagine();
     renderBoxDetail(box);
@@ -1253,21 +1530,44 @@ input:focus, textarea:focus, button:focus { outline: none; }
     return { box: box, list: box.groups[gi].threads, index: index, item: box.groups[gi].threads[index] };
   }
 
+  // thread 内联编辑
   window.editThread = function(prefix, index, event) {
     if (event) event.stopPropagation();
     var t = findThread(prefix, index);
     if (!t) return;
-    var newText = prompt('修改内容（最多 1500 字）：', t.item.text);
-    if (newText === null) return;
-    newText = newText.trim().slice(0, 1500);
-    t.item.text = newText;
-    saveImagine();
-    renderBoxDetail(t.box);
+    var el = $('threadFeed').querySelector('.thread-item[data-prefix="' + prefix + '"][data-index="' + index + '"]')
+      || $('groupWrap').querySelector('.thread-item[data-prefix="' + prefix + '"][data-index="' + index + '"]');
+    if (!el) return;
+    var textDiv = el.querySelector('.thread-text');
+    var oldText = t.item.text || '';
+    var ta = document.createElement('textarea');
+    ta.className = 'thread-inline-edit';
+    ta.maxLength = 1500;
+    ta.value = oldText;
+    var actions = document.createElement('div');
+    actions.className = 'thread-inline-actions';
+    var cancel = document.createElement('span');
+    cancel.textContent = '取消';
+    var ok = document.createElement('span');
+    ok.textContent = '完成';
+    actions.appendChild(cancel);
+    actions.appendChild(ok);
+    textDiv.replaceWith(ta);
+    var meta = el.querySelector('.thread-meta-row');
+    meta.style.display = 'none';
+    ta.parentNode.insertBefore(actions, ta.nextSibling);
+    ta.focus();
+    cancel.addEventListener('click', function() { renderBoxDetail(t.box); });
+    ok.addEventListener('click', function() {
+      t.item.text = ta.value.trim().slice(0, 1500);
+      saveImagine();
+      renderBoxDetail(t.box);
+    });
   };
 
   window.delThread = function(prefix, index, event) {
     if (event) event.stopPropagation();
-    if (!confirm('删除这条补充吗？')) return;
+    if (!confirm('删除这条想象吗？')) return;
     var t = findThread(prefix, index);
     if (!t) return;
     t.list.splice(index, 1);
@@ -1351,22 +1651,31 @@ input:focus, textarea:focus, button:focus { outline: none; }
     if (box) { box.core = this.value; saveImagine(); }
   });
 
-  // ================= 放大填写 =================
+  // ================= 放大填写（双入口） =================
   $('expandBtn').addEventListener('click', function() {
-    var sheet = $('expandSheet');
+    expandTarget = 'thread';
+    $('expandTitle').textContent = '添砖加瓦';
+    $('expandTextarea').maxLength = 1500;
     $('expandTextarea').value = $('detailText').value;
-    $('expandCounter').textContent = $('expandTextarea').value.length + ' / 1500';
-    sheet.classList.add('show');
+    $('expandCounter').textContent = $('detailText').value.length + ' / 1500';
+    $('expandSheet').classList.add('show');
     setTimeout(function() { $('expandTextarea').focus(); }, 200);
   });
 
   $('expandShrink').addEventListener('click', function() {
-    $('detailText').value = $('expandTextarea').value;
+    if (expandTarget === 'events') {
+      $('events').value = $('expandTextarea').value.slice(0, 1000);
+      saveDiaryDraft();
+    } else {
+      $('detailText').value = $('expandTextarea').value;
+      saveThreadDraft();
+    }
     $('expandSheet').classList.remove('show');
   });
 
   $('expandTextarea').addEventListener('input', function() {
-    $('expandCounter').textContent = this.value.length + ' / 1500';
+    var max = expandTarget === 'events' ? 1000 : 1500;
+    $('expandCounter').textContent = this.value.length + ' / ' + max;
   });
 
   $('detailImage').addEventListener('change', function(e) {
@@ -1425,6 +1734,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
       }
       saveImagine();
       $('detailText').value = '';
+      clearThreadDraft(box.id);
       pendingFiles = [];
       $('detailImage').value = '';
       renderImgPreview();
@@ -1472,7 +1782,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
   });
 
   // ================= 导入导出 =================
-  $('exportBtn').addEventListener('click', function() {
+  function exportData() {
     var data = { profile: userProfile, diary: entries, imagine: imagineBoxes };
     var blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
     var a = document.createElement('a');
@@ -1480,11 +1790,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     a.download = '生活在别处_备份.json';
     a.click();
     showToast('导出成功');
-  });
-
-  $('importBtn').addEventListener('click', function() {
-    $('importFile').click();
-  });
+  }
 
   $('importFile').addEventListener('change', function(e) {
     var f = e.target.files[0]; if (!f) return;
