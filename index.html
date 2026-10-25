@@ -134,22 +134,22 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .group-bubble { left: 0; bottom: 100%; margin-bottom: 4px; }
 .group-bubble::after { content: ""; position: absolute; left: 12px; bottom: -4px; width: 8px; height: 8px; background: var(--ink); transform: rotate(45deg); }
 .thread-feed { display: flex; flex-direction: column; margin-bottom: 20px; }
-.thread-item { position: relative; padding: 15px 0 15px 20px; border-left: 1px solid #e0e0e0; margin-left: 5px; }
-.thread-item::before { content: ""; position: absolute; left: -4.5px; top: 22px; width: 8px; height: 8px; border-radius: 50%; background: var(--white); border: 1px solid var(--ink); }
+/* 方案 A：极简行式 */
+.thread-item { position: relative; padding: 16px 0 16px 20px; border-left: 1px solid #f0f0f0; margin-left: 5px; }
+.thread-item::before { content: ""; position: absolute; left: -4.5px; top: 23px; width: 8px; height: 8px; border-radius: 50%; background: var(--white); border: 1px solid var(--ink); }
 .thread-content-wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-.thread-text { font-size: 15px; line-height: 1.6; white-space: pre-wrap; flex: 1; word-break: break-word; }
+.thread-text { font-size: 15px; line-height: 1.7; white-space: pre-wrap; flex: 1; word-break: break-word; }
 .thread-text a { color: #0066cc; text-decoration: underline; }
-/* meta 行：日期右侧图标，点 thread 显示，短 thread 时图标与正文留出间距 */
-.thread-meta-row { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 10px; min-height: 18px; }
-.thread-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
-.thread-icon-slot { display: inline-flex; gap: 12px; visibility: hidden; }
-.thread-item.show-icons .thread-icon-slot { visibility: visible; }
-.thread-icon-btn { cursor: pointer; color: #bbb; padding: 0 2px; line-height: 1; display: inline-flex; align-items: center; }
+/* meta 行：日期靠右，点 thread 日期左移、图标出现 */
+.thread-meta-row { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 8px; min-height: 18px; }
+.thread-icon-slot { display: inline-flex; gap: 12px; width: 0; overflow: hidden; opacity: 0; transition: width 0.22s ease, opacity 0.22s ease; }
+.thread-item.show-icons .thread-icon-slot { width: 70px; opacity: 1; }
+.thread-icon-btn { cursor: pointer; color: #bbb; padding: 0 2px; line-height: 1; display: inline-flex; align-items: center; flex: 0 0 auto; }
 .thread-icon-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
-/* thread 内联编辑 */
-.thread-inline-edit { width: 100%; border: none; background: var(--soft); border-radius: 10px; padding: 10px 12px; font-size: 15px; line-height: 1.6; resize: vertical; min-height: 60px; }
-.thread-inline-actions { display: flex; justify-content: flex-end; gap: 14px; margin-top: 6px; font-size: 13px; color: var(--muted); }
-.thread-inline-actions span { cursor: pointer; }
+.thread-date { font-size: 11px; color: var(--muted); white-space: nowrap; transition: transform 0.22s ease; }
+.thread-item.show-icons .thread-date { transform: translateX(-4px); }
+/* thread 内联编辑：和 core 一样 */
+.thread-inline-edit { width: 100%; border: none; background: transparent; padding: 4px 0; font-size: 15px; line-height: 1.7; resize: vertical; min-height: 40px; color: var(--ink); }
 /* 图片网格 */
 .thread-imgs { display: grid; gap: 4px; margin-top: 8px; max-width: 340px; }
 .thread-imgs.cols-1 { grid-template-columns: 1fr; }
@@ -157,27 +157,31 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .thread-imgs.cols-3 { grid-template-columns: repeat(3, 1fr); }
 .thread-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 12px; border: 1px solid var(--line); cursor: pointer; display: block; }
 .thread-imgs.cols-1 .thread-img { aspect-ratio: 4 / 3; }
-/* 大图预览 */
-#lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9900; display: flex; align-items: center; justify-content: center; overflow: hidden; touch-action: pan-y; }
+/* 大图预览：左右箭头切换 */
+#lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9900; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 #lightbox.hidden { display: none !important; }
-.lightbox-track { display: flex; height: 100%; width: 100%; will-change: transform; }
+.lightbox-track { display: flex; height: 100%; width: 100%; transition: transform 0.25s ease; }
 .lightbox-slide { flex: 0 0 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .lightbox-slide img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px; -webkit-user-drag: none; }
-.lightbox-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.12); color: #fff; font-size: 22px; display: flex; align-items: center; justify-content: center; z-index: 2; }
-.lightbox-dots { position: absolute; bottom: 24px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; z-index: 2; }
+.lightbox-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.12); color: #fff; font-size: 22px; display: flex; align-items: center; justify-content: center; z-index: 3; }
+.lightbox-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); z-index: 3; cursor: pointer; }
+.lightbox-arrow.left { left: 8px; }
+.lightbox-arrow.right { right: 8px; }
+.lightbox-arrow svg { width: 26px; height: 26px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.lightbox-dots { position: absolute; bottom: 24px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; z-index: 3; }
 .lightbox-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); }
 .lightbox-dots span.active { background: #fff; }
-/* 分组 B：弱化标题式 */
+/* 分组 A */
 .new-group-btn { font-size: 12px; color: #bbb; padding: 8px 0 12px; cursor: pointer; }
-.group-section { margin-bottom: 10px; }
-.group-head { display: flex; align-items: center; justify-content: flex-start; gap: 6px; padding: 6px 0; }
+.group-section { margin-bottom: 8px; }
+.group-head { display: flex; align-items: center; justify-content: flex-start; gap: 6px; padding: 8px 0; }
 .group-tri { font-size: 9px; color: #ccc; width: 12px; text-align: center; transition: transform 0.2s ease; }
 .group-tri.open { transform: rotate(90deg); }
-.group-name { font-size: 12.5px; font-weight: 600; color: #999; letter-spacing: 0.05em; cursor: text; }
-.group-count { font-size: 11px; color: #bbb; font-weight: 400; margin-left: 4px; }
+.group-name { font-size: 14px; font-weight: 700; color: var(--ink); cursor: text; }
+.group-count { font-size: 12px; color: #bbb; font-weight: 400; margin-left: 2px; }
 .group-del { font-size: 11px; color: #ccc; margin-left: 8px; cursor: pointer; visibility: hidden; }
 .group-head.editing .group-del { visibility: visible; }
-.group-name-input { font-size: 12.5px; font-weight: 600; color: #999; border: none; border-bottom: 1px solid #ccc; background: transparent; padding: 0; width: 100px; }
+.group-name-input { font-size: 14px; font-weight: 700; color: var(--ink); border: none; border-bottom: 1px solid #ccc; background: transparent; padding: 0; width: 100px; }
 .group-body { padding-top: 2px; }
 .group-body .thread-item { margin-left: 0; }
 /* 发布区分组选择 */
@@ -229,7 +233,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .calsheet-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
 .calsheet-today { font-size: 13px; color: var(--muted); cursor: pointer; padding: 6px 10px; }
 .calsheet-done { font-size: 14px; font-weight: 600; color: var(--ink); cursor: pointer; padding: 6px 14px; }
-.fab { position: fixed; right: 20px; bottom: 40px; width: 56px; height: 56px; background: var(--ink); border-radius: 50%; z-index: 800; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; cursor: grab; touch-action: none; transition: transform 0.1s, left 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.fab { position: fixed; right: 20px; bottom: 40px; width: 56px; height: 56px; background: var(--ink); border-radius: 50%; z-index: 800; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; cursor: grab; touch-action: none; transition: transform 0.1s; }
 .fab:active { cursor: grabbing; transform: scale(0.95); }
 .fab svg { width: 24px; height: 24px; fill: none; stroke: var(--white); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .fab.hidden { display: none !important; }
@@ -251,16 +255,24 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .profile-actions { display: flex; gap: 10px; }
 .profile-actions .add-submit { flex: 1; }
 .profile-cancel { flex: 1; padding: 12px; border: 1px solid var(--line); border-radius: 15px; font-size: 16px; color: var(--muted); background: var(--white); }
-/* 日记写作页优化 */
-.date-display { display: block; text-align: center; font-size: 16px; font-weight: 600; padding: 10px 0; cursor: pointer; color: var(--ink); }
-.write-row { display: flex; gap: 12px; }
+/* 日记写作页 */
+.write-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.write-title { font-size: 19px; font-weight: 700; }
+.date-display { display: block; text-align: center; font-size: 18px; font-weight: 600; padding: 10px 0; cursor: pointer; color: var(--ink); }
+.write-row { display: flex; gap: 16px; }
 .write-row .form-group { flex: 1; }
-.inline-edit { border: none; border-bottom: 1px dashed var(--line); background: transparent; padding: 2px 0; font-size: 15px; width: 100%; }
-.inline-edit:focus { border-bottom-color: var(--ink); }
+.inline-plain { border: none; background: transparent; padding: 4px 0; font-size: 15px; width: 100%; border-bottom: 1px solid var(--line); }
+.inline-plain:focus { border-bottom-color: var(--ink); }
 .events-wrap { position: relative; }
-/* 开发者日志 */
+/* 开发者留言 */
 .dev-log p { font-size: 13px; line-height: 1.9; color: #555; text-align: left; margin: 0 0 12px; }
 .dev-ver { font-size: 12px; color: #999; margin-bottom: 6px; text-align: left; }
+.leave-msg-btn { font-size: 14px; color: var(--ink); cursor: pointer; padding: 10px; display: block; margin: 6px auto 0; }
+#leaveOverlay .modal-content { text-align: center; }
+.leave-mail { font-size: 15px; color: #0066cc; cursor: pointer; margin: 6px 0 4px; word-break: break-all; }
+.leave-hint { font-size: 11px; color: #bbb; margin-bottom: 14px; }
+.leave-actions { display: flex; gap: 10px; margin-top: 16px; }
+.leave-actions .profile-cancel, .leave-actions .add-submit { flex: 1; }
 </style>
 </head>
 <body>
@@ -338,10 +350,26 @@ input:focus, textarea:focus, button:focus { outline: none; }
   <div class="modal-content">
     <h2 style="margin-top:0;">开发者</h2>
     <div class="dev-log">
+      <div class="dev-ver">v1.1</div>
+      <p>新增自定义日历、草稿自动保存、半屏放大编辑、开发者留言入口；想象页分组与 thread 编辑改为原地操作，图片预览改为箭头切换。修复导入、改名刷新与悬浮球拖动问题，扩充句子库与节气节日库。</p>
       <div class="dev-ver">v1.0</div>
-      <p>完成开屏流程、来信、档案与日历过渡。日记支持分栏与智能书写、两端对齐、搜索与字数限制。想象页支持盒子、核心想象、thread 时间线、分组与移动到分组、多图网格与大图预览。全局改为自定义日历、内联编辑，新增数据导出导入、开发者日志与句子库扩充。</p>
+      <p>完成开屏流程、来信、档案与日历。日记支持分栏与智能书写、搜索与字数限制。想象页支持盒子、核心想象、thread 时间线、分组与移动到分组、多图网格与大图预览。新增数据导出导入与开发者日志。</p>
+  </div>
+    <span class="leave-msg-btn" id="leaveMsgBtn">留言</span>
+  </div>
+</div>
+  
+
+<div id="leaveOverlay" class="modal-overlay hidden">
+  <div class="modal-content">
+    <h2 style="margin-top:0;">我想对开发者说</h2>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:10px;">点击邮箱即可复制</p>
+    <div class="leave-mail" id="leaveMail">xinshiji_new@163.com</div>
+    <div class="leave-hint">复制后发邮件即可</div>
+    <div class="leave-actions">
+      <button class="profile-cancel" id="leaveCloseBtn">关闭</button>
+      <button class="add-submit" id="leaveSendBtn">用邮件发送</button>
     </div>
-    <button class="add-submit" id="devCloseBtn" style="width:100%; padding:12px;">关闭</button>
   </div>
 </div>
 
@@ -397,10 +425,9 @@ input:focus, textarea:focus, button:focus { outline: none; }
     </div>
 
     <div id="writeSubView" class="hidden">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <div class="write-header">
         <button type="button" class="plain-btn" id="backBtn" style="font-size:15px;">← 返回</button>
-        <h2 id="formTitle" style="font-size:18px; margin:0;">记下这天</h2>
-        <span style="width:44px;"></span>
+        <h2 id="formTitle" class="write-title">记下这天</h2>
       </div>
       <form id="entryForm">
         <input type="hidden" id="entryId">
@@ -416,23 +443,23 @@ input:focus, textarea:focus, button:focus { outline: none; }
           <div class="write-row">
             <div class="form-group">
               <label>在哪里</label>
-              <input type="text" id="place" class="inline-edit" placeholder="家、公司、咖啡馆……">
+              <input type="text" id="place" class="inline-plain" placeholder="家、公司、咖啡馆……">
             </div>
             <div class="form-group">
               <label>吃了什么</label>
-              <input type="text" id="food" class="inline-edit" placeholder="晚餐、甜点……">
+              <input type="text" id="food" class="inline-plain" placeholder="晚餐、甜点……">
             </div>
           </div>
           <div class="form-group">
             <label>感觉</label>
-            <input type="text" id="mood" class="inline-edit" placeholder="平静、疲惫……">
+            <input type="text" id="mood" class="inline-plain" placeholder="平静、疲惫……">
           </div>
         </div>
 
         <div class="form-group events-wrap">
           <label id="eventsLabel">发生了什么</label>
           <textarea id="events" class="form-textarea" placeholder="先随便写点什么……" maxlength="1000" style="min-height:120px;"></textarea>
-          <span class="expand-btn" id="eventsExpandBtn" style="bottom:8px;">
+          <span class="expand-btn" id="eventsExpandBtn" style="bottom:10px;">
             <svg viewBox="0 0 24 24"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg>
           </span>
         </div>
@@ -530,6 +557,8 @@ input:focus, textarea:focus, button:focus { outline: none; }
 
 <div id="lightbox" class="hidden">
   <button class="lightbox-close" id="lightboxClose">×</button>
+  <div class="lightbox-arrow left" id="lightboxPrev"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"></path></svg></div>
+  <div class="lightbox-arrow right" id="lightboxNext"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg></div>
   <div class="lightbox-track" id="lightboxTrack"></div>
   <div class="lightbox-dots" id="lightboxDots"></div>
 </div>
@@ -540,6 +569,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
   <div class="group-sheet-cancel" id="groupSheetCancel">取消</div>
 </div>
 
+<input type="file" id="importFile" accept="application/json" hidden>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -551,6 +581,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
   var KEY_ONBOARDED = 'herLittleAtlas.onboarded.v8';
   var KEY_CORE_TIP = 'herLittleAtlas.coreTip.v8';
   var KEY_GROUP_TIP2 = 'herLittleAtlas.groupTip2.v8';
+  var KEY_DATE_TIP = 'herLittleAtlas.dateTip.v8';
   var KEY_DRAFT_DIARY = 'herLittleAtlas.draft.diary.v8';
   var KEY_DRAFT_THREAD = 'herLittleAtlas.draft.thread.v8';
   var $ = function(id) { return document.getElementById(id); };
@@ -567,6 +598,8 @@ input:focus, textarea:focus, button:focus { outline: none; }
   var moveContext = null;
   var expandTarget = 'thread';
   var calYear = 0, calMonth = 0, calSel = '';
+  var lightboxImages = [];
+  var lightboxIndex = 0;
 
   var presetEntry = {
     id: 'e-preset-rain',
@@ -607,7 +640,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     { text: "人闲桂花落，夜静春山空。月出惊山鸟，时鸣春涧中。", author: "—— 王维《鸟鸣涧》" },
     { text: "松月生夜凉，风泉满清听。", author: "—— 孟浩然《宿业师山房期丁大不至》" },
     { text: "半窗山月白，一枕竹风凉。", author: "—— 释子益" }
- ];
+  ];
 
   var boxPrompts = {
     '房子': '你理想中的房子在哪？户型多大？窗外是什么风景？',
@@ -653,6 +686,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
       imagineBoxes = i ? JSON.parse(i) : [];
     } catch(e) { console.log(e); }
     startAppFlow();
+    bindFabDrag();
   });
 
   document.querySelectorAll('#welcomeOverlay .gender-btn').forEach(btn => {
@@ -668,6 +702,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     if (!name) { showToast('请填写称呼'); return; }
     userProfile = { name: name, gender: selectedGender };
     localStorage.setItem(KEY_PROFILE, JSON.stringify(userProfile));
+    updatePronouns();
     $('welcomeOverlay').classList.add('hidden');
     $('loader').style.display = 'flex';
     setTimeout(function() {
@@ -703,6 +738,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     localStorage.setItem(KEY_PROFILE, JSON.stringify(userProfile));
     $('profileOverlay').classList.add('hidden');
     updatePronouns();
+    renderDiary();
     showToast('档案已更新');
   });
 
@@ -722,7 +758,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
   });
   $('dataImportBtn').addEventListener('click', function() {
     $('dataOverlay').classList.add('hidden');
-    $('importFile').click();
+    setTimeout(function() { $('importFile').click(); }, 100);
   });
 
   $('resetOnboardBtn').addEventListener('click', function() {
@@ -742,8 +778,26 @@ input:focus, textarea:focus, button:focus { outline: none; }
   $('devBtn').addEventListener('click', function() {
     $('devOverlay').classList.remove('hidden');
   });
-  $('devCloseBtn').addEventListener('click', function() {
+  $('leaveMsgBtn').addEventListener('click', function() {
     $('devOverlay').classList.add('hidden');
+    $('leaveOverlay').classList.remove('hidden');
+  });
+  $('leaveCloseBtn').addEventListener('click', function() {
+    $('leaveOverlay').classList.add('hidden');
+  });
+  $('leaveMail').addEventListener('click', function() {
+    var mail = 'xinshiji_new@163.com';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(mail).then(function() { showToast('邮箱已复制'); });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = mail; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); showToast('邮箱已复制'); } catch(e) {}
+      document.body.removeChild(ta);
+    }
+  });
+  $('leaveSendBtn').addEventListener('click', function() {
+    window.location.href = 'mailto:xinshiji_new@163.com?subject=' + encodeURIComponent('我想对开发者说');
   });
 
   function updatePronouns() {
@@ -864,9 +918,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     $('calAuthor').textContent = q.author;
     var overlay = $('calendarOverlay');
     overlay.classList.remove('hidden');
-    requestAnimationFrame(function() {
-      overlay.classList.add('visible');
-    });
+    requestAnimationFrame(function() { overlay.classList.add('visible'); });
     overlay.addEventListener('click', function() {
       overlay.classList.remove('visible');
       overlay.classList.add('fade-out');
@@ -995,7 +1047,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
   function renderCal() {
     $('calTitle').textContent = calYear + '年' + (calMonth + 1) + '月';
     var first = new Date(calYear, calMonth, 1);
-    var startWeek = (first.getDay() + 6) % 7; // 周一开头
+    var startWeek = (first.getDay() + 6) % 7;
     var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
     var todayStr = new Date().toISOString().split('T')[0];
     var html = '';
@@ -1036,11 +1088,33 @@ input:focus, textarea:focus, button:focus { outline: none; }
     if (calSel) {
       $('date').value = calSel;
       $('dateDisplay').textContent = formatDate(calSel);
+      saveDiaryDraft();
     }
     $('calSheet').classList.remove('show');
   });
 
   $('dateDisplay').addEventListener('click', openCalSheet);
+
+  // 日期点击暗示气泡（全局一次）
+  function maybeShowDateTip() {
+    if (localStorage.getItem(KEY_DATE_TIP)) return;
+    var el = document.createElement('div');
+    el.className = 'core-bubble';
+    el.textContent = '点日期可以修改';
+    el.style.position = 'absolute';
+    el.style.left = '50%';
+    el.style.top = '-4px';
+    el.style.transform = 'translate(-50%, -100%)';
+    var wrap = $('dateDisplay').parentNode;
+    wrap.style.position = 'relative';
+    wrap.appendChild(el);
+    var hide = function() {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      localStorage.setItem(KEY_DATE_TIP, '1');
+      document.removeEventListener('click', hide);
+    };
+    setTimeout(function() { document.addEventListener('click', hide); }, 100);
+  }
 
   // ================= 日记写作 =================
   function openWrite(entry) {
@@ -1069,6 +1143,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     $('diarySubView').classList.add('hidden');
     $('writeSubView').classList.remove('hidden');
     updateFabVisibility();
+    maybeShowDateTip();
   }
 
   function loadDiaryDraft() {
@@ -1171,7 +1246,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
   $('modeNormal').addEventListener('click', () => switchMode('normal'));
   $('modeSmart').addEventListener('click', () => switchMode('smart'));
 
-  // 事件框放大
   $('eventsExpandBtn').addEventListener('click', function() {
     expandTarget = 'events';
     $('expandTitle').textContent = '发生了什么';
@@ -1187,11 +1261,11 @@ input:focus, textarea:focus, button:focus { outline: none; }
     var html = imagineBoxes.map(function(box) {
       return '<div class="box-card" data-id="' + box.id + '">'
         + '<div class="box-content">'
-        + '<div onclick="openBox(\'' + box.id + '\')" style="flex:1;">'
+        + '<div class="open-box" data-id="' + box.id + '" style="flex:1;">'
         + '<div class="box-title">' + escapeHtml(box.name) + '</div>'
         + '<div class="box-desc">' + totalThreadCount(box) + ' 条想象</div>'
         + '</div>'
-        + '<div onclick="openBox(\'' + box.id + '\')" style="font-size:22px; color:#ccc; padding-right:6px;">›</div>'
+        + '<div class="open-box" data-id="' + box.id + '" style="font-size:22px; color:#ccc; padding-right:6px;">›</div>'
         + '</div>'
         + '<div class="box-swipe-actions">'
         + '<div class="box-swipe-edit" onclick="editBoxName(\'' + box.id + '\', event)">编辑</div>'
@@ -1224,9 +1298,14 @@ input:focus, textarea:focus, button:focus { outline: none; }
         if (isSwiping) { card.classList.add('swiped'); isSwiping = false; }
       });
       card.addEventListener('click', function(e) {
-        if (card.classList.contains('swiped') && !e.target.closest('.box-swipe-actions')) {
+        if (card.classList.contains('swiped')) {
           card.classList.remove('swiped');
+          e.preventDefault();
+          e.stopPropagation();
+          return;
         }
+        var opener = e.target.closest('.open-box');
+        if (opener) openBox(opener.getAttribute('data-id'));
       });
     });
   }
@@ -1268,7 +1347,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     if (!box.groups) box.groups = [];
     pendingFiles = [];
     renderImgPreview();
-    // 恢复该盒子草稿
     var d = loadThreadDraft(id);
     $('detailText').value = d.text || '';
     renderBoxDetail(box);
@@ -1355,12 +1433,12 @@ input:focus, textarea:focus, button:focus { outline: none; }
     return '<div class="thread-item" onclick="toggleThreadIcons(this, event)" data-prefix="' + prefix + '" data-index="' + index + '">'
       + '<div class="thread-content-wrap"><div class="thread-text">' + linkify(item.text || '') + '</div></div>'
       + '<div class="thread-meta-row">'
-      + '<span class="thread-date">' + dateStr + '</span>'
       + '<span class="thread-icon-slot">'
       + '<span class="thread-icon-btn" onclick="editThread(\'' + prefix + '\',' + index + ', event)"><svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></span>'
       + '<span class="thread-icon-btn" onclick="openMoveSheet(\'' + prefix + '\',' + index + ', event)"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"></circle></svg></span>'
       + '<span class="thread-icon-btn" onclick="delThread(\'' + prefix + '\',' + index + ', event)"><svg viewBox="0 0 24 24"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg></span>'
       + '</span>'
+      + '<span class="thread-date">' + dateStr + '</span>'
       + '</div>'
       + imgHtml
       + '</div>';
@@ -1379,7 +1457,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
   function renderGroups(box) {
     if (!box.groups) box.groups = [];
     var html = '';
-    // 新建分组放最上面
     html += '<div class="new-group-btn" onclick="addGroup()">+ 新建分组</div>';
     box.groups.forEach(function(g, gi) {
       html += '<div class="group-section" data-gi="' + gi + '">'
@@ -1479,7 +1556,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     });
   }
 
-  // ================= 移动到分组 =================
   window.openMoveSheet = function(prefix, index, event) {
     if (event) event.stopPropagation();
     var t = findThread(prefix, index);
@@ -1530,7 +1606,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
     return { box: box, list: box.groups[gi].threads, index: index, item: box.groups[gi].threads[index] };
   }
 
-  // thread 内联编辑
   window.editThread = function(prefix, index, event) {
     if (event) event.stopPropagation();
     var t = findThread(prefix, index);
@@ -1544,24 +1619,18 @@ input:focus, textarea:focus, button:focus { outline: none; }
     ta.className = 'thread-inline-edit';
     ta.maxLength = 1500;
     ta.value = oldText;
-    var actions = document.createElement('div');
-    actions.className = 'thread-inline-actions';
-    var cancel = document.createElement('span');
-    cancel.textContent = '取消';
-    var ok = document.createElement('span');
-    ok.textContent = '完成';
-    actions.appendChild(cancel);
-    actions.appendChild(ok);
     textDiv.replaceWith(ta);
     var meta = el.querySelector('.thread-meta-row');
     meta.style.display = 'none';
-    ta.parentNode.insertBefore(actions, ta.nextSibling);
     ta.focus();
-    cancel.addEventListener('click', function() { renderBoxDetail(t.box); });
-    ok.addEventListener('click', function() {
+    var commit = function() {
       t.item.text = ta.value.trim().slice(0, 1500);
       saveImagine();
       renderBoxDetail(t.box);
+    };
+    ta.addEventListener('blur', commit);
+    ta.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ta.blur(); }
     });
   };
 
@@ -1575,9 +1644,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     renderBoxDetail(t.box);
   };
 
-  // ================= 大图预览 =================
-  var lightboxImages = [];
-  var lightboxIndex = 0;
+  // ================= 大图预览：左右箭头 =================
   window.openLightbox = function(prefix, index, imgIndex) {
     var t = findThread(prefix, index);
     if (!t) return;
@@ -1600,58 +1667,42 @@ input:focus, textarea:focus, button:focus { outline: none; }
     }).join('');
     track.style.transition = 'none';
     track.style.transform = 'translateX(' + (-lightboxIndex * 100) + '%)';
+    requestAnimationFrame(function() { track.style.transition = 'transform 0.25s ease'; });
+    updateLightboxArrows();
   }
 
-  function setLightboxIndex(idx, animate) {
+  function updateLightboxArrows() {
+    $('lightboxPrev').style.visibility = lightboxIndex > 0 ? 'visible' : 'hidden';
+    $('lightboxNext').style.visibility = lightboxIndex < lightboxImages.length - 1 ? 'visible' : 'hidden';
+  }
+
+  function setLightboxIndex(idx) {
     lightboxIndex = Math.max(0, Math.min(idx, lightboxImages.length - 1));
     var track = $('lightboxTrack');
-    track.style.transition = animate ? 'transform 0.25s ease' : 'none';
     track.style.transform = 'translateX(' + (-lightboxIndex * 100) + '%)';
     var dots = $('lightboxDots').children;
     for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('active', i === lightboxIndex);
+    updateLightboxArrows();
   }
 
   $('lightboxClose').addEventListener('click', function() {
     $('lightbox').classList.add('hidden');
   });
-
-  (function bindLightboxSwipe() {
-    var track = $('lightboxTrack');
-    var startX = 0, startY = 0, lastX = 0, dragging = false;
-    track.addEventListener('touchstart', function(e) {
-      if (e.touches.length !== 1) return;
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      lastX = startX;
-      dragging = true;
-      track.style.transition = 'none';
-    }, { passive: true });
-    track.addEventListener('touchmove', function(e) {
-      if (!dragging || e.touches.length !== 1) return;
-      var x = e.touches[0].clientX;
-      var dx = x - startX;
-      lastX = x;
-      track.style.transform = 'translateX(calc(' + (-lightboxIndex * 100) + '% + ' + dx + 'px))';
-    }, { passive: true });
-    track.addEventListener('touchend', function() {
-      if (!dragging) return;
-      dragging = false;
-      var dx = lastX - startX;
-      if (Math.abs(dx) > 50) {
-        if (dx < 0) setLightboxIndex(lightboxIndex + 1, true);
-        else setLightboxIndex(lightboxIndex - 1, true);
-      } else {
-        setLightboxIndex(lightboxIndex, true);
-      }
-    });
-  })();
+  $('lightboxPrev').addEventListener('click', function(e) {
+    e.stopPropagation();
+    setLightboxIndex(lightboxIndex - 1);
+  });
+  $('lightboxNext').addEventListener('click', function(e) {
+    e.stopPropagation();
+    setLightboxIndex(lightboxIndex + 1);
+  });
 
   $('coreInput').addEventListener('blur', function() {
     var box = imagineBoxes.find(x => x.id === currentBoxId);
     if (box) { box.core = this.value; saveImagine(); }
   });
 
-  // ================= 放大填写（双入口） =================
+  // ================= 放大填写 =================
   $('expandBtn').addEventListener('click', function() {
     expandTarget = 'thread';
     $('expandTitle').textContent = '添砖加瓦';
@@ -1807,6 +1858,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
           else if (Array.isArray(data)) entries = data;
           if (data.imagine) imagineBoxes = data.imagine;
           saveDiary(); saveImagine();
+          updatePronouns();
           showToast('导入成功，即将刷新');
           setTimeout(() => location.reload(), 1500);
         }
@@ -1816,57 +1868,59 @@ input:focus, textarea:focus, button:focus { outline: none; }
     r.readAsText(f);
   });
 
-  // ================= 拖拽悬浮球 =================
-  var fab = $('fabBtn');
-  var isDragging = false;
-  var startX, startY, startLeft, startTop;
+  // ================= 拖拽悬浮球（只在日记列表页） =================
+  function bindFabDrag() {
+    var fab = $('fabBtn');
+    var isDragging = false;
+    var startX, startY, startLeft, startTop;
 
-  fab.addEventListener('touchstart', startDrag, {passive: false});
-  fab.addEventListener('mousedown', startDrag);
+    fab.addEventListener('touchstart', startDrag, {passive: false});
+    fab.addEventListener('mousedown', startDrag);
 
-  function startDrag(e) {
-    isDragging = false;
-    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    var rect = fab.getBoundingClientRect();
-    startX = clientX; startY = clientY;
-    startLeft = rect.left; startTop = rect.top;
-    document.addEventListener('touchmove', onDrag, {passive: false});
-    document.addEventListener('touchend', endDrag);
-    document.addEventListener('mousemove', onDrag);
-    document.addEventListener('mouseup', endDrag);
+    function startDrag(e) {
+      isDragging = false;
+      var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      var rect = fab.getBoundingClientRect();
+      startX = clientX; startY = clientY;
+      startLeft = rect.left; startTop = rect.top;
+      document.addEventListener('touchmove', onDrag, {passive: false});
+      document.addEventListener('touchend', endDrag);
+      document.addEventListener('mousemove', onDrag);
+      document.addEventListener('mouseup', endDrag);
+    }
+
+    function onDrag(e) {
+      if (!startX) return;
+      e.preventDefault();
+      var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      var dx = clientX - startX;
+      var dy = clientY - startY;
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
+      fab.style.left = (startLeft + dx) + 'px';
+      fab.style.top = (startTop + dy) + 'px';
+      fab.style.right = 'auto';
+      fab.style.bottom = 'auto';
+    }
+
+    function endDrag() {
+      document.removeEventListener('touchmove', onDrag);
+      document.removeEventListener('touchend', endDrag);
+      document.removeEventListener('mousemove', onDrag);
+      document.removeEventListener('mouseup', endDrag);
+      startX = null;
+      var rect = fab.getBoundingClientRect();
+      var vw = window.innerWidth;
+      var targetLeft = rect.left + rect.width/2 > vw/2 ? vw - rect.width - 20 : 20;
+      fab.style.left = targetLeft + 'px';
+      fab.style.top = Math.max(20, Math.min(rect.top, window.innerHeight - rect.height - 20)) + 'px';
+    }
+
+    fab.addEventListener('click', function(e) {
+      if (isDragging) { e.preventDefault(); e.stopPropagation(); }
+    }, true);
   }
-
-  function onDrag(e) {
-    if (!startX) return;
-    e.preventDefault();
-    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    var dx = clientX - startX;
-    var dy = clientY - startY;
-    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
-    fab.style.left = (startLeft + dx) + 'px';
-    fab.style.top = (startTop + dy) + 'px';
-    fab.style.right = 'auto';
-    fab.style.bottom = 'auto';
-  }
-
-  function endDrag() {
-    document.removeEventListener('touchmove', onDrag);
-    document.removeEventListener('touchend', endDrag);
-    document.removeEventListener('mousemove', onDrag);
-    document.removeEventListener('mouseup', endDrag);
-    startX = null;
-    var rect = fab.getBoundingClientRect();
-    var vw = window.innerWidth;
-    var targetLeft = rect.left + rect.width/2 > vw/2 ? vw - rect.width - 20 : 20;
-    fab.style.left = targetLeft + 'px';
-    fab.style.top = Math.max(20, Math.min(rect.top, window.innerHeight - rect.height - 20)) + 'px';
-  }
-
-  fab.addEventListener('click', function(e) {
-    if (isDragging) { e.preventDefault(); e.stopPropagation(); }
-  }, true);
 
 })();
 </script>
