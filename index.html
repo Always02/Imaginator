@@ -192,12 +192,13 @@ body.sorting-mode .sorting-tip { display: block; }
 /* 分组 */
 .group-section { margin-bottom: 8px; position: relative; overflow: hidden; padding: 2px 0; }
 .group-content { position: relative; z-index: 2; background: var(--white); transition: transform 0.25s ease; }
-/* 只让 group-content 移动 */
-.group-content { position: relative; z-index: 2; background: var(--white); transition: transform 0.25s ease; width: 100%; }
+/* group-content 只负责包裹组头，不再包裹整个组身 */
+.group-content { position: relative; z-index: 2; background: var(--white); transition: transform 0.25s ease; width: 100%; overflow: hidden; }
 .group-section.swiped .group-content { transform: translateX(-120px); }
 /* 按钮固定在行的右侧，高度只跟 head 一样高，不拉伸到底部 */
-.group-swipe-actions { position: absolute; top: 0; right: 0; height: 49px; display: flex; z-index: 1; transform: translateX(100%); transition: transform 0.25s ease; }
-.group-section.swiped .group-swipe-actions { transform: translateX(0); }
+/* group-content 只负责包裹组头，不再包裹整个组身 */
+.group-content { position: relative; z-index: 2; background: var(--white); transition: transform 0.25s ease; width: 100%; overflow: hidden; }
+.group-section.swiped .group-content { transform: translateX(-120px); }
 .group-swipe-edit, .group-swipe-delete { width: 60px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #fff; }
 .group-swipe-edit { background: #555; }
 .group-swipe-delete { background: var(--ink); }
