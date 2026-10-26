@@ -93,7 +93,10 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .entry { padding: 20px 0; border-bottom: 1px solid var(--line); }
 .entry-date { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
 .entry-place { font-size: 20px; font-weight: 700; margin: 5px 0 10px; }
-.entry-body { font-size: 15px; line-height: 1.8; white-space: pre-wrap; margin-bottom: 10px; word-break: break-word; text-align: justify; text-justify: inter-ideograph; }
+.entry-body { 
+  font-size: 15px; line-height: 1.8; white-space: pre-wrap; margin-bottom: 10px; word-break: break-word; 
+  text-align: justify; text-justify: inter-ideograph; text-align-last: left; -webkit-text-align-last: left;
+}
 .entry-body a { color: #0066cc; text-decoration: underline; }
 .entry-tags { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
 .tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); padding: 3px 8px; border-radius: 12px; }
@@ -128,45 +131,40 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .box-title-input { font-size: 20px; font-weight: 700; border: none; background: transparent; width: auto; max-width: 240px; padding: 0; color: #111 !important; }
 .box-title-input:disabled { color: #111 !important; }
 
-/* Core */
-.core-imagine { margin-bottom: 30px; position: relative; padding-left: 16px; }
+/* Core (自适应高度与字数限制) */
+.core-imagine { margin-bottom: 24px; position: relative; padding-left: 16px; display: flex; }
 .core-imagine::before { content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 2px; background: #999; border-radius: 2px; }
-.core-input { width: 100%; border: none; background: transparent; padding: 12px 4px; font-size: 17px; font-weight: 600; line-height: 1.8; resize: none; }
+.core-input { width: 100%; border: none; background: transparent; padding: 12px 4px; font-size: 17px; font-weight: 600; line-height: 1.8; resize: none; overflow: hidden; color: var(--ink); }
 .core-input:focus { background: transparent; }
 
 /* 气泡 */
-.core-bubble, .group-bubble, .guide-bubble { position: absolute; background: var(--ink); color: #fff; font-size: 12px; padding: 8px 12px; border-radius: 10px; white-space: nowrap; z-index: 100; pointer-events: none; }
+.core-bubble, .group-bubble, .guide-bubble { position: absolute; background: var(--ink); color: #fff; font-size: 12px; padding: 8px 12px; border-radius: 10px; white-space: nowrap; z-index: 100; pointer-events: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 .core-bubble { left: 16px; top: -6px; transform: translateY(-100%); }
 .core-bubble::after { content: ""; position: absolute; left: 18px; bottom: -4px; width: 8px; height: 8px; background: var(--ink); transform: rotate(45deg); }
-.group-bubble { left: 0; bottom: 100%; margin-bottom: 4px; }
-.group-bubble::after { content: ""; position: absolute; left: 12px; bottom: -4px; width: 8px; height: 8px; background: var(--ink); transform: rotate(45deg); }
-
-.guide-bubble.top { bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 6px; }
-.guide-bubble.top::after { left: calc(50% - 4px); bottom: -4px; }
-.guide-bubble.right { left: 100%; top: 50%; transform: translateY(-50%); margin-left: 6px; }
+.guide-bubble.right { left: 100%; top: 50%; transform: translateY(-50%); margin-left: 10px; white-space: normal; width: 140px; line-height: 1.5; text-align: center;}
 .guide-bubble.right::after { left: -4px; top: calc(50% - 4px); }
+.guide-bubble.bottom { top: 100%; left: 20px; margin-top: 8px; white-space: normal; width: 180px; line-height: 1.5; text-align: left;}
+.guide-bubble.bottom::after { left: 18px; top: -4px; }
 
-/* 功能区（新） */
-.ungrouped-wrap { background: var(--soft); border-radius: 12px; padding: 10px 14px; margin-bottom: 20px; }
+/* Threads */
 .thread-feed { display: flex; flex-direction: column; }
 .thread-item { position: relative; padding: 14px 0; margin: 0; display: flex; align-items: flex-start; gap: 8px; }
-.thread-content-wrap { display: flex; flex-direction: column; flex: 1; gap: 4px; }
-.thread-text { font-size: 15px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+.thread-content-wrap { display: flex; flex-wrap: wrap; flex: 1; align-items: flex-end; justify-content: space-between; gap: 8px; }
+.thread-text { font-size: 15px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; flex: 1 1 auto; min-width: 200px; }
 .thread-text a { color: #0066cc; text-decoration: underline; }
-.thread-meta-row { display: flex; align-items: center; justify-content: flex-end; gap: 8px; min-height: 18px; }
-.thread-date { font-size: 11px; color: #ccc; white-space: nowrap; transition: transform 0.22s ease; }
-.thread-item.show-icons .thread-date { transform: translateX(-4px); }
-.thread-icon-slot { display: inline-flex; gap: 12px; width: 0; overflow: hidden; opacity: 0; transition: width 0.22s ease, opacity 0.22s ease; order: 2; }
-.thread-item.show-icons .thread-icon-slot { width: 70px; opacity: 1; }
+
+/* 日期与图标自适应掉落 */
+.thread-meta-row { display: flex; align-items: center; justify-content: flex-end; margin-left: auto; gap: 8px; min-height: 18px; flex: 0 0 auto;}
+.thread-date { font-size: 11px; color: #ccc; white-space: nowrap; }
+.thread-icon-slot { display: inline-flex; gap: 12px; width: 0; overflow: hidden; opacity: 0; transition: width 0.22s ease, opacity 0.22s ease; }
+.thread-item.show-icons .thread-icon-slot { width: 56px; opacity: 1; }
 .thread-icon-btn { cursor: pointer; color: #bbb; padding: 0 2px; line-height: 1; display: inline-flex; align-items: center; flex: 0 0 auto; }
 .thread-icon-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
 .thread-inline-edit { width: 100%; border: none; background: transparent; padding: 4px 0; font-size: 15px; line-height: 1.7; resize: vertical; min-height: 40px; color: var(--ink); }
-.thread-imgs { display: grid; gap: 4px; margin-top: 8px; max-width: 340px; }
-.thread-imgs.cols-1 { grid-template-columns: 1fr; }
-.thread-imgs.cols-2 { grid-template-columns: repeat(2, 1fr); }
-.thread-imgs.cols-3 { grid-template-columns: repeat(3, 1fr); }
-.thread-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 12px; border: 1px solid var(--line); cursor: pointer; display: block; }
-.thread-imgs.cols-1 .thread-img { aspect-ratio: 4 / 3; }
+
+/* 未分组区域 (下移，不同底色) */
+.ungrouped-wrap { background: #fcfcfc; border: 1px dashed #eee; border-radius: 12px; padding: 12px 14px; margin-top: 24px; margin-bottom: 20px; display: none; }
+.ungrouped-wrap.has-content { display: block; }
 
 /* 多选圆圈 */
 .thread-checkbox { display: none; width: 18px; height: 18px; border-radius: 50%; border: 1px solid #ccc; flex-shrink: 0; align-items: center; justify-content: center; margin-top: 4px; }
@@ -181,32 +179,33 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .multi-btn.cancel { color: var(--muted); font-weight: 400; }
 
 /* Toolbar */
-.group-toolbar { display: flex; justify-content: flex-end; margin-bottom: 8px; position: relative; }
+.group-toolbar { display: flex; justify-content: flex-end; margin-bottom: 4px; position: relative; margin-top: -4px;}
 .more-btn { cursor: pointer; color: #bbb; font-size: 20px; padding: 0 5px; font-weight: bold; }
 .action-menu { position: absolute; right: 0; top: 100%; background: #fff; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 50; display: none; flex-direction: column; padding: 6px; min-width: 120px; }
 .action-menu.show { display: flex; }
 .action-menu span { padding: 10px 12px; font-size: 14px; border-radius: 6px; cursor: pointer; text-align: left; }
 .action-menu span:hover { background: var(--soft); }
+.sorting-tip { position: absolute; right: 30px; top: 5px; font-size: 12px; color: #e04343; cursor: pointer; font-weight: bold; display: none;}
+body.sorting-mode .sorting-tip { display: block; }
 
 /* 分组 */
 .group-section { margin-bottom: 8px; position: relative; overflow: hidden; padding: 2px 0; }
 .group-content { position: relative; z-index: 2; background: var(--white); transition: transform 0.25s ease; }
-.group-section.swiped .group-content { transform: translateX(-160px); }
+.group-section.swiped .group-content { transform: translateX(-120px); }
 .group-swipe-actions { position: absolute; top: 0; right: 0; height: 100%; display: flex; z-index: 3; transform: translateX(100%); transition: transform 0.25s ease; }
 .group-section.swiped .group-swipe-actions { transform: translateX(0); }
-.group-swipe-edit, .group-swipe-delete { width: 80px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #fff; }
+.group-swipe-edit, .group-swipe-delete { width: 60px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #fff; }
 .group-swipe-edit { background: #555; }
 .group-swipe-delete { background: var(--ink); }
 
 .group-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 12px 0 10px; border-bottom: 1px solid #f2f2f2; cursor: pointer; }
 .group-left { display: flex; align-items: center; gap: 6px; }
-.group-name { font-size: 15px; font-weight: 700; color: var(--ink); cursor: text; }
+.group-name { font-size: 15px; font-weight: 700; color: var(--ink); }
 .group-count { font-size: 12px; color: #bbb; font-weight: 400; margin-left: 2px; }
-.group-sort-btns { display: none; gap: 6px; color: #ccc; font-size: 12px; }
+.group-sort-btns { display: none; gap: 10px; color: #bbb; font-size: 14px; padding-right: 10px;}
 body.sorting-mode .group-sort-btns { display: flex; }
 .group-sort-btns span { cursor: pointer; padding: 0 4px; }
 .group-body { padding-top: 2px; }
-.group-name-input { font-size: 15px; font-weight: 700; color: var(--ink); border: none; border-bottom: 1px solid #ccc; background: transparent; padding: 0; width: 100px; }
 
 /* 新建分组弹窗 */
 #inlineGroupModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 9600; display: flex; align-items: center; justify-content: center; }
@@ -220,7 +219,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
 .modal-inner-actions .btn-ok { background: var(--ink); color: #fff; border: none; }
 
 /* 底部其他 */
-.post-group-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--muted); }
+.post-group-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; margin-top: 12px; font-size: 13px; color: var(--muted); }
 .post-group-select { font-size: 13px; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; background: var(--white); }
 .add-detail { position: relative; margin: 0 auto; }
 .add-textarea { width: 100%; border: none; background: var(--soft); font-size: 15px; resize: none; padding: 15px; min-height: 80px; border-radius: 12px; margin-bottom: 10px; }
@@ -305,7 +304,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
 .dev-log p { font-size: 13px; line-height: 1.9; color: #555; text-align: left; margin: 0 0 12px; }
 .dev-ver { font-size: 12px; color: #999; margin-bottom: 6px; text-align: left; }
 .dev-letter p { font-size: 14px; line-height: 2; color: #444; margin: 0 0 14px; text-align: justify; white-space: pre-wrap;}
-.dev-letter .sign { text-align: right; margin-top: 18px; color: #333; }
+.dev-letter .sign { text-align: left; margin-top: 18px; color: #333; white-space: pre-wrap; line-height: 2;}
 .dev-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
 .leave-msg-btn { font-size: 14px; color: var(--ink); cursor: pointer; padding: 10px; }
 .dev-back-btn { font-size: 14px; color: var(--muted); cursor: pointer; padding: 10px; }
@@ -364,7 +363,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
     <div class="gender-select">
       <button class="gender-btn" data-g="男">男</button>
       <button class="gender-btn" data-g="女">女</button>
-      <button class="gender-btn" data-g="Ta">无性别</button>
+      <button class="gender-btn data-g=Ta active">无性别</button>
     </div>
     <div class="profile-actions">
       <button class="profile-cancel" id="cancelProfileBtn">取消</button>
@@ -388,7 +387,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
 
 <div id="devOverlay" class="modal-overlay hidden">
   <div class="modal-content">
-    <h2 style="margin-top:0;">开发者</h2>
+    <h2 style="margin-top:0;" id="devTitle">开发者</h2>
     <div id="devMenu">
       <div class="dev-menu">
         <div class="dev-menu-item" id="openDevLog">开发日志</div>
@@ -397,16 +396,18 @@ body.sorting-mode .group-sort-btns { display: flex; }
     </div>
     <div id="devLogPanel" class="dev-panel hidden">
       <div class="dev-log">
+        <div class="dev-ver">v1.5</div>
+        <p>优化了想象页的细节交互，增加了演示盒子新手引导，修复了排版渲染问题，重构了开发者页面结构。</p>
         <div class="dev-ver">v1.4</div>
-        <p>优化了想象页分组的滑动手势与视觉区分，新增了多维度的分组批量管理功能，加入了对应的新手交互引导。</p>
+        <p>优化了想象页分组的滑动手势与视觉区分，新增了多维度的分组批量管理功能。</p>
         <div class="dev-ver">v1.3</div>
-        <p>想象页新增分组状态记忆，不再因修改或发布而重置折叠；新增分组内联输入、一键收起/展开、分组排序；新增多选模式，支持批量移动与删除。优化了组名滑动操作的交互方式，调整了底部的输入布局。</p>
+        <p>想象页新增分组状态记忆，不再因修改或发布而重置折叠；新增分组内联输入、一键收起/展开、分组排序；新增多选模式。</p>
         <div class="dev-ver">v1.2</div>
-        <p>开发者页改为二级菜单，新增“来自开发者的一封信”。日记编辑页放大输入时适配键盘，保持正文与日期可见。想象页时间线去掉左侧竖线与圆点，分组改为无边框行式。</p>
+        <p>开发者页改为二级菜单，新增“来自开发者的一封信”。日记编辑页放大输入时适配键盘。</p>
         <div class="dev-ver">v1.1</div>
-        <p>新增自定义日历、草稿自动保存、半屏放大编辑、开发者留言入口；想象页分组与 thread 编辑改为原地操作，图片预览改为箭头切换。修复导入、改名刷新与悬浮球拖动问题。</p>
+        <p>新增自定义日历、草稿自动保存、半屏放大编辑、开发者留言入口。</p>
         <div class="dev-ver">v1.0</div>
-        <p>完成开屏流程、来信、档案与日历。日记支持分栏与智能书写、搜索与字数限制。想象页支持盒子、核心想象、thread 时间线、分组与移动到分组、多图网格与大图预览。新增数据导出导入与开发者日志。</p>
+        <p>完成开屏流程、来信、档案与日历。新增数据导出导入与开发者日志。</p>
       </div>
     </div>
     <div id="devLetterPanel" class="dev-panel hidden">
@@ -562,14 +563,14 @@ body.sorting-mode .group-sort-btns { display: flex; }
       </div>
       
       <div class="core-imagine">
-        <textarea id="coreInput" class="core-input" placeholder="写下这个盒子的核心想象……" rows="2"></textarea>
+        <textarea id="coreInput" class="core-input" placeholder="写下这个盒子的核心想象……" rows="1" maxlength="200"></textarea>
       </div>
+
+      <div id="groupWrap"></div>
 
       <div class="ungrouped-wrap" id="ungroupedWrap">
         <div class="thread-feed" id="threadFeed"></div>
       </div>
-
-      <div id="groupWrap"></div>
 
       <div class="add-detail">
         <div class="post-group-row" id="postGroupRow" style="display:none;">
@@ -665,7 +666,6 @@ body.sorting-mode .group-sort-btns { display: flex; }
   var KEY_PROFILE = 'herLittleAtlas.profile.v8';
   var KEY_ONBOARDED = 'herLittleAtlas.onboarded.v8';
   var KEY_CORE_TIP = 'herLittleAtlas.coreTip.v8';
-  var KEY_GROUP_TIP2 = 'herLittleAtlas.groupTip2.v8';
   var KEY_DRAFT_DIARY = 'herLittleAtlas.draft.diary.v8';
   var KEY_DRAFT_THREAD = 'herLittleAtlas.draft.thread.v8';
   var $ = function(id) { return document.getElementById(id); };
@@ -776,6 +776,15 @@ body.sorting-mode .group-sort-btns { display: flex; }
     startAppFlow();
     bindFabDrag();
     bindVisualViewport();
+    
+    // 全局复位逻辑
+    document.addEventListener('touchstart', function(e) {
+      if (!e.target.closest('.box-card') && !e.target.closest('.group-section') && !e.target.closest('.thread-item') && !e.target.closest('.thread-icon-btn')) {
+        document.querySelectorAll('.box-card.swiped').forEach(c => c.classList.remove('swiped'));
+        document.querySelectorAll('.group-section.swiped').forEach(g => g.classList.remove('swiped'));
+        document.querySelectorAll('.thread-item.show-icons').forEach(t => t.classList.remove('show-icons'));
+      }
+    }, {passive: true});
   });
 
   document.querySelectorAll('#welcomeOverlay .gender-btn').forEach(btn => {
@@ -863,16 +872,19 @@ body.sorting-mode .group-sort-btns { display: flex; }
     showDevMenu();
   });
   function showDevMenu() {
+    $('devTitle').textContent = '开发者';
     $('devMenu').classList.remove('hidden');
     $('devLogPanel').classList.add('hidden');
     $('devLetterPanel').classList.add('hidden');
   }
   $('openDevLog').addEventListener('click', function() {
+    $('devTitle').textContent = '开发者日志';
     $('devMenu').classList.add('hidden');
     $('devLogPanel').classList.remove('hidden');
     $('devLetterPanel').classList.add('hidden');
   });
   $('openDevLetter').addEventListener('click', function() {
+    $('devTitle').textContent = '开发者来信';
     $('devMenu').classList.add('hidden');
     $('devLetterPanel').classList.remove('hidden');
     $('devLogPanel').classList.add('hidden');
@@ -887,15 +899,14 @@ body.sorting-mode .group-sort-btns { display: flex; }
   });
 
   function renderDevLetter() {
-    var name = userProfile.name || 'Ta';
     var letterHTML = `
-      <p>“${name}”你好：</p>
-      <p>我是Elsewhere的设计者Always02，很高兴见到你。</p>
+      <p>我是Elsewhere的设计者，很高兴见到你。</p>
       <p>Elsewhere的概念取自米兰·昆德拉，即生活在“别处”。它于我而言意义特殊，不仅是我真正意义上第一个网页作品，也代表了我渴望与这个世界相处的艺术。</p>
       <p>顾名思义，别处不在此处。这里的“日记”与“想象”并非真实记录，而是设定于另一个世界的虚构内容。Elsewhere的创作动机来自我某次的低落：当时我忍不住设想，如果我完全自由、完全放松，成为另一个世界的自己，我会在哪儿做些什么事呢？由此，我写下了一篇不存在的日记。当然，如果你愿意，”日记“也可以只是你的日记。</p>
-      <p>人难免不被某些事暂时“困住”——环境、系统、家庭、责任，周围的一切似乎无所不在约束、规范、塑改我们。但只要尚存思想，总还拥有无限的可能。我从小有个习惯，睡不着和感到悲伤时，就尝试在脑海中填充想象：未来的我生活在哪？身边有怎样的一群人？要怎样设计和装饰属于我的小房子？这些想象支撑着我走到了今天，伴我度过无数个想着想着就酣然入睡的夜。日与夜攒积，成了此时这一隅elsewhere，安放你我现实中无处可去的思绪。再说了，逐字记录着，指不定这些”日记“和”想象“哪天就实现了一二呢。</p>
-      <p>人类的思索是上天赋予的礼物，宇宙就在人类的想象之间。<br>不论生活如何地枷锁般使你坠地，愿你我的美好想象永远飞行。</p>
-      <p class="sign">Always02<br>2026年秋天</p>
+      <p>人难免不被某些事暂时“困住”——环境、系统、家庭、责任，周围的一切似乎无所不在约束、规范、塑改我们。但只要尚存思想，总还拥有无限的可能。</p>
+      <p>我从小有个习惯，睡不着和感到悲伤时，就尝试在脑海中填充想象：未来的我生活在哪？身边有怎样的一群人？要怎样设计和装饰属于我的小房子？这些想象支撑着我走到了今天，伴我度过无数个想着想着就酣然入睡的夜。日与夜攒积，成了此时这一隅elsewhere，安放你我现实中无处可去的思绪。</p>
+      <p>你说，我们收藏的”日记“和”想象“，会不会哪天就实现了一二呢？</p>
+      <p class="sign">-<br>思索<br>是上天赋予的礼物，<br>宇宙诞生于人类的想象之间；<br>不论生活如何地枷锁般使你坠地，<br>愿我们的想象永远飞行。</p>
     `;
     $('devLetterContent').innerHTML = letterHTML;
   }
@@ -1485,6 +1496,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
     $('boxTitleInput').disabled = true;
     $('boxTitleInput').style.color = '#111';
     $('coreInput').value = box.core || '';
+    autoResizeCore();
     var prompt = boxPrompts[box.name] || boxPrompts['default'];
     $('coreInput').placeholder = prompt;
     if (!box.groups) box.groups = [];
@@ -1499,7 +1511,15 @@ body.sorting-mode .group-sort-btns { display: flex; }
     renderBoxDetail(box);
     updateFabVisibility();
     maybeShowCoreTip();
+    document.body.classList.remove('sorting-mode');
   };
+
+  function autoResizeCore() {
+    var el = $('coreInput');
+    el.style.height = 'auto';
+    el.style.height = (el.scrollHeight) + 'px';
+  }
+  $('coreInput').addEventListener('input', autoResizeCore);
 
   function threadDraftKey(id) { return KEY_DRAFT_THREAD + '.' + id; }
   function loadThreadDraft(id) {
@@ -1529,14 +1549,15 @@ body.sorting-mode .group-sort-btns { display: flex; }
   function renderBoxDetail(box) {
     var ungroupedEl = $('ungroupedWrap');
     if (!box.details || !box.details.length) {
-      ungroupedEl.style.display = 'none';
+      ungroupedEl.classList.remove('has-content');
     } else {
-      ungroupedEl.style.display = 'block';
+      ungroupedEl.classList.add('has-content');
       $('threadFeed').innerHTML = renderUngroupedThreads(box);
     }
     
     renderGroups(box);
     renderPostGroupSelect(box);
+    bindGlobalReset();
   }
 
   function renderPostGroupSelect(box) {
@@ -1573,7 +1594,8 @@ body.sorting-mode .group-sort-btns { display: flex; }
 
     return '<div class="thread-item' + selectClass + selectedClass + '" onclick="handleThreadClick(this, event, \'' + prefix + '\', ' + index + ')" data-prefix="' + prefix + '" data-index="' + index + '">'
       + '<div class="thread-checkbox"></div>'
-      + '<div class="thread-content-wrap"><div class="thread-text">' + linkify(item.text || '') + '</div></div>'
+      + '<div class="thread-content-wrap">'
+      + '<div class="thread-text">' + linkify(item.text || '') + '</div>'
       + '<div class="thread-meta-row">'
       + '<span class="thread-date">' + dateStr + '</span>'
       + '<span class="thread-icon-slot">'
@@ -1581,6 +1603,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
       + '<span class="thread-icon-btn" onclick="openMoveSheet(\'' + prefix + '\',' + index + ', event)"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"></circle></svg></span>'
       + '<span class="thread-icon-btn" onclick="delThread(\'' + prefix + '\',' + index + ', event)"><svg viewBox="0 0 24 24"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg></span>'
       + '</span>'
+      + '</div>'
       + '</div>'
       + imgHtml
       + '</div>';
@@ -1601,6 +1624,11 @@ body.sorting-mode .group-sort-btns { display: flex; }
       return;
     }
     if (event && event.target.closest('.thread-icon-btn')) return;
+    
+    // 关闭其他
+    document.querySelectorAll('.thread-item.show-icons').forEach(t => { if(t !== el) t.classList.remove('show-icons'); });
+    document.querySelectorAll('.group-section.swiped').forEach(g => g.classList.remove('swiped'));
+    
     el.classList.toggle('show-icons');
   };
 
@@ -1615,13 +1643,16 @@ body.sorting-mode .group-sort-btns { display: flex; }
     var html = '';
     
     html += '<div class="group-toolbar">';
+    html += '<span class="sorting-tip" onclick="toggleSortingMode()">完成</span>';
     html += '<div class="more-btn" onclick="toggleActionMenu(event)">⋯</div>';
     html += '<div class="action-menu" id="actionMenu">';
     html += '<span onclick="showInlineGroupModal()">新建分组</span>';
     html += '<span onclick="toggleMultiSelect()">多选</span>';
     if (box.groups.length > 0) {
       html += '<span onclick="toggleAllGroups()">全部收起/展开</span>';
-      html += '<span onclick="toggleSortingMode()">调整排序</span>';
+      if (!document.body.classList.contains('sorting-mode')) {
+        html += '<span onclick="toggleSortingMode()">调整排序</span>';
+      }
     }
     html += '</div></div>';
 
@@ -1633,7 +1664,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
         + '<div class="group-content">'
         + '<div class="group-head">'
         + '<div class="group-left">'
-        + '<span class="group-name" onclick="startEditGroup(' + gi + ', event)">' + escapeHtml(g.name) + '</span>'
+        + '<span class="group-name">' + escapeHtml(g.name) + '</span>'
         + '<span class="group-count">· ' + (g.threads ? g.threads.length : 0) + '</span>'
         + '</div>'
         + '<div class="group-sort-btns">'
@@ -1652,7 +1683,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
     });
     $('groupWrap').innerHTML = html;
     
-    // 绑定手势（左滑露按钮）
+    // 绑定左滑手势
     $('groupWrap').querySelectorAll('.group-section').forEach(function(sec) {
       var gi = parseInt(sec.getAttribute('data-gi'), 10);
       var startX = 0, startY = 0, isSwiping = false;
@@ -1674,7 +1705,13 @@ body.sorting-mode .group-sort-btns { display: flex; }
       }, { passive: true });
       
       sec.addEventListener('touchend', function() {
-        if (isSwiping) { sec.classList.add('swiped'); isSwiping = false; }
+        if (isSwiping) { 
+          // 关闭其他滑出的
+          document.querySelectorAll('.group-section.swiped').forEach(g => { if(g !== sec) g.classList.remove('swiped'); });
+          document.querySelectorAll('.thread-item.show-icons').forEach(t => t.classList.remove('show-icons'));
+          sec.classList.add('swiped'); 
+          isSwiping = false; 
+        }
       });
       
       sec.addEventListener('click', function(e) {
@@ -1685,7 +1722,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
           return;
         }
         var head = e.target.closest('.group-head');
-        if (head && !e.target.closest('.group-name') && !e.target.closest('.group-sort-btns')) {
+        if (head && !e.target.closest('.group-sort-btns')) {
           var body = $('groupBody' + gi);
           if (body) {
             var hide = body.style.display === 'none';
@@ -1702,17 +1739,14 @@ body.sorting-mode .group-sort-btns { display: flex; }
       if (firstGroup) {
         var bubble = document.createElement('div');
         bubble.className = 'guide-bubble right';
-        bubble.textContent = '向左滑动管理分组，点击标题编辑';
-        
+        bubble.textContent = '向左滑动管理分组';
         var groupHead = firstGroup.querySelector('.group-head');
         groupHead.style.position = 'relative';
         groupHead.appendChild(bubble);
-        
         setTimeout(function() {
           if (bubble.parentNode) bubble.parentNode.removeChild(bubble);
           localStorage.setItem('group_guide_shown', '1');
-        }, 5000);
-        
+        }, 4000);
         document.addEventListener('touchstart', function removeBubble() {
           if (bubble.parentNode) bubble.parentNode.removeChild(bubble);
           localStorage.setItem('group_guide_shown', '1');
@@ -1722,11 +1756,16 @@ body.sorting-mode .group-sort-btns { display: flex; }
     }
   }
 
-  // 工具栏菜单控制
+  function bindGlobalReset() {
+    // 已在全局绑定，无需重复
+  }
+
   window.toggleActionMenu = function(e) {
     if(e) e.stopPropagation();
     var m = $('actionMenu');
     m.classList.toggle('show');
+    document.querySelectorAll('.group-section.swiped').forEach(g => g.classList.remove('swiped'));
+    document.querySelectorAll('.thread-item.show-icons').forEach(t => t.classList.remove('show-icons'));
   };
   document.addEventListener('click', function(e) {
     if (!e.target.closest('.group-toolbar')) {
@@ -1737,8 +1776,10 @@ body.sorting-mode .group-sort-btns { display: flex; }
 
   window.toggleSortingMode = function() {
     document.body.classList.toggle('sorting-mode');
-    $('actionMenu').classList.remove('show');
-    showToast(document.body.classList.contains('sorting-mode') ? '点击 ▲ ▼ 调整顺序' : '排序已关闭');
+    var m = $('actionMenu');
+    if(m) m.classList.remove('show');
+    // 重新渲染工具栏以隐藏菜单选项
+    renderGroups(imagineBoxes.find(x => x.id === currentBoxId));
   };
 
   window.showInlineGroupModal = function() {
@@ -1790,6 +1831,8 @@ body.sorting-mode .group-sort-btns { display: flex; }
     isMultiSelect = !isMultiSelect;
     selectedThreads = [];
     $('multiActionBar').classList.toggle('show', isMultiSelect);
+    var m = $('actionMenu');
+    if(m) m.classList.remove('show');
     renderBoxDetail(imagineBoxes.find(x => x.id === currentBoxId));
   };
   $('cancelMultiBtn').onclick = function() { toggleMultiSelect(); };
@@ -1799,11 +1842,9 @@ body.sorting-mode .group-sort-btns { display: flex; }
     if (!confirm('确认删除选中的 ' + selectedThreads.length + ' 条想象吗？')) return;
     var box = imagineBoxes.find(x => x.id === currentBoxId);
     
-    // 先标记要删除的
     var toDelete = selectedThreads.map(t => {
        return { list: t.prefix === 'flat' ? box.details : box.groups[parseInt(t.prefix.slice(1))].threads, index: t.index };
     });
-    // 索引从大到小排，防止 splice 错位
     toDelete.sort((a,b) => b.index - a.index).forEach(item => item.list.splice(item.index, 1));
     
     saveImagine();
@@ -1826,7 +1867,6 @@ body.sorting-mode .group-sort-btns { display: flex; }
   window.doMultiMove = function(target) {
     var box = imagineBoxes.find(x => x.id === currentBoxId);
     
-    // 先提取要移动的数据
     var itemsToMove = [];
     var toDelete = selectedThreads.map(t => {
        return { list: t.prefix === 'flat' ? box.details : box.groups[parseInt(t.prefix.slice(1))].threads, index: t.index };
@@ -1835,7 +1875,6 @@ body.sorting-mode .group-sort-btns { display: flex; }
        itemsToMove.push(item.list.splice(item.index, 1)[0]);
     });
     
-    // 放入目标
     if (target === -1) {
       if (!box.details) box.details = [];
       itemsToMove.forEach(it => box.details.push(it));
@@ -1850,11 +1889,6 @@ body.sorting-mode .group-sort-btns { display: flex; }
     showToast('已移动');
   };
 
-  window.startEditGroup = function(gi, event) {
-    if (event) event.stopPropagation();
-    triggerEditGroup(gi, event);
-  };
-  
   window.triggerEditGroup = function(gi, event) {
     if (event) event.stopPropagation();
     var box = imagineBoxes.find(x => x.id === currentBoxId);
@@ -1864,7 +1898,6 @@ body.sorting-mode .group-sort-btns { display: flex; }
     var headLeft = sec.querySelector('.group-left');
     var g = box.groups[gi];
     
-    // 替换成输入框
     headLeft.innerHTML = '<input class="group-name-input" maxlength="8" value="' + escapeHtml(g.name) + '">';
     var input = headLeft.querySelector('.group-name-input');
     input.focus();
@@ -2191,6 +2224,26 @@ body.sorting-mode .group-sort-btns { display: flex; }
         return;
       }
       var newBox = { id: 'box-' + Date.now(), type: type, name: boxName, core: '', details: [], groups: [] };
+      
+      // 新手演示数据
+      if (imagineBoxes.length === 0 && !localStorage.getItem('demo_created')) {
+        newBox.core = '我有一间在南方二三线的日常居所A，工作和休息在这里；一间能交通方便抵达无所谓城市、但要舒适且公共设施完备的地方单身公寓B，个人完全休息，用来安放各种爱好。';
+        newBox.groups = [
+          { name: '想象分支 1 - 日常居所', threads: [
+            { text: '书房：有一整面书墙，配一个懒人沙发。\n厨房：半开放式，门口带吧台（摆放酒水）。橱柜多、双色搭配、易清理；洗碗消毒一体，烤箱、烘焙和调酒工具齐全。', date: new Date().toISOString().split('T')[0] }
+          ]},
+          { name: '想象分支 2 - 单身公寓', threads: [
+            { text: '影音室：一角收藏电影、音乐胶片，专门用来放映。\n录音室：降噪隔离，放置吉他和钢琴。\n运动区：瑜伽垫、跑步机和器械；墙上挂自行车和滑雪板，各种球类收在角落。', date: new Date().toISOString().split('T')[0] }
+          ]},
+          { name: '你理解了么？', threads: [
+            { text: '理解了就点击右上角的“…”更多，多选后一键删除。', date: new Date().toISOString().split('T')[0] },
+            { text: '开启为你的想象添砖加瓦吧！', date: new Date().toISOString().split('T')[0] }
+          ]}
+        ];
+        localStorage.setItem('demo_created', '1');
+        showToast('已为您生成演示盒子');
+      }
+      
       imagineBoxes.push(newBox);
       saveImagine();
       $('boxTypeMenu').classList.remove('show');
