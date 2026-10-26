@@ -2278,7 +2278,6 @@ body.sorting-mode .group-sort-btns { display: flex; }
     if (!text && !files.length) return;
     var targetGroup = parseInt($('postGroupSelect').value, 10);
     processImages(files, function(images) {
-      // 防止用户在压缩期间切走
       if (currentBoxId !== box.id) return;
       var now = new Date();
       var dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
