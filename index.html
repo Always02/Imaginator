@@ -192,8 +192,11 @@ body.sorting-mode .sorting-tip { display: block; }
 /* 分组 */
 .group-section { margin-bottom: 8px; position: relative; overflow: hidden; padding: 2px 0; }
 .group-content { position: relative; z-index: 2; background: var(--white); transition: transform 0.25s ease; }
+/* 只让 group-content 移动 */
+.group-content { position: relative; z-index: 2; background: var(--white); transition: transform 0.25s ease; width: 100%; }
 .group-section.swiped .group-content { transform: translateX(-120px); }
-.group-swipe-actions { position: absolute; top: 0; right: 0; height: 100%; display: flex; z-index: 3; transform: translateX(100%); transition: transform 0.25s ease; }
+/* 按钮固定在行的右侧，高度只跟 head 一样高，不拉伸到底部 */
+.group-swipe-actions { position: absolute; top: 0; right: 0; height: 49px; display: flex; z-index: 1; transform: translateX(100%); transition: transform 0.25s ease; }
 .group-section.swiped .group-swipe-actions { transform: translateX(0); }
 .group-swipe-edit, .group-swipe-delete { width: 60px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #fff; }
 .group-swipe-edit { background: #555; }
@@ -1920,33 +1923,37 @@ body.sorting-mode .group-sort-btns { display: flex; }
   };
   $('cancelMultiBtn').onclick = function() { toggleMultiSelect(); };
 
-  $('multiDeleteBtn').onclick = function() {
+    $('multiDeleteBtn').onclick = function() {
     if (!selectedThreads.length) { showToast('请先选择'); return; }
-    if (!confirm('确认删除选中的 ' + selectedThreads.length + ' 条内容吗？')) return;
+    if (!confirm('确认删除选中的 ' + selectedThreads.length + ' 项吗？')) return;
     var box = imagineBoxes.find(x => x.id === currentBoxId);
     
     var toDelete = [];
+    
     selectedThreads.forEach(t => {
       if (t.prefix.startsWith('group_')) {
         var gi = parseInt(t.prefix.split('_')[1], 10);
-        if (box.groups[gi] && box.groups[gi].threads) {
-          box.groups[gi].threads.forEach((_, i) => toDelete.push({ list: box.groups[gi].threads, index: i }));
+        if (box.groups[gi]) {
+          // 标记删除整个组
+          toDelete.push({ isGroup: true, gi: gi });
         }
       } else {
         var list = t.prefix === 'flat' ? box.details : box.groups[parseInt(t.prefix.slice(1))].threads;
-        toDelete.push({ list: list, index: t.index });
+        if (list) toDelete.push({ isGroup: false, list: list, index: t.index });
       }
     });
     
-    var uniqueList = [];
-    var seen = new Set();
-    toDelete.forEach(item => {
-       var key = item.list.toString() + '_' + item.index;
-       if (!seen.has(key)) { seen.add(key); uniqueList.push(item); }
+    // 倒序删掉小点
+    toDelete.filter(d => !d.isGroup).sort((a,b) => b.index - a.index).forEach(d => {
+      d.list.splice(d.index, 1);
     });
-    uniqueList.sort((a,b) => b.index - a.index).forEach(item => item.list.splice(item.index, 1));
     
-    saveImagine();
+    // 倒序删掉分组（连带里面的全部小点一起删）
+    toDelete.filter(d => d.isGroup).map(d => d.gi).sort((a,b) => b - a).forEach(gi => {
+      box.groups.splice(gi, 1);
+    });
+    
+    saveMeta();
     toggleMultiSelect();
     showToast('已删除');
   };
