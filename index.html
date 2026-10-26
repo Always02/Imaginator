@@ -155,7 +155,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .thread-meta-row { display: flex; align-items: center; justify-content: flex-end; margin-left: auto; gap: 8px; min-height: 18px; flex: 0 0 auto;}
 .thread-date { font-size: 11px; color: #ccc; white-space: nowrap; }
 .thread-icon-slot { display: inline-flex; gap: 12px; width: 0; overflow: hidden; opacity: 0; transition: width 0.22s ease, opacity 0.22s ease; }
-.thread-item.show-icons .thread-icon-slot { width: 56px; opacity: 1; }
+.thread-item.show-icons .thread-icon-slot { width: 70px; opacity: 1; }
 .thread-icon-btn { cursor: pointer; color: #bbb; padding: 0 2px; line-height: 1; display: inline-flex; align-items: center; flex: 0 0 auto; }
 .thread-icon-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
 .thread-inline-edit { width: 100%; border: none; background: transparent; padding: 4px 0; font-size: 15px; line-height: 1.7; resize: vertical; min-height: 40px; color: var(--ink); }
@@ -300,7 +300,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
 .dev-menu { display: flex; flex-direction: column; gap: 10px; margin: 10px 0 18px; }
 .dev-menu-item { padding: 14px; border: 1px solid var(--line); border-radius: 12px; font-size: 15px; cursor: pointer; text-align: center; }
 .dev-menu-item:active { background: var(--soft); }
-.dev-panel { text-align: left; max-height: 52vh; overflow-y: auto; margin-bottom: 16px; scrollbar-width: none; -ms-overflow-style: none; }
+.dev-panel { text-align: left; max-height: 52vh; overflow-y: auto; margin-bottom: 16px; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; }
 .dev-panel::-webkit-scrollbar { display: none; }
 .dev-log p { font-size: 13px; line-height: 1.9; color: #555; text-align: left; margin: 0 0 12px; }
 .dev-ver { font-size: 12px; color: #999; margin-bottom: 6px; text-align: left; }
@@ -685,6 +685,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
   var calYear = 0, calMonth = 0, calSel = '';
   var lightboxImages = [];
   var lightboxIndex = 0;
+  var isEditingDiary = false;
   
   var collapsedGroups = {}; 
   var isMultiSelect = false;
@@ -778,14 +779,14 @@ body.sorting-mode .group-sort-btns { display: flex; }
     bindFabDrag();
     bindVisualViewport();
     
-    // 全局复位逻辑
-    document.addEventListener('touchstart', function(e) {
+    // 全局复位（仅在点击时触发，避免干扰滑动）
+    document.addEventListener('click', function(e) {
       if (!e.target.closest('.box-card') && !e.target.closest('.group-section') && !e.target.closest('.thread-item') && !e.target.closest('.thread-icon-btn')) {
         document.querySelectorAll('.box-card.swiped').forEach(c => c.classList.remove('swiped'));
         document.querySelectorAll('.group-section.swiped').forEach(g => g.classList.remove('swiped'));
         document.querySelectorAll('.thread-item.show-icons').forEach(t => t.classList.remove('show-icons'));
       }
-    }, {passive: true});
+    });
   });
 
   document.querySelectorAll('#welcomeOverlay .gender-btn').forEach(btn => {
@@ -1234,7 +1235,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
     if (calSel) {
       $('date').value = calSel;
       $('dateText').textContent = formatDate(calSel);
-      saveDiaryDraft();
+      if (!isEditingDiary) saveDiaryDraft();
     }
     $('calSheet').classList.remove('show');
   });
@@ -1245,6 +1246,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
   function openWrite(entry) {
     $('entryForm').reset();
     if (entry) {
+      isEditingDiary = true;
       $('entryId').value = entry.id;
       $('date').value = entry.date;
       $('place').value = entry.place || '';
@@ -1253,6 +1255,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
       $('events').value = entry.events || '';
       $('formTitle').textContent = '编辑记录。';
     } else {
+      isEditingDiary = false;
       $('entryId').value = '';
       var draft = loadDiaryDraft();
       var today = new Date().toISOString().split('T')[0];
@@ -1274,6 +1277,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
     try { return JSON.parse(localStorage.getItem(KEY_DRAFT_DIARY) || '{}'); } catch(e) { return {}; }
   }
   function saveDiaryDraft() {
+    if (isEditingDiary) return; // 编辑旧日记不保存为新草稿
     var d = {
       date: $('date').value, place: $('place').value, food: $('food').value,
       mood: $('mood').value, events: $('events').value
@@ -1431,7 +1435,12 @@ body.sorting-mode .group-sort-btns { display: flex; }
           + '<div class="box-desc">先看看如何在这里写下想象吧</div>'
           + '</div>'
           + '<div class="open-box" data-id="demo-box" style="font-size:22px; color:#ccc; padding-right:6px;">›</div>'
-          + '</div></div>';
+          + '</div>'
+          + '<div class="box-swipe-actions">'
+          + '<div class="box-swipe-edit" onclick="editBoxName(\'demo-box\', event)">编辑</div>'
+          + '<div class="box-swipe-delete" onclick="deleteBox(\'demo-box\', event)">删除</div>'
+          + '</div>'
+          + '</div>';
       }
     }
 
@@ -1490,10 +1499,11 @@ body.sorting-mode .group-sort-btns { display: flex; }
 
   window.editBoxName = function(id, event) {
     if (event) event.stopPropagation();
-    var box = imagineBoxes.find(x => x.id === id);
+    var box = id === 'demo-box' ? { name: '学习' } : imagineBoxes.find(x => x.id === id);
     if (!box) return;
     var newName = prompt('修改盒子名称：', box.name);
     if (newName !== null && newName.trim() !== '') {
+      if (id === 'demo-box') { showToast('演示盒子不支持改名'); return; }
       box.name = newName.trim();
       saveImagine();
       renderHub();
@@ -1502,6 +1512,12 @@ body.sorting-mode .group-sort-btns { display: flex; }
 
   window.deleteBox = function(id, event) {
     if (event) event.stopPropagation();
+    if (id === 'demo-box') {
+      if (!confirm('确定删除「学习」演示盒子吗？')) return;
+      localStorage.setItem('demo_created', '1');
+      renderHub();
+      return;
+    }
     if (!confirm('确定删除这个盒子吗？里面的内容也会一并删除。')) return;
     imagineBoxes = imagineBoxes.filter(x => x.id !== id);
     saveImagine();
@@ -1511,41 +1527,32 @@ body.sorting-mode .group-sort-btns { display: flex; }
 
   window.openBox = function(id) {
     if (id === 'demo-box') {
-      currentBoxId = 'demo-box';
-      $('imagineHub').classList.add('hidden');
-      $('boxDetail').classList.remove('hidden');
-      $('boxTitleInput').value = '学习';
-      
-      $('coreInput').value = '这里放置你的核心想象支干。例：（想象盒子-房子）我有一间在南方一二线线的日常居所A，工作在这；一间能交通方便抵达舒适且公共设施完备的单身公寓B，个人休息，用来安放各种爱好。';
-      
-      var coreEl = $('coreInput');
-      coreEl.style.height = 'auto';
-      coreEl.style.height = Math.max(60, coreEl.scrollHeight) + 'px';
-
-      var demoGroups = [
-        { name: '右上角点击“…”更多，可新建分组。', threads: [
-            { text: '点开后，选择多选，可删除或移动分组下的小点', date: new Date().toISOString().split('T')[0] },
-            { text: '点击调整排序，可以调整分组排序，右边的上下标可移动分组', date: new Date().toISOString().split('T')[0] }
-        ]},
-        { name: '例：单身公寓', threads: [
-            { text: '影音室：一角收藏电影、音乐胶片，专门用来放映。', date: new Date().toISOString().split('T')[0] },
-            { text: '录音室：降噪隔离，放置吉他和钢琴。', date: new Date().toISOString().split('T')[0] },
-            { text: '运动区：瑜伽垫、跑步机和器械；墙上挂自行车和滑雪板，各种球类收在角落。', date: new Date().toISOString().split('T')[0] }
-        ]},
-        { name: '你理解了么？', threads: [
-            { text: '理解后可以点击右上角的“…”更多，多选后一键删除或返回到上一个页面，左划删掉整个盒子。', date: new Date().toISOString().split('T')[0] },
-            { text: '开启为你的想象添砖加瓦吧！', date: new Date().toISOString().split('T')[0] }
-        ]}
-      ];
-      
-      var demoBox = { id: 'demo-box', name: '学习', groups: demoGroups, details: [] };
-      
-      renderGroups(demoBox);
-      $('ungroupedWrap').classList.remove('has-content');
-      renderPostGroupSelect(demoBox);
-      
-      updateFabVisibility();
-      return;
+      // 将演示盒子临时载入
+      var hasDemo = imagineBoxes.some(b => b.id === 'demo-box');
+      if (!hasDemo) {
+        var demoBox = {
+          id: 'demo-box',
+          name: '学习',
+          core: '这里放置你的核心想象支干。例：（想象盒子-房子）我有一间在南方一二线线的日常居所A，工作在这；一间能交通方便抵达舒适且公共设施完备的单身公寓B，个人休息，用来安放各种爱好。',
+          details: [],
+          groups: [
+            { name: '右上角点击“…”更多，可新建分组。', threads: [
+                { text: '点开后，选择多选，可删除或移动分组下的小点', date: new Date().toISOString().split('T')[0] },
+                { text: '点击调整排序，可以调整分组排序，右边的上下标可移动分组', date: new Date().toISOString().split('T')[0] }
+            ]},
+            { name: '例：单身公寓', threads: [
+                { text: '影音室：一角收藏电影、音乐胶片，专门用来放映。', date: new Date().toISOString().split('T')[0] },
+                { text: '录音室：降噪隔离，放置吉他和钢琴。', date: new Date().toISOString().split('T')[0] },
+                { text: '运动区：瑜伽垫、跑步机和器械；墙上挂自行车和滑雪板，各种球类收在角落。', date: new Date().toISOString().split('T')[0] }
+            ]},
+            { name: '你理解了么？', threads: [
+                { text: '理解后可以点击右上角的“…”更多，多选后一键删除或返回到上一个页面，左划删掉整个盒子。', date: new Date().toISOString().split('T')[0] },
+                { text: '开启为你的想象添砖加瓦吧！', date: new Date().toISOString().split('T')[0] }
+            ]}
+          ]
+        };
+        imagineBoxes.push(demoBox);
+      }
     }
     
     currentBoxId = id;
@@ -1559,7 +1566,6 @@ body.sorting-mode .group-sort-btns { display: flex; }
     $('boxTitleInput').style.color = '#111';
     $('coreInput').value = box.core || '';
     
-    // 初始化高度，不立刻撑满
     var coreEl = $('coreInput');
     coreEl.style.height = 'auto';
     coreEl.style.height = Math.max(60, coreEl.scrollHeight) + 'px';
@@ -1687,6 +1693,13 @@ body.sorting-mode .group-sort-btns { display: flex; }
         selectedThreads.push({ prefix: prefix, index: index });
         el.classList.add('selected');
       }
+      // 取消可能被选中的父组
+      if (prefix.startsWith('g')) {
+        var gi = parseInt(prefix.slice(1), 10);
+        selectedThreads = selectedThreads.filter(t => t.prefix !== 'group_' + gi);
+        var sec = $('groupWrap').querySelector('.group-section[data-gi="' + gi + '"]');
+        if (sec) sec.classList.remove('selected');
+      }
       updateMultiBarState();
       return;
     }
@@ -1788,13 +1801,27 @@ body.sorting-mode .group-sort-btns { display: flex; }
       event.preventDefault(); event.stopPropagation();
       var sec = headEl.closest('.group-section');
       var isSelected = selectedThreads.some(t => t.prefix === 'group_' + gi);
+      var box = imagineBoxes.find(x => x.id === currentBoxId);
       if (isSelected) {
         selectedThreads = selectedThreads.filter(t => t.prefix !== 'group_' + gi);
+        // 同时移除子节点
+        if (box.groups[gi] && box.groups[gi].threads) {
+          selectedThreads = selectedThreads.filter(t => t.prefix !== 'g' + gi);
+        }
         sec.classList.remove('selected');
       } else {
         selectedThreads.push({ prefix: 'group_' + gi, index: 0 });
+        // 同时勾选子节点
+        if (box.groups[gi] && box.groups[gi].threads) {
+          box.groups[gi].threads.forEach((_, i) => {
+            if (!selectedThreads.some(t => t.prefix === 'g' + gi && t.index === i)) {
+              selectedThreads.push({ prefix: 'g' + gi, index: i });
+            }
+          });
+        }
         sec.classList.add('selected');
       }
+      renderBoxDetail(box);
       updateMultiBarState();
       return;
     }
@@ -1834,8 +1861,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
     document.body.classList.toggle('sorting-mode');
     var m = $('actionMenu');
     if(m) m.classList.remove('show');
-    // 重新渲染工具栏以隐藏菜单选项
-    renderGroups(imagineBoxes.find(x => x.id === currentBoxId) || {id:'demo-box', name:'学习', groups: []}); // fallback
+    renderGroups(imagineBoxes.find(x => x.id === currentBoxId));
   };
 
   window.showInlineGroupModal = function() {
@@ -1899,7 +1925,6 @@ body.sorting-mode .group-sort-btns { display: flex; }
     if (!confirm('确认删除选中的 ' + selectedThreads.length + ' 条内容吗？')) return;
     var box = imagineBoxes.find(x => x.id === currentBoxId);
     
-    // 提取所有要删除的索引
     var toDelete = [];
     selectedThreads.forEach(t => {
       if (t.prefix.startsWith('group_')) {
@@ -1913,7 +1938,6 @@ body.sorting-mode .group-sort-btns { display: flex; }
       }
     });
     
-    // 去重并按索引倒序
     var uniqueList = [];
     var seen = new Set();
     toDelete.forEach(item => {
@@ -1943,7 +1967,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
     var box = imagineBoxes.find(x => x.id === currentBoxId);
     
     var itemsToMove = [];
-    var toDelete = selectedThreads.map(t => {
+    var toDelete = selectedThreads.filter(t => !t.prefix.startsWith('group_')).map(t => {
        return { list: t.prefix === 'flat' ? box.details : box.groups[parseInt(t.prefix.slice(1))].threads, index: t.index };
     });
     toDelete.sort((a,b) => b.index - a.index).forEach(item => {
@@ -2254,6 +2278,8 @@ body.sorting-mode .group-sort-btns { display: flex; }
     if (!text && !files.length) return;
     var targetGroup = parseInt($('postGroupSelect').value, 10);
     processImages(files, function(images) {
+      // 防止用户在压缩期间切走
+      if (currentBoxId !== box.id) return;
       var now = new Date();
       var dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
       var item = { text: text, images: images, date: dateStr };
@@ -2335,9 +2361,11 @@ body.sorting-mode .group-sort-btns { display: flex; }
             userProfile = data.profile;
             localStorage.setItem(KEY_PROFILE, JSON.stringify(userProfile));
           }
-          if (data.diary) entries = data.diary;
+          if (data.diary && Array.isArray(data.diary)) entries = data.diary;
           else if (Array.isArray(data)) entries = data;
-          if (data.imagine) imagineBoxes = data.imagine;
+          
+          if (data.imagine && Array.isArray(data.imagine)) imagineBoxes = data.imagine;
+          
           saveDiary(); saveImagine();
           updatePronouns();
           showToast('导入成功，即将刷新');
