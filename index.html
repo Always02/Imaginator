@@ -1756,9 +1756,14 @@ body.sorting-mode .group-sort-btns { display: flex; }
         + '<span onclick="moveGroup(' + gi + ', 1, event)">▼</span>'
         + '</div>'
         + '</div>'
-        + '<div class="group-body" id="groupBody' + gi + '" style="' + displayStyle + '">'
+        + '<div class="group-swipe-actions">'
+        + '<div class="group-swipe-edit" onclick="triggerEditGroup(' + gi + ', event)">编辑</div>'
+        + '<div class="group-swipe-delete" onclick="delGroup(' + gi + ', event)">删除</div>'
+        + '</div>'
+        + '</div>' // 这里闭合 group-content
+        + '<div class="group-body" id="groupBody' + gi + '" style="' + displayStyle + '">' // group-body 放到了外面
         + (g.threads || []).map(function(item, i) { return threadItemHtml(item, i, 'g' + gi); }).join('')
-        + '</div></div>'
+        + '</div></div>'; // 闭合 group-section
         + '<div class="group-swipe-actions">'
         + '<div class="group-swipe-edit" onclick="triggerEditGroup(' + gi + ', event)">编辑</div>'
         + '<div class="group-swipe-delete" onclick="delGroup(' + gi + ', event)">删除</div>'
