@@ -131,7 +131,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .box-title-input { font-size: 20px; font-weight: 700; border: none; background: transparent; width: auto; max-width: 240px; padding: 0; color: #111 !important; }
 .box-title-input:disabled { color: #111 !important; }
 
-/* Core (自适应高度与字数限制) */
+/* Core */
 .core-imagine { margin-bottom: 24px; position: relative; padding-left: 16px; display: flex; }
 .core-imagine::before { content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 2px; background: #999; border-radius: 2px; }
 .core-input { width: 100%; border: none; background: transparent; padding: 12px 4px; font-size: 17px; font-weight: 600; line-height: 1.8; resize: none; overflow: hidden; color: var(--ink); }
@@ -143,8 +143,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .core-bubble::after { content: ""; position: absolute; left: 18px; bottom: -4px; width: 8px; height: 8px; background: var(--ink); transform: rotate(45deg); }
 .guide-bubble.right { left: 100%; top: 50%; transform: translateY(-50%); margin-left: 10px; white-space: normal; width: 140px; line-height: 1.5; text-align: center;}
 .guide-bubble.right::after { left: -4px; top: calc(50% - 4px); }
-.guide-bubble.bottom { top: 100%; left: 20px; margin-top: 8px; white-space: normal; width: 180px; line-height: 1.5; text-align: left;}
-.guide-bubble.bottom::after { left: 18px; top: -4px; }
 
 /* Threads */
 .thread-feed { display: flex; flex-direction: column; }
@@ -162,21 +160,24 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .thread-icon-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
 .thread-inline-edit { width: 100%; border: none; background: transparent; padding: 4px 0; font-size: 15px; line-height: 1.7; resize: vertical; min-height: 40px; color: var(--ink); }
 
-/* 未分组区域 (下移，不同底色) */
+/* 未分组区域 (下移) */
 .ungrouped-wrap { background: #fcfcfc; border: 1px dashed #eee; border-radius: 12px; padding: 12px 14px; margin-top: 24px; margin-bottom: 20px; display: none; }
 .ungrouped-wrap.has-content { display: block; }
 
 /* 多选圆圈 */
-.thread-checkbox { display: none; width: 18px; height: 18px; border-radius: 50%; border: 1px solid #ccc; flex-shrink: 0; align-items: center; justify-content: center; margin-top: 4px; }
-.thread-item.select-mode .thread-checkbox { display: flex; }
-.thread-item.selected .thread-checkbox { background: var(--ink); border-color: var(--ink); }
-.thread-item.selected .thread-checkbox::after { content: ""; width: 8px; height: 5px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg) translateY(-1px); }
+.thread-checkbox, .group-checkbox { display: none; width: 18px; height: 18px; border-radius: 50%; border: 1px solid #ccc; flex-shrink: 0; align-items: center; justify-content: center; margin-top: 4px; }
+.thread-item.select-mode .thread-checkbox, .group-head.select-mode .group-checkbox { display: flex; }
+.thread-item.selected .thread-checkbox, .group-section.selected .group-checkbox { background: var(--ink); border-color: var(--ink); }
+.thread-item.selected .thread-checkbox::after, .group-section.selected .group-checkbox::after { content: ""; width: 8px; height: 5px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg) translateY(-1px); }
 .thread-item.select-mode .thread-meta-row { display: none; }
+.group-head.select-mode { padding-left: 2px; }
 
-.multi-action-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); z-index: 9000; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; transform: translateY(100%); transition: transform 0.25s ease; }
+/* 多选底栏 */
+.multi-action-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); z-index: 9000; padding: 16px 24px 30px; display: flex; justify-content: space-between; align-items: center; transform: translateY(100%); transition: transform 0.25s ease; }
 .multi-action-bar.show { transform: translateY(0); }
-.multi-btn { font-size: 14px; color: var(--ink); padding: 8px; font-weight: 600; cursor: pointer; }
+.multi-btn { font-size: 15px; color: var(--ink); padding: 8px; font-weight: 600; cursor: pointer; }
 .multi-btn.cancel { color: var(--muted); font-weight: 400; }
+.multi-btn.disabled { color: #ccc; pointer-events: none; }
 
 /* Toolbar */
 .group-toolbar { display: flex; justify-content: flex-end; margin-bottom: 4px; position: relative; margin-top: -4px;}
@@ -363,7 +364,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
     <div class="gender-select">
       <button class="gender-btn" data-g="男">男</button>
       <button class="gender-btn" data-g="女">女</button>
-      <button class="gender-btn data-g=Ta active">无性别</button>
+      <button class="gender-btn active" data-g="Ta">无性别</button>
     </div>
     <div class="profile-actions">
       <button class="profile-cancel" id="cancelProfileBtn">取消</button>
@@ -397,7 +398,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
     <div id="devLogPanel" class="dev-panel hidden">
       <div class="dev-log">
         <div class="dev-ver">v1.5</div>
-        <p>优化了想象页的细节交互，增加了演示盒子新手引导，修复了排版渲染问题，重构了开发者页面结构。</p>
+        <p>优化了想象页的细节交互，增加了“学习盒子”演示新手引导，修复了排版渲染与输入框初始高度问题，重构了开发者页面结构，新增分组多选支持。</p>
         <div class="dev-ver">v1.4</div>
         <p>优化了想象页分组的滑动手势与视觉区分，新增了多维度的分组批量管理功能。</p>
         <div class="dev-ver">v1.3</div>
@@ -853,15 +854,20 @@ body.sorting-mode .group-sort-btns { display: flex; }
   });
 
   $('resetOnboardBtn').addEventListener('click', function() {
-    if (!confirm('重置新手引导？下次打开会重新看到开场和来信。')) return;
+    if (!confirm('重置新手引导？下次打开会重新看到开场和来信，以及各类操作演示。')) return;
     localStorage.removeItem(KEY_ONBOARDED);
+    localStorage.removeItem('demo_created');
+    localStorage.removeItem('group_guide_shown');
+    localStorage.removeItem(KEY_CORE_TIP);
     location.reload();
   });
 
   $('clearWorldBtn').addEventListener('click', function() {
     if (!confirm('确定清空这个世界？档案、新手引导、日记、想象都会删除，无法恢复。')) return;
     Object.keys(localStorage).forEach(function(k) {
-      if (k.indexOf('herLittleAtlas.') === 0) localStorage.removeItem(k);
+      if (k.indexOf('herLittleAtlas.') === 0 || k === 'demo_created' || k === 'group_guide_shown') {
+        localStorage.removeItem(k);
+      }
     });
     location.reload();
   });
@@ -1412,7 +1418,25 @@ body.sorting-mode .group-sort-btns { display: flex; }
 
   // ================= 想象渲染 =================
   function renderHub() {
-    var html = imagineBoxes.map(function(box) {
+    var html = '';
+    
+    // 强制置顶「学习」盒子
+    var hasDemoBox = imagineBoxes.some(b => b.name === '学习');
+    if (!localStorage.getItem('demo_created') || hasDemoBox) {
+      if (!hasDemoBox) {
+        html += '<div class="box-card" data-id="demo-box">'
+          + '<div class="box-content">'
+          + '<div class="open-box" data-id="demo-box" style="flex:1;">'
+          + '<div class="box-title">学习</div>'
+          + '<div class="box-desc">先看看如何在这里写下想象吧</div>'
+          + '</div>'
+          + '<div class="open-box" data-id="demo-box" style="font-size:22px; color:#ccc; padding-right:6px;">›</div>'
+          + '</div></div>';
+      }
+    }
+
+    html += imagineBoxes.map(function(box) {
+      if (box.name === '学习') return ''; // 避免重复
       return '<div class="box-card" data-id="' + box.id + '">'
         + '<div class="box-content">'
         + '<div class="open-box" data-id="' + box.id + '" style="flex:1;">'
@@ -1486,6 +1510,44 @@ body.sorting-mode .group-sort-btns { display: flex; }
   };
 
   window.openBox = function(id) {
+    if (id === 'demo-box') {
+      currentBoxId = 'demo-box';
+      $('imagineHub').classList.add('hidden');
+      $('boxDetail').classList.remove('hidden');
+      $('boxTitleInput').value = '学习';
+      
+      $('coreInput').value = '这里放置你的核心想象支干。例：（想象盒子-房子）我有一间在南方一二线线的日常居所A，工作在这；一间能交通方便抵达舒适且公共设施完备的单身公寓B，个人休息，用来安放各种爱好。';
+      
+      var coreEl = $('coreInput');
+      coreEl.style.height = 'auto';
+      coreEl.style.height = Math.max(60, coreEl.scrollHeight) + 'px';
+
+      var demoGroups = [
+        { name: '右上角点击“…”更多，可新建分组。', threads: [
+            { text: '点开后，选择多选，可删除或移动分组下的小点', date: new Date().toISOString().split('T')[0] },
+            { text: '点击调整排序，可以调整分组排序，右边的上下标可移动分组', date: new Date().toISOString().split('T')[0] }
+        ]},
+        { name: '例：单身公寓', threads: [
+            { text: '影音室：一角收藏电影、音乐胶片，专门用来放映。', date: new Date().toISOString().split('T')[0] },
+            { text: '录音室：降噪隔离，放置吉他和钢琴。', date: new Date().toISOString().split('T')[0] },
+            { text: '运动区：瑜伽垫、跑步机和器械；墙上挂自行车和滑雪板，各种球类收在角落。', date: new Date().toISOString().split('T')[0] }
+        ]},
+        { name: '你理解了么？', threads: [
+            { text: '理解后可以点击右上角的“…”更多，多选后一键删除或返回到上一个页面，左划删掉整个盒子。', date: new Date().toISOString().split('T')[0] },
+            { text: '开启为你的想象添砖加瓦吧！', date: new Date().toISOString().split('T')[0] }
+        ]}
+      ];
+      
+      var demoBox = { id: 'demo-box', name: '学习', groups: demoGroups, details: [] };
+      
+      renderGroups(demoBox);
+      $('ungroupedWrap').classList.remove('has-content');
+      renderPostGroupSelect(demoBox);
+      
+      updateFabVisibility();
+      return;
+    }
+    
     currentBoxId = id;
     var box = imagineBoxes.find(x => x.id === id);
     if (!box) return;
@@ -1496,7 +1558,12 @@ body.sorting-mode .group-sort-btns { display: flex; }
     $('boxTitleInput').disabled = true;
     $('boxTitleInput').style.color = '#111';
     $('coreInput').value = box.core || '';
-    autoResizeCore();
+    
+    // 初始化高度，不立刻撑满
+    var coreEl = $('coreInput');
+    coreEl.style.height = 'auto';
+    coreEl.style.height = Math.max(60, coreEl.scrollHeight) + 'px';
+
     var prompt = boxPrompts[box.name] || boxPrompts['default'];
     $('coreInput').placeholder = prompt;
     if (!box.groups) box.groups = [];
@@ -1557,7 +1624,6 @@ body.sorting-mode .group-sort-btns { display: flex; }
     
     renderGroups(box);
     renderPostGroupSelect(box);
-    bindGlobalReset();
   }
 
   function renderPostGroupSelect(box) {
@@ -1621,14 +1687,12 @@ body.sorting-mode .group-sort-btns { display: flex; }
         selectedThreads.push({ prefix: prefix, index: index });
         el.classList.add('selected');
       }
+      updateMultiBarState();
       return;
     }
     if (event && event.target.closest('.thread-icon-btn')) return;
-    
-    // 关闭其他
     document.querySelectorAll('.thread-item.show-icons').forEach(t => { if(t !== el) t.classList.remove('show-icons'); });
     document.querySelectorAll('.group-section.swiped').forEach(g => g.classList.remove('swiped'));
-    
     el.classList.toggle('show-icons');
   };
 
@@ -1659,11 +1723,15 @@ body.sorting-mode .group-sort-btns { display: flex; }
     box.groups.forEach(function(g, gi) {
       var isCollapsed = collapsedGroups[currentBoxId + '_' + gi];
       var displayStyle = isCollapsed ? 'display:none;' : 'display:block;';
+      var isGroupSelected = isMultiSelect && selectedThreads.some(t => t.prefix === 'group_' + gi);
+      var groupSelectClass = isMultiSelect ? ' select-mode' : '';
+      var groupSelectedClass = isGroupSelected ? ' selected' : '';
       
-      html += '<div class="group-section" data-gi="' + gi + '">'
+      html += '<div class="group-section' + groupSelectedClass + '" data-gi="' + gi + '">'
         + '<div class="group-content">'
-        + '<div class="group-head">'
+        + '<div class="group-head' + groupSelectClass + '" onclick="handleGroupClick(this, event, ' + gi + ')">'
         + '<div class="group-left">'
+        + '<div class="group-checkbox"></div>'
         + '<span class="group-name">' + escapeHtml(g.name) + '</span>'
         + '<span class="group-count">· ' + (g.threads ? g.threads.length : 0) + '</span>'
         + '</div>'
@@ -1705,59 +1773,47 @@ body.sorting-mode .group-sort-btns { display: flex; }
       }, { passive: true });
       
       sec.addEventListener('touchend', function() {
-        if (isSwiping) { 
-          // 关闭其他滑出的
+        if (isSwiping && !isMultiSelect) { 
           document.querySelectorAll('.group-section.swiped').forEach(g => { if(g !== sec) g.classList.remove('swiped'); });
           document.querySelectorAll('.thread-item.show-icons').forEach(t => t.classList.remove('show-icons'));
           sec.classList.add('swiped'); 
           isSwiping = false; 
         }
       });
-      
-      sec.addEventListener('click', function(e) {
-        if (sec.classList.contains('swiped')) {
-          sec.classList.remove('swiped');
-          e.preventDefault();
-          e.stopPropagation();
-          return;
-        }
-        var head = e.target.closest('.group-head');
-        if (head && !e.target.closest('.group-sort-btns')) {
-          var body = $('groupBody' + gi);
-          if (body) {
-            var hide = body.style.display === 'none';
-            body.style.display = hide ? 'block' : 'none';
-            collapsedGroups[currentBoxId + '_' + gi] = !hide;
-          }
-        }
-      });
     });
-
-    // 首次有分组时，显示引导气泡
-    if (box.groups.length > 0 && !localStorage.getItem('group_guide_shown')) {
-      var firstGroup = $('groupWrap').querySelector('.group-section');
-      if (firstGroup) {
-        var bubble = document.createElement('div');
-        bubble.className = 'guide-bubble right';
-        bubble.textContent = '向左滑动管理分组';
-        var groupHead = firstGroup.querySelector('.group-head');
-        groupHead.style.position = 'relative';
-        groupHead.appendChild(bubble);
-        setTimeout(function() {
-          if (bubble.parentNode) bubble.parentNode.removeChild(bubble);
-          localStorage.setItem('group_guide_shown', '1');
-        }, 4000);
-        document.addEventListener('touchstart', function removeBubble() {
-          if (bubble.parentNode) bubble.parentNode.removeChild(bubble);
-          localStorage.setItem('group_guide_shown', '1');
-          document.removeEventListener('touchstart', removeBubble);
-        }, { once: true });
-      }
-    }
   }
 
-  function bindGlobalReset() {
-    // 已在全局绑定，无需重复
+  window.handleGroupClick = function(headEl, event, gi) {
+    if (isMultiSelect) {
+      event.preventDefault(); event.stopPropagation();
+      var sec = headEl.closest('.group-section');
+      var isSelected = selectedThreads.some(t => t.prefix === 'group_' + gi);
+      if (isSelected) {
+        selectedThreads = selectedThreads.filter(t => t.prefix !== 'group_' + gi);
+        sec.classList.remove('selected');
+      } else {
+        selectedThreads.push({ prefix: 'group_' + gi, index: 0 });
+        sec.classList.add('selected');
+      }
+      updateMultiBarState();
+      return;
+    }
+    var body = $('groupBody' + gi);
+    if (body) {
+      var hide = body.style.display === 'none';
+      body.style.display = hide ? 'block' : 'none';
+      collapsedGroups[currentBoxId + '_' + gi] = !hide;
+    }
+  };
+
+  function updateMultiBarState() {
+    var moveBtn = $('multiMoveBtn');
+    var hasGroupSelected = selectedThreads.some(t => t.prefix.startsWith('group_'));
+    if (hasGroupSelected) {
+      moveBtn.classList.add('disabled');
+    } else {
+      moveBtn.classList.remove('disabled');
+    }
   }
 
   window.toggleActionMenu = function(e) {
@@ -1779,7 +1835,7 @@ body.sorting-mode .group-sort-btns { display: flex; }
     var m = $('actionMenu');
     if(m) m.classList.remove('show');
     // 重新渲染工具栏以隐藏菜单选项
-    renderGroups(imagineBoxes.find(x => x.id === currentBoxId));
+    renderGroups(imagineBoxes.find(x => x.id === currentBoxId) || {id:'demo-box', name:'学习', groups: []}); // fallback
   };
 
   window.showInlineGroupModal = function() {
@@ -1834,18 +1890,37 @@ body.sorting-mode .group-sort-btns { display: flex; }
     var m = $('actionMenu');
     if(m) m.classList.remove('show');
     renderBoxDetail(imagineBoxes.find(x => x.id === currentBoxId));
+    updateMultiBarState();
   };
   $('cancelMultiBtn').onclick = function() { toggleMultiSelect(); };
 
   $('multiDeleteBtn').onclick = function() {
     if (!selectedThreads.length) { showToast('请先选择'); return; }
-    if (!confirm('确认删除选中的 ' + selectedThreads.length + ' 条想象吗？')) return;
+    if (!confirm('确认删除选中的 ' + selectedThreads.length + ' 条内容吗？')) return;
     var box = imagineBoxes.find(x => x.id === currentBoxId);
     
-    var toDelete = selectedThreads.map(t => {
-       return { list: t.prefix === 'flat' ? box.details : box.groups[parseInt(t.prefix.slice(1))].threads, index: t.index };
+    // 提取所有要删除的索引
+    var toDelete = [];
+    selectedThreads.forEach(t => {
+      if (t.prefix.startsWith('group_')) {
+        var gi = parseInt(t.prefix.split('_')[1], 10);
+        if (box.groups[gi] && box.groups[gi].threads) {
+          box.groups[gi].threads.forEach((_, i) => toDelete.push({ list: box.groups[gi].threads, index: i }));
+        }
+      } else {
+        var list = t.prefix === 'flat' ? box.details : box.groups[parseInt(t.prefix.slice(1))].threads;
+        toDelete.push({ list: list, index: t.index });
+      }
     });
-    toDelete.sort((a,b) => b.index - a.index).forEach(item => item.list.splice(item.index, 1));
+    
+    // 去重并按索引倒序
+    var uniqueList = [];
+    var seen = new Set();
+    toDelete.forEach(item => {
+       var key = item.list.toString() + '_' + item.index;
+       if (!seen.has(key)) { seen.add(key); uniqueList.push(item); }
+    });
+    uniqueList.sort((a,b) => b.index - a.index).forEach(item => item.list.splice(item.index, 1));
     
     saveImagine();
     toggleMultiSelect();
@@ -2224,26 +2299,6 @@ body.sorting-mode .group-sort-btns { display: flex; }
         return;
       }
       var newBox = { id: 'box-' + Date.now(), type: type, name: boxName, core: '', details: [], groups: [] };
-      
-      // 新手演示数据
-      if (imagineBoxes.length === 0 && !localStorage.getItem('demo_created')) {
-        newBox.core = '我有一间在南方二三线的日常居所A，工作和休息在这里；一间能交通方便抵达无所谓城市、但要舒适且公共设施完备的地方单身公寓B，个人完全休息，用来安放各种爱好。';
-        newBox.groups = [
-          { name: '想象分支 1 - 日常居所', threads: [
-            { text: '书房：有一整面书墙，配一个懒人沙发。\n厨房：半开放式，门口带吧台（摆放酒水）。橱柜多、双色搭配、易清理；洗碗消毒一体，烤箱、烘焙和调酒工具齐全。', date: new Date().toISOString().split('T')[0] }
-          ]},
-          { name: '想象分支 2 - 单身公寓', threads: [
-            { text: '影音室：一角收藏电影、音乐胶片，专门用来放映。\n录音室：降噪隔离，放置吉他和钢琴。\n运动区：瑜伽垫、跑步机和器械；墙上挂自行车和滑雪板，各种球类收在角落。', date: new Date().toISOString().split('T')[0] }
-          ]},
-          { name: '你理解了么？', threads: [
-            { text: '理解了就点击右上角的“…”更多，多选后一键删除。', date: new Date().toISOString().split('T')[0] },
-            { text: '开启为你的想象添砖加瓦吧！', date: new Date().toISOString().split('T')[0] }
-          ]}
-        ];
-        localStorage.setItem('demo_created', '1');
-        showToast('已为您生成演示盒子');
-      }
-      
       imagineBoxes.push(newBox);
       saveImagine();
       $('boxTypeMenu').classList.remove('show');
