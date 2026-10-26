@@ -68,7 +68,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .cal-quote { font-size: 16px; line-height: 2; color: #333; max-width: 280px; text-align: justify; }
 .cal-author { font-size: 13px; color: var(--muted); margin-top: 15px; align-self: flex-end; }
 .cal-tap { position: absolute; bottom: 40px; font-size: 12px; color: #aaa; animation: pulse 2s infinite; }
-@keyframes pulse { 0%,100%{opacity: 0.3;} 50%{opacity: 1;} }
+@keyframes pulse { 0%,100%{opacity:0.3;} 50%{opacity:1;} }
 
 /* 主应用 */
 .app { max-width: 680px; margin: 0 auto; min-height: 100vh; padding: 0 20px 100px; opacity: 0; transition: opacity 0.8s; }
@@ -134,12 +134,10 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .group-bubble { left: 0; bottom: 100%; margin-bottom: 4px; }
 .group-bubble::after { content: ""; position: absolute; left: 12px; bottom: -4px; width: 8px; height: 8px; background: var(--ink); transform: rotate(45deg); }
 .thread-feed { display: flex; flex-direction: column; margin-bottom: 20px; }
-/* thread：去掉左侧竖线与圆圈 */
 .thread-item { position: relative; padding: 14px 0; margin: 0; }
 .thread-content-wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .thread-text { font-size: 15px; line-height: 1.7; white-space: pre-wrap; flex: 1; word-break: break-word; }
 .thread-text a { color: #0066cc; text-decoration: underline; }
-/* meta 行：日期最右，点 thread 后图标出现在日期右侧，日期左移 */
 .thread-meta-row { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 8px; min-height: 18px; }
 .thread-date { font-size: 11px; color: #ccc; white-space: nowrap; transition: transform 0.22s ease; }
 .thread-item.show-icons .thread-date { transform: translateX(-4px); }
@@ -147,9 +145,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .thread-item.show-icons .thread-icon-slot { width: 70px; opacity: 1; }
 .thread-icon-btn { cursor: pointer; color: #bbb; padding: 0 2px; line-height: 1; display: inline-flex; align-items: center; flex: 0 0 auto; }
 .thread-icon-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
-/* thread 内联编辑 */
 .thread-inline-edit { width: 100%; border: none; background: transparent; padding: 4px 0; font-size: 15px; line-height: 1.7; resize: vertical; min-height: 40px; color: var(--ink); }
-/* 图片网格 */
 .thread-imgs { display: grid; gap: 4px; margin-top: 8px; max-width: 340px; }
 .thread-imgs.cols-1 { grid-template-columns: 1fr; }
 .thread-imgs.cols-2 { grid-template-columns: repeat(2, 1fr); }
@@ -170,7 +166,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .lightbox-dots { position: absolute; bottom: 24px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; z-index: 3; }
 .lightbox-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); }
 .lightbox-dots span.active { background: #fff; }
-/* 分组：方案 A，极简行式 */
+/* 分组：方案 A */
 .new-group-btn { font-size: 12px; color: #bbb; padding: 8px 0 12px; cursor: pointer; }
 .group-section { margin-bottom: 8px; }
 .group-head { display: flex; align-items: center; justify-content: flex-start; gap: 6px; padding: 10px 0; border-bottom: 1px solid #f2f2f2; }
@@ -180,7 +176,6 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .group-head.editing .group-del { visibility: visible; }
 .group-name-input { font-size: 15px; font-weight: 700; color: var(--ink); border: none; border-bottom: 1px solid #ccc; background: transparent; padding: 0; width: 100px; }
 .group-body { padding-top: 2px; }
-/* 发布区分组选择 */
 .post-group-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--muted); }
 .post-group-select { font-size: 13px; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; background: var(--white); }
 .add-detail { position: relative; padding-left: 20px; border-left: 1px solid transparent; margin-left: 5px; }
@@ -189,10 +184,9 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .add-img-btn { display: inline-flex; align-items: center; cursor: pointer; color: var(--muted); }
 .add-img-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .add-submit { background: var(--ink); color: var(--white); padding: 6px 16px; border-radius: 15px; font-size: 14px; font-weight: 600; }
-/* 放大键 */
 .expand-btn { position: absolute; right: 10px; bottom: 46px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: #bbb; cursor: pointer; z-index: 2; }
 .expand-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-/* 半屏编辑层 */
+/* 半屏编辑层（跟随视觉视口） */
 #expandSheet { position: fixed; left: 0; right: 0; bottom: 0; height: 68vh; background: #fff; border-radius: 18px 18px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.18); z-index: 9700; display: flex; flex-direction: column; padding: 16px 20px 24px; transform: translateY(100%); transition: transform 0.28s ease; }
 #expandSheet.show { transform: translateY(0); }
 .expand-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -201,19 +195,16 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .expand-shrink svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .expand-textarea { flex: 1; width: 100%; border: none; background: var(--soft); border-radius: 12px; padding: 15px; font-size: 15px; line-height: 1.7; resize: none; }
 .expand-counter { text-align: right; font-size: 11px; color: #ccc; margin-top: 6px; }
-/* 图片小预览 */
 .img-preview-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
 .img-preview-item { position: relative; width: 56px; height: 56px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
 .img-preview-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .img-preview-remove { position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; border-radius: 50%; background: rgba(0,0,0,0.55); color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-/* 底部选组弹层 */
 #groupSheet { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 16px 16px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.15); z-index: 9600; padding: 16px 20px 30px; transform: translateY(100%); transition: transform 0.25s ease; }
 #groupSheet.show { transform: translateY(0); }
 .group-sheet-title { font-size: 13px; color: var(--muted); margin-bottom: 12px; text-align: center; }
 .group-sheet-item { padding: 14px 8px; font-size: 16px; border-bottom: 1px solid var(--line); cursor: pointer; text-align: center; }
 .group-sheet-item:last-child { border-bottom: none; }
 .group-sheet-cancel { padding: 14px 8px; font-size: 15px; color: var(--muted); text-align: center; cursor: pointer; margin-top: 6px; }
-/* 自定义日历弹层 */
 #calSheet { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 18px 18px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.18); z-index: 9700; padding: 18px 20px 28px; transform: translateY(100%); transition: transform 0.28s ease; }
 #calSheet.show { transform: translateY(0); }
 .calsheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
@@ -262,10 +253,18 @@ input:focus, textarea:focus, button:focus { outline: none; }
 .write-field { width: 100%; border: none; border-radius: 12px; padding: 14px 15px; background: var(--soft); font-size: 15px; color: var(--ink); transition: background 0.2s; }
 .write-field:focus { background: #f0f0f0; }
 .events-wrap { position: relative; }
-/* 开发者留言 */
+/* 开发者 */
+.dev-menu { display: flex; flex-direction: column; gap: 10px; margin: 10px 0 18px; }
+.dev-menu-item { padding: 14px; border: 1px solid var(--line); border-radius: 12px; font-size: 15px; cursor: pointer; text-align: center; }
+.dev-menu-item:active { background: var(--soft); }
+.dev-panel { text-align: left; max-height: 52vh; overflow-y: auto; margin-bottom: 16px; }
 .dev-log p { font-size: 13px; line-height: 1.9; color: #555; text-align: left; margin: 0 0 12px; }
 .dev-ver { font-size: 12px; color: #999; margin-bottom: 6px; text-align: left; }
-.leave-msg-btn { font-size: 14px; color: var(--ink); cursor: pointer; padding: 10px; display: block; margin: 6px auto 0; }
+.dev-letter p { font-size: 14px; line-height: 2; color: #444; margin: 0 0 14px; text-align: justify; }
+.dev-letter .sign { text-align: right; margin-top: 18px; color: #333; }
+.dev-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+.leave-msg-btn { font-size: 14px; color: var(--ink); cursor: pointer; padding: 10px; }
+.dev-back-btn { font-size: 14px; color: var(--muted); cursor: pointer; padding: 10px; }
 #leaveOverlay .modal-content { text-align: center; }
 .leave-mail { font-size: 15px; color: #0066cc; cursor: pointer; margin: 6px 0 14px; word-break: break-all; }
 .leave-actions { display: flex; gap: 10px; margin-top: 16px; }
@@ -346,14 +345,36 @@ input:focus, textarea:focus, button:focus { outline: none; }
 <div id="devOverlay" class="modal-overlay hidden">
   <div class="modal-content">
     <h2 style="margin-top:0;">开发者</h2>
-    <div class="dev-log">
-      <div class="dev-ver">v1.1</div>
-      <p>新增自定义日历、草稿自动保存、半屏放大编辑、开发者留言入口；想象页分组与 thread 编辑改为原地操作，图片预览改为箭头切换。修复导入、改名刷新与悬浮球拖动问题。</p>
-      <div class="dev-ver">v1.0</div>
-      <p>完成开屏流程、来信、档案与日历。日记支持分栏与智能书写、搜索与字数限制。想象页支持盒子、核心想象、thread 时间线、分组与移动到分组、多图网格与大图预览。新增数据导出导入与开发者日志。</p>
+    <div id="devMenu">
+      <div class="dev-menu">
+        <div class="dev-menu-item" id="openDevLog">开发日志</div>
+        <div class="dev-menu-item" id="openDevLetter">来自开发者的一封信</div>
+      </div>
     </div>
-    <span class="leave-msg-btn" id="leaveMsgBtn">留言</span>
-    <span class="leave-msg-btn" id="devBackBtn" style="color:var(--muted);">返回</span>
+    <div id="devLogPanel" class="dev-panel hidden">
+      <div class="dev-log">
+        <div class="dev-ver">v1.2</div>
+        <p>开发者页改为二级菜单，新增“来自开发者的一封信”。日记编辑页放大输入时适配键盘，保持正文与日期可见。想象页时间线去掉左侧竖线与圆点，分组改为无边框行式。</p>
+        <div class="dev-ver">v1.1</div>
+        <p>新增自定义日历、草稿自动保存、半屏放大编辑、开发者留言入口；想象页分组与 thread 编辑改为原地操作，图片预览改为箭头切换。修复导入、改名刷新与悬浮球拖动问题。</p>
+        <div class="dev-ver">v1.0</div>
+        <p>完成开屏流程、来信、档案与日历。日记支持分栏与智能书写、搜索与字数限制。想象页支持盒子、核心想象、thread 时间线、分组与移动到分组、多图网格与大图预览。新增数据导出导入与开发者日志。</p>
+      </div>
+    </div>
+    <div id="devLetterPanel" class="dev-panel hidden">
+      <div class="dev-letter">
+        <p>你好：</p>
+        <p>我是这个作品的设计者 Always02，很高兴见到你。</p>
+        <p>Elsewhere 的概念取自米兰·昆德拉。它对我有很特殊的意义，它不仅是我真正意义上第一个网页作品，也代表了我渴望与这个世界相处的艺术。这里的“日记”与“想象”并非真实记录，而是设定于另一个世界的虚构内容。Elsewhere 的出现也十分偶然，它只是缘起于我某天的心情低落：当时我忍不住想，如果此刻的我完全自由、完全放松，成为另一世界的自己，我会是在哪，做些什么呢？由此，我写下了某篇不存在的日记。因此，它其实并不是日记，不过当然也可以拿来当日记用。</p>
+        <p>人有时候会暂时被“困住”——因为环境、系统、家庭、责任等等，似乎无所不被周围的一切所约束。但我们的思想，总归拥有无限的可能。我从小就有一个习惯：睡不着和伤心的时候，开始在脑海中填充想象——未来我生活在哪里呢？身边有怎样的一群人？我会怎样设计和装饰属于我的小房子？是这些想象支撑着我走到了今天，陪伴我度过无数个想着想着就酣然入睡的夜。那些日夜积攒在一起，就成了现在这一隅 elsewhere，给你我一同安放那些现实中无处可去的想法。以及，说不定这些不存在的日记和想象哪天就真的实现了一二呢。</p>
+        <p>人类的思索是上天赋予的礼物，宇宙就在人类的想象之间。不论生活如何如枷锁般使你坠地，愿你的美好想象永远飞行。</p>
+        <p class="sign">祝好<br>Always02</p>
+      </div>
+    </div>
+    <div class="dev-bottom">
+      <span class="leave-msg-btn" id="leaveMsgBtn">留言</span>
+      <span class="dev-back-btn" id="devBackBtn">返回</span>
+    </div>
   </div>
 </div>
 
@@ -687,6 +708,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     } catch(e) { console.log(e); }
     startAppFlow();
     bindFabDrag();
+    bindVisualViewport();
   });
 
   document.querySelectorAll('#welcomeOverlay .gender-btn').forEach(btn => {
@@ -777,9 +799,29 @@ input:focus, textarea:focus, button:focus { outline: none; }
 
   $('devBtn').addEventListener('click', function() {
     $('devOverlay').classList.remove('hidden');
+    showDevMenu();
+  });
+  function showDevMenu() {
+    $('devMenu').classList.remove('hidden');
+    $('devLogPanel').classList.add('hidden');
+    $('devLetterPanel').classList.add('hidden');
+  }
+  $('openDevLog').addEventListener('click', function() {
+    $('devMenu').classList.add('hidden');
+    $('devLogPanel').classList.remove('hidden');
+    $('devLetterPanel').classList.add('hidden');
+  });
+  $('openDevLetter').addEventListener('click', function() {
+    $('devMenu').classList.add('hidden');
+    $('devLetterPanel').classList.remove('hidden');
+    $('devLogPanel').classList.add('hidden');
   });
   $('devBackBtn').addEventListener('click', function() {
-    $('devOverlay').classList.add('hidden');
+    if (!$('devMenu').classList.contains('hidden')) {
+      $('devOverlay').classList.add('hidden');
+    } else {
+      showDevMenu();
+    }
   });
   $('leaveMsgBtn').addEventListener('click', function() {
     $('devOverlay').classList.add('hidden');
@@ -1240,8 +1282,45 @@ input:focus, textarea:focus, button:focus { outline: none; }
     $('expandTextarea').value = $('events').value;
     $('expandCounter').textContent = $('events').value.length + ' / 1000';
     $('expandSheet').classList.add('show');
-    setTimeout(function() { $('expandTextarea').focus(); }, 200);
+    setTimeout(function() {
+      $('expandTextarea').focus();
+      positionExpandSheetForKeyboard();
+    }, 200);
   });
+
+  // 键盘弹出时，把编辑层顶部放到可用区域约 1/4 处，露出日期
+  function positionExpandSheetForKeyboard() {
+    var sheet = $('expandSheet');
+    if (!sheet.classList.contains('show')) return;
+    if (!window.visualViewport) return;
+    var vv = window.visualViewport;
+    var availTop = vv.offsetTop;
+    var availHeight = vv.height;
+    var topGap = availHeight * 0.25;
+    var sheetTop = availTop + topGap;
+    var sheetHeight = availHeight - topGap;
+    sheet.style.top = sheetTop + 'px';
+    sheet.style.bottom = 'auto';
+    sheet.style.height = Math.max(160, sheetHeight) + 'px';
+  }
+
+  function bindVisualViewport() {
+    if (!window.visualViewport) return;
+    var handler = function() {
+      if ($('expandSheet').classList.contains('show')) {
+        positionExpandSheetForKeyboard();
+      }
+    };
+    window.visualViewport.addEventListener('resize', handler);
+    window.visualViewport.addEventListener('scroll', handler);
+  }
+
+  function resetExpandSheetPosition() {
+    var sheet = $('expandSheet');
+    sheet.style.top = '';
+    sheet.style.bottom = '0';
+    sheet.style.height = '68vh';
+  }
 
   // ================= 想象渲染 =================
   function renderHub() {
@@ -1691,6 +1770,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
     $('expandTextarea').maxLength = 1500;
     $('expandTextarea').value = $('detailText').value;
     $('expandCounter').textContent = $('detailText').value.length + ' / 1500';
+    resetExpandSheetPosition();
     $('expandSheet').classList.add('show');
     setTimeout(function() { $('expandTextarea').focus(); }, 200);
   });
@@ -1704,6 +1784,7 @@ input:focus, textarea:focus, button:focus { outline: none; }
       saveThreadDraft();
     }
     $('expandSheet').classList.remove('show');
+    resetExpandSheetPosition();
   });
 
   $('expandTextarea').addEventListener('input', function() {
